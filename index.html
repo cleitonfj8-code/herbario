@@ -388,6 +388,25 @@ label.ic { display: grid; place-items: center; cursor: pointer; }
 .cand-imgs figcaption { font-size: 0.64rem; color: var(--cinza); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 @media (max-width: 760px) { .etiqueta-foto { width: 96px; } .etiqueta-foto img { width: 96px; height: 96px; } }
 
+/* Quadro-resumo morfológico */
+.quadro-resumo { background: var(--branco); border: 1px solid var(--linha); border-left: 4px solid var(--floresta); border-radius: var(--raio); padding: 14px 18px; margin: 14px 0 4px; }
+.quadro-resumo h3 { font-size: 1.05rem; margin: 0 0 8px; }
+.quadro-resumo dl { margin: 0; }
+.qr-linha { display: grid; grid-template-columns: 112px 1fr; gap: 10px; padding: 7px 0; border-top: 1px solid var(--linha-2); align-items: baseline; }
+.qr-linha:first-child { border-top: 0; }
+.qr-linha dt { display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--floresta-3); }
+.qr-linha dt .icone { width: 16px; height: 16px; color: var(--oliva); }
+.qr-linha dd { margin: 0; font-size: 0.95rem; }
+.qr-linha.vazio dd { color: var(--cinza); font-style: italic; }
+.qr-nota { color: var(--terra); font-size: 0.82rem; }
+.qr-rodape { font-size: 0.78rem; color: var(--cinza); margin: 8px 0 0; }
+details.original { margin-top: 6px; font-size: 0.82rem; color: var(--cinza); }
+details.original summary { cursor: pointer; }
+details.original span { display: block; padding: 6px 10px; border-left: 2px solid var(--linha); margin-top: 4px; font-style: italic; }
+
+.biblio-grupo { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--oliva); margin: 18px 0 8px; }
+.rodape a { color: inherit; }
+
 </style>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231F3A2B'/%3E%3Cpath d='M9 24C9 14 15 8 24 8c0 9-6 15-15 16z' fill='none' stroke='%23F3EEE2' stroke-width='2'/%3E%3Cpath d='M9 24l9-9' stroke='%23F3EEE2' stroke-width='2'/%3E%3C/svg%3E">
 </head>
@@ -552,14 +571,14 @@ label.ic { display: grid; place-items: center; cursor: pointer; }
 </div>
 
 <footer class="rodape">
-  <p><strong>HERBÁRIO</strong> — plataforma de identificação vegetal e consulta morfológica.</p>
+  <p><strong>HERBÁRIO</strong> — plataforma de identificação vegetal e consulta morfológica. <a href="#sobre">Método, fontes e biblioteca</a>.</p>
   <p>Identificação por Pl@ntNet. Identificações automáticas podem errar. Confirme espécies de interesse científico, alimentar ou medicinal com um especialista e com as bases indicadas em cada ficha.</p>
 </footer>
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
 <script>
-window.__HERBARIO_DADOS__ = {"indice": {"atualizado_em": "2026-11-15", "especies": [{"slug": "mangifera-indica", "nome_cientifico": "Mangifera indica", "autoria": "L.", "familia": "Anacardiaceae", "nome_popular": ["mangueira", "manga"], "sinonimos": ["Mangifera laxiflora Desr.", "Mangifera rubra Bojer", "Mangifera equina Crevost & Lemarié", "Mangifera rostrata Blanco"], "status": "verificada", "atualizado_em": "2026-11-15"}]}, "fichas": {"mangifera-indica": {"cabecalho": {"nome_cientifico": "Mangifera indica", "autoria": "L.", "familia": "Anacardiaceae", "genero": "Mangifera", "epiteto": "indica", "nome_popular": ["mangueira", "manga (fruto)", "manguita", "manguinha"], "sinonimos": ["Mangifera laxiflora Desr.", "Mangifera rubra Bojer", "Mangifera equina Crevost & Lemarié", "Mangifera rostrata Blanco", "Mangifera austroyunnanensis Hu"], "nota_taxonomica": "Nome aceito, publicado por Lineu em Species Plantarum: 200 (1753) [R1]. Ordem Sapindales (APG IV). Diploide, 2n = 40 [R2, R10]. A lista completa de sinônimos heterotípicos está no POWO [R1].", "status": "verificada", "atualizado_em": "2026-11-15", "referencias": [{"id": "R1", "citacao": "POWO. Mangifera indica L. Plants of the World Online. Royal Botanic Gardens, Kew.", "url": "https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:69913-1", "consultado_em": "2026-11-15", "secoes": ["geral"]}, {"id": "R2", "citacao": "SUKONTHASING, S.; WONGRAKPANICH, M.; VERHEIJ, E. W. M. Mangifera indica L. In: VERHEIJ, E. W. M.; CORONEL, R. E. (ed.). Plant Resources of South-East Asia No. 2: Edible fruits and nuts. Bogor: PROSEA Foundation, 1991.", "url": "https://prosea.prota4u.org/view.aspx?id=1522", "consultado_em": "2026-11-15", "secoes": ["geral", "raiz", "caule", "folha", "flor", "fruto", "semente", "curiosidades"]}, {"id": "R3", "citacao": "ACEVEDO-RODRÍGUEZ, P. et al. Flora of St. John, U.S. Virgin Islands. Memoirs of the New York Botanical Garden, v. 78, p. 1–581, 1996. Tratamento de Mangifera indica.", "url": "https://sweetdev.nybg.org/science-dev/vh/monographs-details/?irn=28029", "consultado_em": "2026-11-15", "secoes": ["caule", "folha", "flor", "fruto", "semente", "curiosidades"]}, {"id": "R4", "citacao": "FLORA OF CHINA. Mangifera indica. eFloras.org, Missouri Botanical Garden & Harvard University Herbaria. Consultado em reprodução licenciada (CC BY-NC-SA 3.0) no Scratchpad myspecies.info.", "url": "https://nantiyaag2.myspecies.info/taxonomy/term/12/descriptions", "consultado_em": "2026-11-15", "secoes": ["fruto", "flor"]}, {"id": "R5", "citacao": "USDA NRCS. Mango, Mangifera indica L. Plant Guide. National Plant Data Center.", "url": "https://plants.usda.gov/DocumentLibrary/plantguide/pdf/cs_main3.pdf", "consultado_em": "2026-11-15", "secoes": ["raiz", "folha", "geral", "curiosidades"]}, {"id": "R6", "citacao": "FERREIRA, F. R. et al. Germoplasma de manga no Brasil. Embrapa (Repositório Alice).", "url": "https://www.alice.cnptia.embrapa.br/alice/bitstream/doc/137955/1/OPB784.pdf", "consultado_em": "2026-11-15", "secoes": ["geral"]}, {"id": "R7", "citacao": "SILVA-LUZ, C. L.; PIRANI, J. R.; PELL, S. K.; MITCHELL, J. D. Anacardiaceae. In: Flora e Funga do Brasil. Rio de Janeiro: Jardim Botânico do Rio de Janeiro, 2021 (atualização contínua).", "url": "https://floradobrasil.jbrj.gov.br/reflora/floradobrasil/FB44", "consultado_em": "2026-11-15", "secoes": ["geral"]}, {"id": "R8", "citacao": "Flora of Anacardiaceae in the Upper Paraná Atlantic Forest. Rodriguésia (SciELO).", "url": "https://www.scielo.br/j/rod/a/Tvn7JhvF4DpFjvZZDtbpgTS/?lang=en", "consultado_em": "2026-11-15", "secoes": ["geral"]}, {"id": "R9", "citacao": "YADAV, C. B. et al. Promoter insertion leads to polyembryony in mango — a case of convergent evolution with citrus. Horticulture Research, v. 10, n. 12, uhad227, 2023. DOI: 10.1093/hr/uhad227.", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10709545", "consultado_em": "2026-11-15", "secoes": ["semente", "geral", "curiosidades"]}, {"id": "R10", "citacao": "ALI, G. S. et al. GWAS identifies a polyembryony locus in mango: development of KASP and PACE markers for marker-assisted breeding. Frontiers in Plant Science, 2025. DOI: 10.3389/fpls.2025.1508027.", "url": "https://www.frontiersin.org/journals/plant-science/articles/10.3389/fpls.2025.1508027/pdf", "consultado_em": "2026-11-15", "secoes": ["semente", "curiosidades"]}, {"id": "R11", "citacao": "Fruit yield and root system distribution of 'Tommy Atkins' mango under different irrigation regimes. Revista Brasileira de Engenharia Agrícola e Ambiental (SciELO).", "url": "https://scielo.br/j/rbeaa/a/rWXXKgfPfpPZkXGG5pKPWRK", "consultado_em": "2026-11-15", "secoes": ["raiz"]}, {"id": "R12", "citacao": "Differential expression of polyembryony in certain mango genotypes. Indian Journal of Horticulture, v. 79, n. 4, p. 415–421, 2022. DOI: 10.5958/0974-0112.2022.00058.5.", "url": "https://journal.iahs.org.in/index.php/ijh/article/view/512", "consultado_em": "2026-11-15", "secoes": ["semente", "curiosidades"]}, {"id": "R13", "citacao": "PARROTTA, J. A. Mangifera indica L. Mango. Anacardiaceae. In: Árboles de Puerto Rico (USDA Forest Service).", "url": "https://npn.rngr.net/publications/arboles-de-puerto-rico/mangifera-indica/at_download/file", "consultado_em": "2026-11-15", "secoes": ["geral"]}, {"id": "R14", "citacao": "PARISOT, E. Étude de la croissance rythmique chez de jeunes manguiers (Mangifera indica L.). Première partie: description, germination et conservation de graines polyembryonnées. Fruits, v. 43, n. 2, p. 97–105, 1988.", "url": "https://revues.cirad.fr/index.php/fruits/article/download/35024/35503/38991", "consultado_em": "2026-11-15", "secoes": ["semente"]}, {"id": "R15", "citacao": "MUSEU NACIONAL/UFRJ. Horto Botânico: Mangifera indica.", "url": "https://www.museunacional.ufrj.br/hortobotanico/arvoresearbustos/mangiferaindica.html", "consultado_em": "2026-11-15", "secoes": ["geral"]}]}, "secoes": {"geral": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"resumo": "Árvore perenifólia de grande porte, originária da região indo-birmanesa e hoje cultivada em todas as regiões tropicais e subtropicais. No Brasil é exótica, introduzida pelos portugueses e amplamente cultivada pelos frutos.", "itens": [{"caractere": "Origem", "valor": "Região indo-birmanesa. O POWO delimita a área nativa de Assam ao sul de Yunnan (China), incluindo Himalaia Oriental, Mianmar e Tailândia.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R1", "R2"]}, {"caractere": "Distribuição geográfica", "valor": "Pantropical por cultivo. Difundiu-se pelo Sudeste Asiático há cerca de 1.500 anos, chegou à África Oriental há cerca de 1.000 anos e às Américas nos últimos séculos.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R13"]}, {"caractere": "Ocorrência no Brasil", "valor": "Espécie exótica, introduzida pelos portugueses provavelmente no século XVI e cultivada em todo o país. Consta na Flora e Funga do Brasil (tratamento de Anacardiaceae); estudos florísticos a registram como exótica cultivada, inclusive em unidades de conservação da Mata Atlântica.", "termos": [{"termo": "exótica", "definicao": "Espécie que ocorre fora da sua área de distribuição natural por introdução humana."}], "certeza": "alta", "origem": "literatura", "fontes": ["R6", "R7", "R8"]}, {"caractere": "Habitat", "valor": "Na área nativa, florestas do bioma tropical sazonalmente seco, em geral entre 300 e 900 m de altitude. Precisa de estação seca de mais de três meses para frutificar bem; temperatura ótima em torno de 24–27 °C.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R1", "R13", "R2"]}, {"caractere": "Hábito", "valor": "Árvore perenifólia, ereta e ramificada, de 10 a 45 m de altura, tronco com 60 a 120 cm de diâmetro e copa densa.", "termos": [{"termo": "perenifólia", "definicao": "Planta que mantém folhas durante o ano todo, sem perda total da folhagem em uma estação."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Ciclo de vida", "valor": "Perene e longeva: há registros de árvores com cerca de 300 anos ainda produzindo frutos. Plantas de semente começam a frutificar após 5 a 7 anos.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R5", "R2"]}, {"caractere": "Importância ecológica", "valor": "Flores visitadas e polinizadas principalmente por insetos (moscas e abelhas). Frutos e folhas servem de alimento a animais silvestres.", "termos": [], "certeza": "media", "origem": "literatura", "fontes": ["R2", "R5"]}, {"caractere": "Importância econômica", "valor": "Uma das frutíferas mais importantes do mundo, com produção anual acima de 57 milhões de toneladas, atrás apenas da banana entre as frutas tropicais e subtropicais. A madeira também é aproveitada.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R9", "R5"]}], "variacao": "Há centenas de cultivares, com grande variação no tamanho, forma e cor dos frutos e na presença de fibras na polpa.", "divergencias": ["A área nativa é descrita de forma ampla como Índia e Mianmar em várias fontes; o POWO a restringe a Assam, Himalaia Oriental, Mianmar, Tailândia e sul de Yunnan.", "A introdução no Brasil é datada no século XVI (Embrapa) ou, de forma menos precisa, antes do fim do século XVII (Parrotta)."], "limitacoes": "Não foi possível consultar diretamente a ficha da espécie na Flora e Funga do Brasil (situação de origem e domínios fitogeográficos); confira no link das bases."}}, "raiz": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"resumo": "Sistema radicular axial (pivotante), com raiz principal longa e profunda, combinada a uma densa massa de raízes absorventes superficiais.", "itens": [{"caractere": "Tipo de sistema", "valor": "Axial ou pivotante: uma raiz principal longa, pouco ramificada, que pode alcançar 6 a 8 m de profundidade.", "termos": [{"termo": "pivotante", "definicao": "Sistema em que a raiz primária, originada da radícula do embrião, cresce mais que as laterais e forma um eixo principal."}], "certeza": "alta", "origem": "literatura", "fontes": ["R5", "R2"]}, {"caractere": "Raízes absorventes", "valor": "Densa massa de raízes finas próximas à superfície, responsáveis pela absorção de água e nutrientes.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R5"]}, {"caractere": "Raízes de ancoragem", "valor": "As raízes superficiais emitem raízes descendentes de ancoragem, que penetram cerca de 1,2 m; a expansão lateral chega a 7,5 m.", "termos": [], "certeza": "media", "origem": "literatura", "fontes": ["R5"]}, {"caractere": "Função adaptativa", "valor": "A raiz profunda dá sustentação e permite obter água no período seco, o que ajuda a árvore a sobreviver a estiagens e a manter a floração.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R11"]}, {"caractere": "Plasticidade em cultivo", "valor": "Em pomares irrigados no semiárido baiano ('Tommy Atkins'), as raízes ficaram limitadas a cerca de 3–3,5 m do tronco e 1,4 m de profundidade; sem irrigação, o sistema radicular e a produção diminuem.", "termos": [], "certeza": "media", "origem": "literatura", "fontes": ["R11"]}, {"caractere": "Porta-enxertos", "valor": "Em plantios comerciais, a copa costuma ser enxertada sobre porta-enxerto obtido de sementes poliembriônicas; nesse caso, o sistema radicular é o do porta-enxerto.", "termos": [{"termo": "porta-enxerto", "definicao": "Planta que fornece o sistema radicular sobre o qual se enxerta a copa de outra variedade."}], "certeza": "alta", "origem": "literatura", "fontes": ["R9"]}], "variacao": "A profundidade e a extensão das raízes dependem do solo, do lençol freático e da irrigação.", "divergencias": [], "limitacoes": "Nenhuma das fontes descreve raízes modificadas (tabulares, escoras etc.) para a espécie; por isso não são listadas."}}, "caule": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"resumo": "Caule aéreo, ereto e lenhoso do tipo tronco, com casca castanho-acinzentada fissurada e seiva resinosa. O crescimento ocorre em fluxos rítmicos.", "itens": [{"caractere": "Tipo", "valor": "Tronco: caule aéreo, ereto, lenhoso e ramificado, com 60 a 120 cm de diâmetro em árvores adultas.", "termos": [{"termo": "tronco", "definicao": "Caule lenhoso e robusto das árvores, ramificado na parte superior."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Casca", "valor": "Castanho-acinzentada, com fissuras longitudinais.", "termos": [{"termo": "ritidoma", "definicao": "Camada externa morta da casca das árvores, que pode se fissurar ou desprender."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Exsudato", "valor": "Seiva resinosa e clara, que pode irritar a pele de pessoas sensíveis.", "termos": [{"termo": "exsudato", "definicao": "Substância (látex, resina, goma) que escorre de um órgão vegetal quando ferido."}], "certeza": "alta", "origem": "literatura", "fontes": ["R3"]}, {"caractere": "Arquitetura e ramificação", "valor": "Segue o modelo arquitetural de Scarrone: o tronco cresce em fluxos sucessivos e os ramos terminam em inflorescências terminais, o que leva à ramificação a partir das gemas abaixo delas.", "termos": [{"termo": "modelo arquitetural", "definicao": "Padrão de crescimento e ramificação geneticamente determinado de uma espécie (sistema de Hallé & Oldeman)."}], "certeza": "media", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Crescimento", "valor": "Rítmico, em fluxos: plantas jovens podem emitir até quatro fluxos de brotação por ano, se houver umidade. Em geral só as gemas da ponta comprimida dos ramos crescem ou florescem.", "termos": [{"termo": "fluxo de crescimento", "definicao": "Período curto de brotação intensa, separado por fases de repouso das gemas."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}], "variacao": "A copa pode ser arredondada e larga ou mais estreita e ereta, conforme cultivar e ambiente.", "divergencias": [], "limitacoes": "As fontes consultadas não detalham lenticelas, nós e entrenós dos ramos jovens. A explicação do modelo de Scarrone resume o conceito de Hallé & Oldeman e não detalha a espécie."}}, "folha": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"resumo": "Folhas simples, alternas espiraladas e agrupadas no ápice dos ramos, com limbo estreitamente elíptico a lanceolado, subcoriáceo e glabro, nervura central saliente e clara. As folhas novas são avermelhadas.", "itens": [{"caractere": "Classificação", "valor": "Simples.", "termos": [{"termo": "folha simples", "definicao": "Folha com um único limbo, não dividido em folíolos."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Filotaxia", "valor": "Alterna espiralada, com as folhas concentradas nas extremidades dos ramos.", "termos": [{"termo": "filotaxia", "definicao": "Modo de disposição das folhas no caule."}, {"termo": "espiralada", "definicao": "Uma folha por nó, dispostas ao longo de uma espiral em torno do caule."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Pecíolo", "valor": "Até 10 cm de comprimento (geralmente 1–5 cm), com pulvino na base.", "termos": [{"termo": "pulvino", "definicao": "Dilatação na base do pecíolo, ligada aos movimentos e à orientação da folha."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Formato do limbo", "valor": "Estreitamente elíptico a lanceolado ou oblongo-lanceolado, às vezes levemente falcado; cerca de 8–40 × 2–10 cm. Em ramos estéreis pode chegar a 50 cm.", "termos": [{"termo": "lanceolado", "definicao": "Limbo bem mais longo que largo, mais largo abaixo do meio e afinando para o ápice, como ponta de lança."}, {"termo": "falcado", "definicao": "Curvo como uma foice."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3", "R5"]}, {"caractere": "Ápice", "valor": "Acuminado.", "termos": [{"termo": "acuminado", "definicao": "Ápice que se estreita em ponta longa e fina."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Base", "valor": "Atenuada (estreitando-se gradualmente para o pecíolo), às vezes oblíqua.", "termos": [{"termo": "atenuada", "definicao": "Base que se estreita gradualmente em direção ao pecíolo."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Margem", "valor": "Inteira, muitas vezes ondulada.", "termos": [{"termo": "margem inteira", "definicao": "Borda contínua, sem dentes nem recortes."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Nervação", "valor": "Peninérvea, com nervura central proeminente, de cor amarelada ou esbranquiçada, e 12 a 30 pares de nervuras secundárias salientes.", "termos": [{"termo": "peninérvea", "definicao": "Nervação em que as nervuras secundárias saem de uma nervura central, como as barbas de uma pena."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R5"]}, {"caractere": "Consistência e superfície", "valor": "Subcoriácea, glabra; verde-escura e brilhante na face superior, mais clara na inferior.", "termos": [{"termo": "coriácea", "definicao": "Consistência firme e espessa, semelhante a couro."}, {"termo": "glabra", "definicao": "Sem pelos (tricomas)."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3", "R5"]}, {"caractere": "Folhas jovens", "valor": "Emitidas em fluxos, de cor avermelhada a bronzeada, tornando-se verde-escuras ao amadurecer.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R5"]}], "variacao": "As folhas variam bastante numa mesma árvore e entre cultivares, em tamanho e na cor dos brotos novos.", "divergencias": [], "limitacoes": "As fontes não mencionam estípulas; o gênero é descrito com folhas pecioladas e simples, sem estípulas citadas."}}, "flor": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"resumo": "Flores pequenas, pentâmeras, de simetria radial, reunidas em panículas terminais amplas que misturam flores masculinas e hermafroditas. Em geral só um dos cinco estames é fértil.", "itens": [{"caractere": "Inflorescência", "valor": "Panícula terminal, amplamente ramificada, densa e tomentosa, com até 60 cm (em geral 20–40 cm).", "termos": [{"termo": "panícula", "definicao": "Inflorescência racemosa composta, ramificada, em geral de contorno piramidal."}, {"termo": "tomentosa", "definicao": "Coberta por pelos curtos e densos."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Sistema sexual", "valor": "Flores masculinas e hermafroditas na mesma inflorescência (planta andromonoica); nas masculinas, o pistilo é abortivo.", "termos": [{"termo": "andromonoica", "definicao": "Planta que tem flores masculinas e flores hermafroditas no mesmo indivíduo."}, {"termo": "monoclina", "definicao": "Flor com androceu e gineceu (hermafrodita)."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Tamanho e cor", "valor": "5–8 mm de diâmetro, amarelo-esverdeadas; pétalas creme a rosadas, passando de verde-amareladas a avermelhadas.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Simetria", "valor": "Actinomorfa (radial).", "termos": [{"termo": "actinomorfa", "definicao": "Flor com vários planos de simetria, de aspecto radial."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Perianto", "valor": "Heteroclamídeo: cálice de 5 sépalas lanceoladas (cerca de 2 mm), pubescentes; corola de 5 pétalas livres, oblongas a espatuladas, com cerca do dobro do comprimento das sépalas (3–3,5 mm).", "termos": [{"termo": "heteroclamídeo", "definicao": "Perianto com cálice e corola distintos entre si."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Disco nectarífero", "valor": "Curto, cupuliforme, carnoso e com 5 lobos, entre a corola e o androceu.", "termos": [{"termo": "disco", "definicao": "Estrutura carnosa no receptáculo, muitas vezes nectarífera, comum nas Sapindales."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Androceu", "valor": "5 estames, geralmente só 1 fértil e maior, exserto além das pétalas; os demais são estaminódios.", "termos": [{"termo": "estaminódio", "definicao": "Estame estéril, sem pólen funcional."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Gineceu", "valor": "Ovário quase globoso e séssil; estilete lateral (sublateral) e curvo; estigma simples, puntiforme.", "termos": [{"termo": "estilete", "definicao": "Parte do pistilo que liga o ovário ao estigma."}, {"termo": "puntiforme", "definicao": "Em forma de ponto."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Carpelos e lóculos", "valor": "No gênero Mangifera, o ovário é unicarpelar e unilocular, com um único óvulo.", "termos": [{"termo": "unilocular", "definicao": "Ovário com uma só cavidade (lóculo)."}], "certeza": "media", "origem": "literatura", "fontes": ["R2"]}], "variacao": "A proporção de flores masculinas e hermafroditas varia entre cultivares e anos.", "divergencias": [], "limitacoes": "O item sobre carpelos descreve o gênero, não especificamente a espécie. As fontes consultadas não detalham a prefloração, a deiscência das anteras nem a posição do ovário em relação às demais peças."}}, "fruto": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"resumo": "Fruto simples, carnoso e indeiscente do tipo drupa, com mesocarpo comestível amarelo a alaranjado e endocarpo lenhoso e fibroso (o “caroço”) que envolve uma única semente.", "itens": [{"caractere": "Classificação", "valor": "Simples, carnoso e indeiscente: drupa.", "termos": [{"termo": "drupa", "definicao": "Fruto carnoso com endocarpo duro (caroço) envolvendo, em geral, uma semente."}, {"termo": "indeiscente", "definicao": "Fruto que não se abre espontaneamente ao amadurecer."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3", "R4"]}, {"caractere": "Forma e tamanho", "valor": "Muito variável; em geral ovoide-oblonga, com os lados bem desiguais, até cerca de 30 × 10 cm. Pende de pedúnculos longos.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Epicarpo (casca)", "valor": "Relativamente espesso, com pontuações glandulares; verde, amarelo, alaranjado ou avermelhado na maturação.", "termos": [{"termo": "epicarpo", "definicao": "Camada mais externa do pericarpo, a 'casca' do fruto."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Mesocarpo (polpa)", "valor": "Carnoso e comestível, amarelo a alaranjado, suculento; com ou sem fibras e de sabor doce a resinoso (terebintáceo).", "termos": [{"termo": "mesocarpo", "definicao": "Camada intermediária do pericarpo; nas drupas, geralmente a parte carnosa."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R4"]}, {"caractere": "Endocarpo (caroço)", "valor": "Espesso, lenhoso e fibroso, achatado, com 5–8 cm.", "termos": [{"termo": "endocarpo", "definicao": "Camada interna do pericarpo; nas drupas, endurecida em caroço."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3", "R4"]}, {"caractere": "Número de sementes", "valor": "Uma semente por fruto, dentro do endocarpo.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Desenvolvimento", "valor": "O vingamento é baixo: cerca de 1 fruto para cada mil flores perfeitas. O amadurecimento leva de 3 a 4 meses (até 5 nas cultivares tardias).", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Composição", "valor": "Em média, 11–18% de casca, 14–22% de polpa e 60–75% de caroço, conforme dados do PROSEA.", "termos": [], "certeza": "media", "origem": "literatura", "fontes": ["R2"]}], "variacao": "Forma, tamanho, cor e teor de fibras variam muito entre cultivares.", "divergencias": ["A Flora of China descreve frutos de 5–10 × 3–4,5 cm; o PROSEA cita até 30 × 10 cm. A diferença reflete a variação entre populações e cultivares.", "A proporção de polpa citada pelo PROSEA (14–22%) parece baixa para as cultivares comerciais atuais; trate como dado de referência a conferir."], "limitacoes": "As fontes consultadas não descrevem com detalhe o modo natural de dispersão na área nativa."}}, "semente": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"resumo": "Semente única, grande e achatada, dentro do endocarpo lenhoso. Conforme a cultivar, é monoembriônica (um embrião sexual) ou poliembriônica (um embrião sexual e vários embriões nucelares, clones da planta-mãe).", "itens": [{"caractere": "Quantidade", "valor": "Uma por fruto.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Forma", "valor": "Grande, achatada, ovoide-reniforme, não labiríntica.", "termos": [{"termo": "reniforme", "definicao": "Em forma de rim."}, {"termo": "labiríntica", "definicao": "Semente com cotilédones dobrados e reentrâncias irregulares, como ocorre em algumas outras espécies de Mangifera."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Embrionia", "valor": "Mono ou poliembriônica conforme a cultivar. Nas poliembriônicas, um embrião vem da fecundação e os demais do nucelo (apomixia esporofítica), sendo geneticamente iguais à planta-mãe.", "termos": [{"termo": "poliembrionia", "definicao": "Formação de mais de um embrião em uma mesma semente."}, {"termo": "nucelo", "definicao": "Tecido do óvulo que envolve o saco embrionário."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R9", "R10"]}, {"caractere": "Embrião e cotilédones", "valor": "Nas sementes monoembriônicas, um único embrião com dois cotilédones ocupa todo o espaço da semente. Nas poliembriônicas, os embriões formam uma massa segmentada e podem diferir no número e no peso dos cotilédones.", "termos": [{"termo": "cotilédone", "definicao": "Folha embrionária, muitas vezes com reservas nutritivas."}], "certeza": "alta", "origem": "literatura", "fontes": ["R9", "R14"]}, {"caractere": "Grupos de cultivares", "valor": "Tradicionalmente, os tipos indianos são monoembriônicos e os do Sudeste Asiático, poliembriônicos.", "termos": [], "certeza": "media", "origem": "literatura", "fontes": ["R12"]}, {"caractere": "Germinação", "valor": "Sementes sem dormência, que germinam com facilidade, em cerca de 2 semanas. Uma semente poliembriônica pode originar várias plântulas.", "termos": [{"termo": "dormência", "definicao": "Estado em que a semente viável não germina mesmo em condições favoráveis."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R14", "R9"]}, {"caractere": "Viabilidade", "valor": "Curta: as sementes perdem rapidamente a capacidade de germinar e são tratadas como recalcitrantes na literatura agronômica.", "termos": [{"termo": "recalcitrante", "definicao": "Semente que não tolera secagem nem armazenamento prolongado."}], "certeza": "media", "origem": "literatura", "fontes": ["R14"]}], "variacao": "O número de embriões por semente varia com a cultivar e com o ano.", "divergencias": [], "limitacoes": "As fontes consultadas não detalham hilo, micrópila e tegumento, nem dizem se a semente madura conserva endosperma (durante o desenvolvimento os embriões dependem dele). O tipo de germinação (epígea ou hipógea) também não foi confirmado."}}, "curiosidades": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"itens": [{"titulo": "Sementes que produzem clones", "texto": "Muitas cultivares formam sementes com vários embriões. Só um deles vem da fecundação; os outros nascem do nucelo e são clones da planta-mãe. Essa característica é a base da maioria dos porta-enxertos de mangueira. Em 2023, pesquisadores identificaram o gene MiRWP como responsável, num caso de evolução convergente com os citros.", "categoria": "evolução", "certeza": "alta", "origem": "literatura", "fontes": ["R9", "R10"]}, {"titulo": "Milhares de flores, poucos frutos", "texto": "As panículas reúnem flores masculinas e hermafroditas, mas apenas cerca de uma em cada mil flores perfeitas chega a formar fruto.", "categoria": "morfologia", "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"titulo": "Polinização por moscas e abelhas", "texto": "O vento contribui pouco: insetos, sobretudo moscas e abelhas, são os principais polinizadores. O estigma fica receptivo por pouco tempo, principalmente à noite e de manhã.", "categoria": "polinização", "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"titulo": "Parente da aroeira e do cajueiro", "texto": "Como outras Anacardiaceae, a mangueira tem seiva resinosa. A resina e a casca do fruto podem causar dermatite de contato em pessoas sensíveis.", "categoria": "outro", "certeza": "alta", "origem": "literatura", "fontes": ["R3", "R5"]}, {"titulo": "Árvores tricentenárias", "texto": "A espécie é muito longeva: há registros de mangueiras com cerca de 300 anos ainda produzindo frutos.", "categoria": "outro", "certeza": "media", "origem": "literatura", "fontes": ["R5"]}], "sem_curiosidades": false, "limitacoes": ""}}}}}};
+window.__HERBARIO_DADOS__ = {"indice": {"atualizado_em": "2026-11-15", "especies": [{"slug": "mangifera-indica", "nome_cientifico": "Mangifera indica", "autoria": "L.", "familia": "Anacardiaceae", "nome_popular": ["mangueira", "manga"], "sinonimos": ["Mangifera laxiflora Desr.", "Mangifera rubra Bojer", "Mangifera equina Crevost & Lemarié", "Mangifera rostrata Blanco"], "status": "verificada", "atualizado_em": "2026-11-15"}]}, "fichas": {"mangifera-indica": {"cabecalho": {"nome_cientifico": "Mangifera indica", "autoria": "L.", "familia": "Anacardiaceae", "genero": "Mangifera", "epiteto": "indica", "nome_popular": ["mangueira", "manga (fruto)", "manguita", "manguinha"], "sinonimos": ["Mangifera laxiflora Desr.", "Mangifera rubra Bojer", "Mangifera equina Crevost & Lemarié", "Mangifera rostrata Blanco", "Mangifera austroyunnanensis Hu"], "nota_taxonomica": "Nome aceito, publicado por Lineu em Species Plantarum: 200 (1753) [R1]. Ordem Sapindales (APG IV). Diploide, 2n = 40 [R2, R10]. A lista completa de sinônimos heterotípicos está no POWO [R1].", "status": "verificada", "atualizado_em": "2026-11-15", "referencias": [{"id": "R1", "citacao": "POWO. Mangifera indica L. Plants of the World Online. Royal Botanic Gardens, Kew.", "url": "https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:69913-1", "consultado_em": "2026-11-15", "secoes": ["geral"]}, {"id": "R2", "citacao": "SUKONTHASING, S.; WONGRAKPANICH, M.; VERHEIJ, E. W. M. Mangifera indica L. In: VERHEIJ, E. W. M.; CORONEL, R. E. (ed.). Plant Resources of South-East Asia No. 2: Edible fruits and nuts. Bogor: PROSEA Foundation, 1991.", "url": "https://prosea.prota4u.org/view.aspx?id=1522", "consultado_em": "2026-11-15", "secoes": ["geral", "raiz", "caule", "folha", "flor", "fruto", "semente", "curiosidades"]}, {"id": "R3", "citacao": "ACEVEDO-RODRÍGUEZ, P. et al. Flora of St. John, U.S. Virgin Islands. Memoirs of the New York Botanical Garden, v. 78, p. 1–581, 1996. Tratamento de Mangifera indica.", "url": "https://sweetdev.nybg.org/science-dev/vh/monographs-details/?irn=28029", "consultado_em": "2026-11-15", "secoes": ["caule", "folha", "flor", "fruto", "semente", "curiosidades"]}, {"id": "R4", "citacao": "FLORA OF CHINA. Mangifera indica. eFloras.org, Missouri Botanical Garden & Harvard University Herbaria. Consultado em reprodução licenciada (CC BY-NC-SA 3.0) no Scratchpad myspecies.info.", "url": "https://nantiyaag2.myspecies.info/taxonomy/term/12/descriptions", "consultado_em": "2026-11-15", "secoes": ["fruto", "flor"]}, {"id": "R5", "citacao": "USDA NRCS. Mango, Mangifera indica L. Plant Guide. National Plant Data Center.", "url": "https://plants.usda.gov/DocumentLibrary/plantguide/pdf/cs_main3.pdf", "consultado_em": "2026-11-15", "secoes": ["raiz", "folha", "geral", "curiosidades"]}, {"id": "R6", "citacao": "FERREIRA, F. R. et al. Germoplasma de manga no Brasil. Embrapa (Repositório Alice).", "url": "https://www.alice.cnptia.embrapa.br/alice/bitstream/doc/137955/1/OPB784.pdf", "consultado_em": "2026-11-15", "secoes": ["geral"]}, {"id": "R7", "citacao": "SILVA-LUZ, C. L.; PIRANI, J. R.; PELL, S. K.; MITCHELL, J. D. Anacardiaceae. In: Flora e Funga do Brasil. Rio de Janeiro: Jardim Botânico do Rio de Janeiro, 2021 (atualização contínua).", "url": "https://floradobrasil.jbrj.gov.br/reflora/floradobrasil/FB44", "consultado_em": "2026-11-15", "secoes": ["geral"]}, {"id": "R8", "citacao": "Flora of Anacardiaceae in the Upper Paraná Atlantic Forest. Rodriguésia (SciELO).", "url": "https://www.scielo.br/j/rod/a/Tvn7JhvF4DpFjvZZDtbpgTS/?lang=en", "consultado_em": "2026-11-15", "secoes": ["geral"]}, {"id": "R9", "citacao": "YADAV, C. B. et al. Promoter insertion leads to polyembryony in mango — a case of convergent evolution with citrus. Horticulture Research, v. 10, n. 12, uhad227, 2023. DOI: 10.1093/hr/uhad227.", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10709545", "consultado_em": "2026-11-15", "secoes": ["semente", "geral", "curiosidades"]}, {"id": "R10", "citacao": "ALI, G. S. et al. GWAS identifies a polyembryony locus in mango: development of KASP and PACE markers for marker-assisted breeding. Frontiers in Plant Science, 2025. DOI: 10.3389/fpls.2025.1508027.", "url": "https://www.frontiersin.org/journals/plant-science/articles/10.3389/fpls.2025.1508027/pdf", "consultado_em": "2026-11-15", "secoes": ["semente", "curiosidades"]}, {"id": "R11", "citacao": "Fruit yield and root system distribution of 'Tommy Atkins' mango under different irrigation regimes. Revista Brasileira de Engenharia Agrícola e Ambiental (SciELO).", "url": "https://scielo.br/j/rbeaa/a/rWXXKgfPfpPZkXGG5pKPWRK", "consultado_em": "2026-11-15", "secoes": ["raiz"]}, {"id": "R12", "citacao": "Differential expression of polyembryony in certain mango genotypes. Indian Journal of Horticulture, v. 79, n. 4, p. 415–421, 2022. DOI: 10.5958/0974-0112.2022.00058.5.", "url": "https://journal.iahs.org.in/index.php/ijh/article/view/512", "consultado_em": "2026-11-15", "secoes": ["semente", "curiosidades"]}, {"id": "R13", "citacao": "PARROTTA, J. A. Mangifera indica L. Mango. Anacardiaceae. In: Árboles de Puerto Rico (USDA Forest Service).", "url": "https://npn.rngr.net/publications/arboles-de-puerto-rico/mangifera-indica/at_download/file", "consultado_em": "2026-11-15", "secoes": ["geral"]}, {"id": "R14", "citacao": "PARISOT, E. Étude de la croissance rythmique chez de jeunes manguiers (Mangifera indica L.). Première partie: description, germination et conservation de graines polyembryonnées. Fruits, v. 43, n. 2, p. 97–105, 1988.", "url": "https://revues.cirad.fr/index.php/fruits/article/download/35024/35503/38991", "consultado_em": "2026-11-15", "secoes": ["semente"]}, {"id": "R15", "citacao": "MUSEU NACIONAL/UFRJ. Horto Botânico: Mangifera indica.", "url": "https://www.museunacional.ufrj.br/hortobotanico/arvoresearbustos/mangiferaindica.html", "consultado_em": "2026-11-15", "secoes": ["geral"]}], "tipos": {"raiz": "Axial (pivotante), profunda, com raízes absorventes superficiais", "caule": "Aéreo, ereto e lenhoso: tronco", "folha": "Simples, alterna espiralada, lanceolada, margem inteira, peninérvea", "flor": "Pequena, pentâmera e actinomorfa, em panícula; flores masculinas e hermafroditas na mesma planta", "fruto": "Drupa (simples, carnoso e indeiscente)", "semente": "Uma por fruto, grande e achatada; mono ou poliembriônica"}}, "secoes": {"geral": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"resumo": "Árvore perenifólia de grande porte, originária da região indo-birmanesa e hoje cultivada em todas as regiões tropicais e subtropicais. No Brasil é exótica, introduzida pelos portugueses e amplamente cultivada pelos frutos.", "itens": [{"caractere": "Origem", "valor": "Região indo-birmanesa. O POWO delimita a área nativa de Assam ao sul de Yunnan (China), incluindo Himalaia Oriental, Mianmar e Tailândia.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R1", "R2"]}, {"caractere": "Distribuição geográfica", "valor": "Pantropical por cultivo. Difundiu-se pelo Sudeste Asiático há cerca de 1.500 anos, chegou à África Oriental há cerca de 1.000 anos e às Américas nos últimos séculos.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R13"]}, {"caractere": "Ocorrência no Brasil", "valor": "Espécie exótica, introduzida pelos portugueses provavelmente no século XVI e cultivada em todo o país. Consta na Flora e Funga do Brasil (tratamento de Anacardiaceae); estudos florísticos a registram como exótica cultivada, inclusive em unidades de conservação da Mata Atlântica.", "termos": [{"termo": "exótica", "definicao": "Espécie que ocorre fora da sua área de distribuição natural por introdução humana."}], "certeza": "alta", "origem": "literatura", "fontes": ["R6", "R7", "R8"]}, {"caractere": "Habitat", "valor": "Na área nativa, florestas do bioma tropical sazonalmente seco, em geral entre 300 e 900 m de altitude. Precisa de estação seca de mais de três meses para frutificar bem; temperatura ótima em torno de 24–27 °C.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R1", "R13", "R2"]}, {"caractere": "Hábito", "valor": "Árvore perenifólia, ereta e ramificada, de 10 a 45 m de altura, tronco com 60 a 120 cm de diâmetro e copa densa.", "termos": [{"termo": "perenifólia", "definicao": "Planta que mantém folhas durante o ano todo, sem perda total da folhagem em uma estação."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Ciclo de vida", "valor": "Perene e longeva: há registros de árvores com cerca de 300 anos ainda produzindo frutos. Plantas de semente começam a frutificar após 5 a 7 anos.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R5", "R2"]}, {"caractere": "Importância ecológica", "valor": "Flores visitadas e polinizadas principalmente por insetos (moscas e abelhas). Frutos e folhas servem de alimento a animais silvestres.", "termos": [], "certeza": "media", "origem": "literatura", "fontes": ["R2", "R5"]}, {"caractere": "Importância econômica", "valor": "Uma das frutíferas mais importantes do mundo, com produção anual acima de 57 milhões de toneladas, atrás apenas da banana entre as frutas tropicais e subtropicais. A madeira também é aproveitada.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R9", "R5"]}], "variacao": "Há centenas de cultivares, com grande variação no tamanho, forma e cor dos frutos e na presença de fibras na polpa.", "divergencias": ["A área nativa é descrita de forma ampla como Índia e Mianmar em várias fontes; o POWO a restringe a Assam, Himalaia Oriental, Mianmar, Tailândia e sul de Yunnan.", "A introdução no Brasil é datada no século XVI (Embrapa) ou, de forma menos precisa, antes do fim do século XVII (Parrotta)."], "limitacoes": "Não foi possível consultar diretamente a ficha da espécie na Flora e Funga do Brasil (situação de origem e domínios fitogeográficos); confira no link das bases."}}, "raiz": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"resumo": "Sistema radicular axial (pivotante), com raiz principal longa e profunda, combinada a uma densa massa de raízes absorventes superficiais.", "itens": [{"caractere": "Tipo de sistema", "valor": "Axial ou pivotante: uma raiz principal longa, pouco ramificada, que pode alcançar 6 a 8 m de profundidade.", "termos": [{"termo": "pivotante", "definicao": "Sistema em que a raiz primária, originada da radícula do embrião, cresce mais que as laterais e forma um eixo principal."}], "certeza": "alta", "origem": "literatura", "fontes": ["R5", "R2"]}, {"caractere": "Raízes absorventes", "valor": "Densa massa de raízes finas próximas à superfície, responsáveis pela absorção de água e nutrientes.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R5"]}, {"caractere": "Raízes de ancoragem", "valor": "As raízes superficiais emitem raízes descendentes de ancoragem, que penetram cerca de 1,2 m; a expansão lateral chega a 7,5 m.", "termos": [], "certeza": "media", "origem": "literatura", "fontes": ["R5"]}, {"caractere": "Função adaptativa", "valor": "A raiz profunda dá sustentação e permite obter água no período seco, o que ajuda a árvore a sobreviver a estiagens e a manter a floração.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R11"]}, {"caractere": "Plasticidade em cultivo", "valor": "Em pomares irrigados no semiárido baiano ('Tommy Atkins'), as raízes ficaram limitadas a cerca de 3–3,5 m do tronco e 1,4 m de profundidade; sem irrigação, o sistema radicular e a produção diminuem.", "termos": [], "certeza": "media", "origem": "literatura", "fontes": ["R11"]}, {"caractere": "Porta-enxertos", "valor": "Em plantios comerciais, a copa costuma ser enxertada sobre porta-enxerto obtido de sementes poliembriônicas; nesse caso, o sistema radicular é o do porta-enxerto.", "termos": [{"termo": "porta-enxerto", "definicao": "Planta que fornece o sistema radicular sobre o qual se enxerta a copa de outra variedade."}], "certeza": "alta", "origem": "literatura", "fontes": ["R9"]}], "variacao": "A profundidade e a extensão das raízes dependem do solo, do lençol freático e da irrigação.", "divergencias": [], "limitacoes": "Nenhuma das fontes descreve raízes modificadas (tabulares, escoras etc.) para a espécie; por isso não são listadas."}}, "caule": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"resumo": "Caule aéreo, ereto e lenhoso do tipo tronco, com casca castanho-acinzentada fissurada e seiva resinosa. O crescimento ocorre em fluxos rítmicos.", "itens": [{"caractere": "Tipo", "valor": "Tronco: caule aéreo, ereto, lenhoso e ramificado, com 60 a 120 cm de diâmetro em árvores adultas.", "termos": [{"termo": "tronco", "definicao": "Caule lenhoso e robusto das árvores, ramificado na parte superior."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Casca", "valor": "Castanho-acinzentada, com fissuras longitudinais.", "termos": [{"termo": "ritidoma", "definicao": "Camada externa morta da casca das árvores, que pode se fissurar ou desprender."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Exsudato", "valor": "Seiva resinosa e clara, que pode irritar a pele de pessoas sensíveis.", "termos": [{"termo": "exsudato", "definicao": "Substância (látex, resina, goma) que escorre de um órgão vegetal quando ferido."}], "certeza": "alta", "origem": "literatura", "fontes": ["R3"]}, {"caractere": "Arquitetura e ramificação", "valor": "Segue o modelo arquitetural de Scarrone: o tronco cresce em fluxos sucessivos e os ramos terminam em inflorescências terminais, o que leva à ramificação a partir das gemas abaixo delas.", "termos": [{"termo": "modelo arquitetural", "definicao": "Padrão de crescimento e ramificação geneticamente determinado de uma espécie (sistema de Hallé & Oldeman)."}], "certeza": "media", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Crescimento", "valor": "Rítmico, em fluxos: plantas jovens podem emitir até quatro fluxos de brotação por ano, se houver umidade. Em geral só as gemas da ponta comprimida dos ramos crescem ou florescem.", "termos": [{"termo": "fluxo de crescimento", "definicao": "Período curto de brotação intensa, separado por fases de repouso das gemas."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}], "variacao": "A copa pode ser arredondada e larga ou mais estreita e ereta, conforme cultivar e ambiente.", "divergencias": [], "limitacoes": "As fontes consultadas não detalham lenticelas, nós e entrenós dos ramos jovens. A explicação do modelo de Scarrone resume o conceito de Hallé & Oldeman e não detalha a espécie."}}, "folha": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"resumo": "Folhas simples, alternas espiraladas e agrupadas no ápice dos ramos, com limbo estreitamente elíptico a lanceolado, subcoriáceo e glabro, nervura central saliente e clara. As folhas novas são avermelhadas.", "itens": [{"caractere": "Classificação", "valor": "Simples.", "termos": [{"termo": "folha simples", "definicao": "Folha com um único limbo, não dividido em folíolos."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Filotaxia", "valor": "Alterna espiralada, com as folhas concentradas nas extremidades dos ramos.", "termos": [{"termo": "filotaxia", "definicao": "Modo de disposição das folhas no caule."}, {"termo": "espiralada", "definicao": "Uma folha por nó, dispostas ao longo de uma espiral em torno do caule."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Pecíolo", "valor": "Até 10 cm de comprimento (geralmente 1–5 cm), com pulvino na base.", "termos": [{"termo": "pulvino", "definicao": "Dilatação na base do pecíolo, ligada aos movimentos e à orientação da folha."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Formato do limbo", "valor": "Estreitamente elíptico a lanceolado ou oblongo-lanceolado, às vezes levemente falcado; cerca de 8–40 × 2–10 cm. Em ramos estéreis pode chegar a 50 cm.", "termos": [{"termo": "lanceolado", "definicao": "Limbo bem mais longo que largo, mais largo abaixo do meio e afinando para o ápice, como ponta de lança."}, {"termo": "falcado", "definicao": "Curvo como uma foice."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3", "R5"]}, {"caractere": "Ápice", "valor": "Acuminado.", "termos": [{"termo": "acuminado", "definicao": "Ápice que se estreita em ponta longa e fina."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Base", "valor": "Atenuada (estreitando-se gradualmente para o pecíolo), às vezes oblíqua.", "termos": [{"termo": "atenuada", "definicao": "Base que se estreita gradualmente em direção ao pecíolo."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Margem", "valor": "Inteira, muitas vezes ondulada.", "termos": [{"termo": "margem inteira", "definicao": "Borda contínua, sem dentes nem recortes."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Nervação", "valor": "Peninérvea, com nervura central proeminente, de cor amarelada ou esbranquiçada, e 12 a 30 pares de nervuras secundárias salientes.", "termos": [{"termo": "peninérvea", "definicao": "Nervação em que as nervuras secundárias saem de uma nervura central, como as barbas de uma pena."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R5"]}, {"caractere": "Consistência e superfície", "valor": "Subcoriácea, glabra; verde-escura e brilhante na face superior, mais clara na inferior.", "termos": [{"termo": "coriácea", "definicao": "Consistência firme e espessa, semelhante a couro."}, {"termo": "glabra", "definicao": "Sem pelos (tricomas)."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3", "R5"]}, {"caractere": "Folhas jovens", "valor": "Emitidas em fluxos, de cor avermelhada a bronzeada, tornando-se verde-escuras ao amadurecer.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R5"]}], "variacao": "As folhas variam bastante numa mesma árvore e entre cultivares, em tamanho e na cor dos brotos novos.", "divergencias": [], "limitacoes": "As fontes não mencionam estípulas; o gênero é descrito com folhas pecioladas e simples, sem estípulas citadas."}}, "flor": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"resumo": "Flores pequenas, pentâmeras, de simetria radial, reunidas em panículas terminais amplas que misturam flores masculinas e hermafroditas. Em geral só um dos cinco estames é fértil.", "itens": [{"caractere": "Inflorescência", "valor": "Panícula terminal, amplamente ramificada, densa e tomentosa, com até 60 cm (em geral 20–40 cm).", "termos": [{"termo": "panícula", "definicao": "Inflorescência racemosa composta, ramificada, em geral de contorno piramidal."}, {"termo": "tomentosa", "definicao": "Coberta por pelos curtos e densos."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Sistema sexual", "valor": "Flores masculinas e hermafroditas na mesma inflorescência (planta andromonoica); nas masculinas, o pistilo é abortivo.", "termos": [{"termo": "andromonoica", "definicao": "Planta que tem flores masculinas e flores hermafroditas no mesmo indivíduo."}, {"termo": "monoclina", "definicao": "Flor com androceu e gineceu (hermafrodita)."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Tamanho e cor", "valor": "5–8 mm de diâmetro, amarelo-esverdeadas; pétalas creme a rosadas, passando de verde-amareladas a avermelhadas.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Simetria", "valor": "Actinomorfa (radial).", "termos": [{"termo": "actinomorfa", "definicao": "Flor com vários planos de simetria, de aspecto radial."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Perianto", "valor": "Heteroclamídeo: cálice de 5 sépalas lanceoladas (cerca de 2 mm), pubescentes; corola de 5 pétalas livres, oblongas a espatuladas, com cerca do dobro do comprimento das sépalas (3–3,5 mm).", "termos": [{"termo": "heteroclamídeo", "definicao": "Perianto com cálice e corola distintos entre si."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Disco nectarífero", "valor": "Curto, cupuliforme, carnoso e com 5 lobos, entre a corola e o androceu.", "termos": [{"termo": "disco", "definicao": "Estrutura carnosa no receptáculo, muitas vezes nectarífera, comum nas Sapindales."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Androceu", "valor": "5 estames, geralmente só 1 fértil e maior, exserto além das pétalas; os demais são estaminódios.", "termos": [{"termo": "estaminódio", "definicao": "Estame estéril, sem pólen funcional."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Gineceu", "valor": "Ovário quase globoso e séssil; estilete lateral (sublateral) e curvo; estigma simples, puntiforme.", "termos": [{"termo": "estilete", "definicao": "Parte do pistilo que liga o ovário ao estigma."}, {"termo": "puntiforme", "definicao": "Em forma de ponto."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Carpelos e lóculos", "valor": "No gênero Mangifera, o ovário é unicarpelar e unilocular, com um único óvulo.", "termos": [{"termo": "unilocular", "definicao": "Ovário com uma só cavidade (lóculo)."}], "certeza": "media", "origem": "literatura", "fontes": ["R2"]}], "variacao": "A proporção de flores masculinas e hermafroditas varia entre cultivares e anos.", "divergencias": [], "limitacoes": "O item sobre carpelos descreve o gênero, não especificamente a espécie. As fontes consultadas não detalham a prefloração, a deiscência das anteras nem a posição do ovário em relação às demais peças."}}, "fruto": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"resumo": "Fruto simples, carnoso e indeiscente do tipo drupa, com mesocarpo comestível amarelo a alaranjado e endocarpo lenhoso e fibroso (o “caroço”) que envolve uma única semente.", "itens": [{"caractere": "Classificação", "valor": "Simples, carnoso e indeiscente: drupa.", "termos": [{"termo": "drupa", "definicao": "Fruto carnoso com endocarpo duro (caroço) envolvendo, em geral, uma semente."}, {"termo": "indeiscente", "definicao": "Fruto que não se abre espontaneamente ao amadurecer."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3", "R4"]}, {"caractere": "Forma e tamanho", "valor": "Muito variável; em geral ovoide-oblonga, com os lados bem desiguais, até cerca de 30 × 10 cm. Pende de pedúnculos longos.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Epicarpo (casca)", "valor": "Relativamente espesso, com pontuações glandulares; verde, amarelo, alaranjado ou avermelhado na maturação.", "termos": [{"termo": "epicarpo", "definicao": "Camada mais externa do pericarpo, a 'casca' do fruto."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Mesocarpo (polpa)", "valor": "Carnoso e comestível, amarelo a alaranjado, suculento; com ou sem fibras e de sabor doce a resinoso (terebintáceo).", "termos": [{"termo": "mesocarpo", "definicao": "Camada intermediária do pericarpo; nas drupas, geralmente a parte carnosa."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R4"]}, {"caractere": "Endocarpo (caroço)", "valor": "Espesso, lenhoso e fibroso, achatado, com 5–8 cm.", "termos": [{"termo": "endocarpo", "definicao": "Camada interna do pericarpo; nas drupas, endurecida em caroço."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3", "R4"]}, {"caractere": "Número de sementes", "valor": "Uma semente por fruto, dentro do endocarpo.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Desenvolvimento", "valor": "O vingamento é baixo: cerca de 1 fruto para cada mil flores perfeitas. O amadurecimento leva de 3 a 4 meses (até 5 nas cultivares tardias).", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Composição", "valor": "Em média, 11–18% de casca, 14–22% de polpa e 60–75% de caroço, conforme dados do PROSEA.", "termos": [], "certeza": "media", "origem": "literatura", "fontes": ["R2"]}], "variacao": "Forma, tamanho, cor e teor de fibras variam muito entre cultivares.", "divergencias": ["A Flora of China descreve frutos de 5–10 × 3–4,5 cm; o PROSEA cita até 30 × 10 cm. A diferença reflete a variação entre populações e cultivares.", "A proporção de polpa citada pelo PROSEA (14–22%) parece baixa para as cultivares comerciais atuais; trate como dado de referência a conferir."], "limitacoes": "As fontes consultadas não descrevem com detalhe o modo natural de dispersão na área nativa."}}, "semente": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"resumo": "Semente única, grande e achatada, dentro do endocarpo lenhoso. Conforme a cultivar, é monoembriônica (um embrião sexual) ou poliembriônica (um embrião sexual e vários embriões nucelares, clones da planta-mãe).", "itens": [{"caractere": "Quantidade", "valor": "Uma por fruto.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Forma", "valor": "Grande, achatada, ovoide-reniforme, não labiríntica.", "termos": [{"termo": "reniforme", "definicao": "Em forma de rim."}, {"termo": "labiríntica", "definicao": "Semente com cotilédones dobrados e reentrâncias irregulares, como ocorre em algumas outras espécies de Mangifera."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Embrionia", "valor": "Mono ou poliembriônica conforme a cultivar. Nas poliembriônicas, um embrião vem da fecundação e os demais do nucelo (apomixia esporofítica), sendo geneticamente iguais à planta-mãe.", "termos": [{"termo": "poliembrionia", "definicao": "Formação de mais de um embrião em uma mesma semente."}, {"termo": "nucelo", "definicao": "Tecido do óvulo que envolve o saco embrionário."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R9", "R10"]}, {"caractere": "Embrião e cotilédones", "valor": "Nas sementes monoembriônicas, um único embrião com dois cotilédones ocupa todo o espaço da semente. Nas poliembriônicas, os embriões formam uma massa segmentada e podem diferir no número e no peso dos cotilédones.", "termos": [{"termo": "cotilédone", "definicao": "Folha embrionária, muitas vezes com reservas nutritivas."}], "certeza": "alta", "origem": "literatura", "fontes": ["R9", "R14"]}, {"caractere": "Grupos de cultivares", "valor": "Tradicionalmente, os tipos indianos são monoembriônicos e os do Sudeste Asiático, poliembriônicos.", "termos": [], "certeza": "media", "origem": "literatura", "fontes": ["R12"]}, {"caractere": "Germinação", "valor": "Sementes sem dormência, que germinam com facilidade, em cerca de 2 semanas. Uma semente poliembriônica pode originar várias plântulas.", "termos": [{"termo": "dormência", "definicao": "Estado em que a semente viável não germina mesmo em condições favoráveis."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R14", "R9"]}, {"caractere": "Viabilidade", "valor": "Curta: as sementes perdem rapidamente a capacidade de germinar e são tratadas como recalcitrantes na literatura agronômica.", "termos": [{"termo": "recalcitrante", "definicao": "Semente que não tolera secagem nem armazenamento prolongado."}], "certeza": "media", "origem": "literatura", "fontes": ["R14"]}], "variacao": "O número de embriões por semente varia com a cultivar e com o ano.", "divergencias": [], "limitacoes": "As fontes consultadas não detalham hilo, micrópila e tegumento, nem dizem se a semente madura conserva endosperma (durante o desenvolvimento os embriões dependem dele). O tipo de germinação (epígea ou hipógea) também não foi confirmado."}}, "curiosidades": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"itens": [{"titulo": "Sementes que produzem clones", "texto": "Muitas cultivares formam sementes com vários embriões. Só um deles vem da fecundação; os outros nascem do nucelo e são clones da planta-mãe. Essa característica é a base da maioria dos porta-enxertos de mangueira. Em 2023, pesquisadores identificaram o gene MiRWP como responsável, num caso de evolução convergente com os citros.", "categoria": "evolução", "certeza": "alta", "origem": "literatura", "fontes": ["R9", "R10"]}, {"titulo": "Milhares de flores, poucos frutos", "texto": "As panículas reúnem flores masculinas e hermafroditas, mas apenas cerca de uma em cada mil flores perfeitas chega a formar fruto.", "categoria": "morfologia", "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"titulo": "Polinização por moscas e abelhas", "texto": "O vento contribui pouco: insetos, sobretudo moscas e abelhas, são os principais polinizadores. O estigma fica receptivo por pouco tempo, principalmente à noite e de manhã.", "categoria": "polinização", "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"titulo": "Parente da aroeira e do cajueiro", "texto": "Como outras Anacardiaceae, a mangueira tem seiva resinosa. A resina e a casca do fruto podem causar dermatite de contato em pessoas sensíveis.", "categoria": "outro", "certeza": "alta", "origem": "literatura", "fontes": ["R3", "R5"]}, {"titulo": "Árvores tricentenárias", "texto": "A espécie é muito longeva: há registros de mangueiras com cerca de 300 anos ainda produzindo frutos.", "categoria": "outro", "certeza": "media", "origem": "literatura", "fontes": ["R5"]}], "sem_curiosidades": false, "limitacoes": ""}}}}}};
 </script>
 <script type="module">
 // ===== config.js =====
@@ -778,7 +797,56 @@ function basesParaEspecie(nomeCientifico) {
   ];
 }
 
-return { BIBLIOGRAFIA_BASE, basesParaEspecie };
+// Biblioteca do Herbário: obras de morfologia e anatomia vegetal.
+// As de acesso aberto têm link; as comerciais são citadas como referência.
+// O site não consulta o texto dessas obras automaticamente: elas fundamentam
+// o glossário e as fichas verificadas (sempre por paráfrase).
+const BIBLIOTECA = [
+  {
+    grupo: "Acesso aberto — morfologia (português)",
+    obras: [
+      { citacao: "ALMEIDA, M.; ALMEIDA, C. V. Morfologia da raiz de plantas com sementes. Piracicaba: ESALQ/USP, 2014 (Coleção Botânica, 1). Licença CC BY 4.0.", url: "https://www.livrosabertos.abcd.usp.br/portaldelivrosUSP/catalog/series/colecaobotanica" },
+      { citacao: "ALMEIDA, M.; ALMEIDA, C. V. Morfologia do caule de plantas com sementes. Piracicaba: ESALQ/USP (Coleção Botânica, 2). DOI 10.11606/9788586481338. Licença CC BY 4.0.", url: "https://www.livrosabertos.abcd.usp.br/portaldelivrosUSP/catalog/series/colecaobotanica" },
+      { citacao: "ALMEIDA, M.; ALMEIDA, C. V. Morfologia da folha de plantas com sementes. Piracicaba: ESALQ/USP, 2018 (Coleção Botânica, 3). DOI 10.11606/9788586481642. Licença CC BY-NC-SA 4.0.", url: "https://www.livrosabertos.abcd.usp.br/portaldelivrosUSP/catalog/series/colecaobotanica" },
+      { citacao: "THOMAZ, L. D. (org.); DUTRA, V. F.; CHAGAS, A. P.; IGLESIAS, D. T. Morfologia vegetal. Vitória: Edufes, 2023. Licença CC BY-NC-ND 4.0.", url: "https://repositorio.ufes.br/handle/10/774" },
+      { citacao: "DUTRA, V. F. (org.) et al. Botânica 2: biologia das plantas vasculares. Vitória: UFES/SEAD, 2015.", url: "https://acervo.sead.ufes.br/arquivos/biologia-das-plantas-vasculares.pdf" },
+      { citacao: "ALMEIDA, R. Morfologia vegetal: da raiz ao fruto. Porto: Faculdade de Ciências da Universidade do Porto, 2025 (Caderno de Biologia, V).", url: "https://repositorio-aberto.up.pt/bitstream/10216/173503/2/765335.pdf" },
+      { citacao: "AGUIAR, C. Manual de botânica I: estrutura e reprodução. Bragança: Instituto Politécnico de Bragança, 2018.", url: "https://bibliotecadigital.ipb.pt/" },
+      { citacao: "Mapas mentais e conceituais de morfofisiologia vegetal. Ponta Grossa: Atena, 2022. Acesso aberto.", url: "https://educapes.capes.gov.br/bitstream/capes/720667/1/mapas-mentais-e-conceituais-de-morfofisiologia-vegetal.pdf" },
+    ],
+  },
+  {
+    grupo: "Morfologia e organografia — obras de referência",
+    obras: [
+      { citacao: "GONÇALVES, E. G.; LORENZI, H. Morfologia vegetal: organografia e dicionário ilustrado de morfologia das plantas vasculares. Nova Odessa: Instituto Plantarum (2. ed., 2011; 3. ed. informada pelo projeto, 2025)." },
+      { citacao: "VIDAL, W. N.; VIDAL, M. R. R.; PAULA, C. C. de. Botânica – organografia: quadros sinóticos ilustrados de fanerógamos. 5. ed. Viçosa: Editora UFV, 2021." },
+      { citacao: "SOUZA, V. C.; FLORES, T. B.; LORENZI, H. Introdução à botânica: morfologia. São Paulo: Instituto Plantarum de Estudos da Flora, 2013." },
+      { citacao: "BARROSO, G. M. et al. Frutos e sementes: morfologia aplicada à sistemática de dicotiledôneas. Viçosa: Editora UFV, 1999." },
+      { citacao: "FERRI, M. G. Botânica: morfologia externa das plantas (organografia). 15. ed. São Paulo: Nobel, 1982." },
+      { citacao: "HARRIS, J. G.; HARRIS, M. W. Plant identification terminology: an illustrated glossary. 2. ed. Spring Lake: Spring Lake Publishing, 2001." },
+    ],
+  },
+  {
+    grupo: "Anatomia vegetal — obras de referência",
+    obras: [
+      { citacao: "ESAU, K. Anatomia das plantas com sementes. São Paulo: Edgard Blücher, 1974." },
+      { citacao: "EVERT, R. F. Anatomia das plantas de Esau: meristemas, células e tecidos do corpo da planta: sua estrutura, função e desenvolvimento. 3. ed. São Paulo: Blucher, 2013." },
+      { citacao: "APPEZZATO-DA-GLÓRIA, B.; CARMELLO-GUERREIRO, S. M. (ed.). Anatomia vegetal. 2. ed. Viçosa: Editora UFV, 2006." },
+      { citacao: "FAHN, A. Plant anatomy. 4. ed. Oxford: Pergamon Press, 1990." },
+      { citacao: "EVERT, R. F.; EICHHORN, S. E. Raven: biologia vegetal. 8. ed. Rio de Janeiro: Guanabara Koogan, 2014." },
+    ],
+  },
+  {
+    grupo: "Sistemática — obras de referência",
+    obras: [
+      { citacao: "JUDD, W. S. et al. Plant systematics: a phylogenetic approach. 4. ed. Sunderland: Sinauer Associates, 2015." },
+      { citacao: "SIMPSON, M. G. Plant systematics. 3. ed. London: Academic Press, 2019." },
+      { citacao: "SOUZA, V. C.; LORENZI, H. Botânica sistemática: guia ilustrado para identificação das famílias de fanerógamas nativas e exóticas no Brasil, baseado em APG III. 3. ed. Nova Odessa: Instituto Plantarum, 2012." },
+    ],
+  },
+];
+
+return { BIBLIOGRAFIA_BASE, basesParaEspecie, BIBLIOTECA };
 })();
 
 // ===== imagens.js =====
@@ -1075,6 +1143,292 @@ async function listarHistorico(max = 8) {
 return { SECOES, listarEspecies, obterFicha, registrarHistorico, listarHistorico };
 })();
 
+// ===== traduzir.js =====
+const M_traduzir = (() => {
+
+// Tradução automática para o português dos trechos das floras.
+// 1) API Translator do Chrome (no aparelho, só no computador);
+// 2) MyMemory (gratuito, cota diária por aparelho);
+// 3) sem tradução: mostra o texto original.
+
+const CACHE = "herbario.trad.v1.";
+const LINGUA = { eng: "en", en: "en", spa: "es", es: "es", fra: "fr", fr: "fr", deu: "de", de: "de", ita: "it", it: "it", nld: "nl", nl: "nl", lat: "la", la: "la" };
+let cotaEsgotada = false;
+const tradutores = {};
+
+function codigoLingua(c) {
+  const k = String(c || "").toLowerCase();
+  if (/^(por|pt)/.test(k)) return "pt";
+  return LINGUA[k] || "en";
+}
+
+function chave(t, l) {
+  let h = 0;
+  for (let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) | 0;
+  return CACHE + l + "." + h;
+}
+
+async function tradutorChrome(origem) {
+  if (!("Translator" in self) || origem === "la") return null;
+  if (tradutores[origem] !== undefined) return tradutores[origem];
+  try {
+    const opt = { sourceLanguage: origem, targetLanguage: "pt" };
+    const disp = await self.Translator.availability(opt);
+    tradutores[origem] = disp === "available" ? await self.Translator.create(opt) : null;
+  } catch {
+    tradutores[origem] = null;
+  }
+  return tradutores[origem];
+}
+
+function pedacos(t, max = 450) {
+  const out = [];
+  let atual = "";
+  for (const f of t.split(/(?<=[.;:])\s+/)) {
+    const cand = atual ? atual + " " + f : f;
+    if (new TextEncoder().encode(cand).length > max && atual) {
+      out.push(atual);
+      atual = f;
+    } else atual = cand;
+  }
+  if (atual) out.push(atual.slice(0, 480));
+  return out;
+}
+
+async function myMemory(t, origem, signal) {
+  if (cotaEsgotada) return null;
+  const partes = [];
+  for (const p of pedacos(t)) {
+    const r = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(p)}&langpair=${origem}|pt-BR`, { signal });
+    if (!r.ok) return null;
+    const j = await r.json();
+    const tr = String(j?.responseData?.translatedText || "");
+    if (j.responseStatus !== 200 || /MYMEMORY WARNING|QUERY LENGTH LIMIT/i.test(tr)) {
+      if (/YOU USED ALL AVAILABLE FREE TRANSLATIONS/i.test(tr) || j.responseStatus === 429) cotaEsgotada = true;
+      return null;
+    }
+    partes.push(tr);
+  }
+  return partes.join(" ");
+}
+
+/** Traduz para português. Retorna {texto, servico} ou null (mantém o original). */
+async function traduzir(texto, linguaGbif, { signal } = {}) {
+  const origem = codigoLingua(linguaGbif);
+  if (!texto || origem === "pt") return null;
+  const k = chave(texto, origem);
+  try {
+    const c = localStorage.getItem(k);
+    if (c) return JSON.parse(c);
+  } catch {}
+  let res = null;
+  try {
+    const tc = await tradutorChrome(origem);
+    if (tc) res = { texto: await tc.translate(texto), servico: "tradutor do Chrome" };
+  } catch {}
+  if (!res) {
+    try {
+      const t = await myMemory(texto, origem === "la" ? "en" : origem, signal);
+      if (t) res = { texto: t, servico: "MyMemory" };
+    } catch {}
+  }
+  if (res) {
+    try {
+      localStorage.setItem(k, JSON.stringify(res));
+    } catch {}
+  }
+  return res;
+}
+
+function cotaTraducaoEsgotada() {
+  return cotaEsgotada;
+}
+
+return { codigoLingua, traduzir, cotaTraducaoEsgotada };
+})();
+
+// ===== glossario.js =====
+const M_glossario = (() => {
+
+// Glossário organográfico usado para reconhecer, nas descrições das floras,
+// os tipos de cada órgão (pt / en / es). Cada órgão tem categorias; de cada
+// categoria vale o primeiro termo encontrado. Termos e definições segundo a
+// terminologia usual de organografia (Gonçalves & Lorenzi; Vidal & Vidal;
+// Harris & Harris), em redação própria.
+
+const T = (rotulo, re, definicao) => ({ rotulo, re, definicao });
+
+const GLOSSARIO = {
+  raiz: [
+    ["sistema", [
+      T("axial (pivotante)", /\b(tap ?roots?|roots? (is |are )?tap|pivotante|axial|ra[ií]z principal)\b/i, "Uma raiz principal mais desenvolvida, da qual saem raízes laterais."),
+      T("fasciculada", /\b(fibrous roots?|roots? (are )?fibrous|fasciculad[ao]s?|cabeleira)\b/i, "Feixe de raízes finas de tamanho semelhante, sem raiz principal."),
+    ]],
+    ["modificações", [
+      T("tuberosa", /\b(tuberous roots?|ra[ií]z(es)? tuberosas?|tuberos[ao])\b/i, "Raiz espessada que acumula reservas."),
+      T("escoras", /\b(prop roots?|stilt roots?|escoras?|zancos)\b/i, "Raízes que saem do caule e o sustentam como escoras."),
+      T("tabulares", /\b(buttress(es| roots?)?|tabulares|sapopemas?)\b/i, "Raízes achatadas em forma de tábua na base do tronco."),
+      T("respiratórias (pneumatóforos)", /\b(pneumatophores?|pneumat[óo]foros?|respirat[óo]rias)\b/i, "Raízes que crescem para fora do solo encharcado e fazem trocas gasosas."),
+      T("aéreas", /\b(aerial roots?|ra[ií]z(es)? a[ée]reas?)\b/i, "Raízes que se desenvolvem expostas ao ar."),
+      T("adventícias", /\b(adventitious roots?|advent[ií]cias?)\b/i, "Raízes que nascem de órgãos que não são a raiz principal, como caule ou folha."),
+      T("sugadoras (haustórios)", /\b(haustori(a|um|os?)|sugadoras?)\b/i, "Raízes de parasitas que penetram a planta hospedeira."),
+      T("estranguladoras", /\b(strangl(er|ing)|estranguladoras?)\b/i, "Raízes que envolvem e apertam o tronco do hospedeiro."),
+    ]],
+  ],
+  caule: [
+    ["tipo", [
+      T("estipe", /\b(estipe|stipe)\b/i, "Caule cilíndrico, geralmente não ramificado, com folhas no ápice, típico das palmeiras."),
+      T("colmo", /\b(culms?|colmos?)\b/i, "Caule com nós e entrenós bem marcados, como nos capins e bambus."),
+      T("rizoma", /\b(rhizomes?|rizomas?)\b/i, "Caule subterrâneo, geralmente horizontal, com nós e gemas."),
+      T("tubérculo", /\b(stem tubers?|tub[ée]rculos?)\b/i, "Caule subterrâneo espessado que acumula reservas."),
+      T("bulbo", /\b(bulbs?|bulbos?)\b/i, "Caule muito curto envolvido por folhas carnosas ou membranosas."),
+      T("estolão", /\b(stolons?|runners?|estol[õo](es|n)?|estol[ãa]o)\b/i, "Caule rasteiro que forma raízes e novas plantas nos nós."),
+      T("cladódio", /\b(cladod(e|ium|ios?)|cl[áa]d[óo]dios?)\b/i, "Caule achatado e verde que faz fotossíntese no lugar das folhas."),
+      T("tronco", /\b(trunks?|troncos?)\b/i, "Caule lenhoso e robusto das árvores, ramificado na parte superior."),
+      T("haste", /\b(hastes?)\b/i, "Caule aéreo delicado, geralmente herbáceo."),
+    ]],
+    ["porte e orientação", [
+      T("trepador", /\b(climb(er|ing)|lianas?|vines?|twining|trepadeiras?|trepador|volúvel|escandente|scandent)\b/i, "Caule que se apoia ou se enrola em suportes para crescer."),
+      T("rastejante", /\b(creeping|prostrate|procumbent|rastejante|prostrad[ao])\b/i, "Caule que cresce deitado sobre o solo."),
+      T("ereto", /\b(erect|eret[ao]|erguid[ao])\b/i, "Caule que cresce na vertical."),
+    ]],
+    ["consistência", [
+      T("lenhoso", /\b(woody|lenhos[ao]|le[ñn]os[ao])\b/i, "Caule rígido, com madeira."),
+      T("suculento", /\b(succulent|suculent[ao])\b/i, "Caule carnoso que armazena água."),
+      T("herbáceo", /\b(herbaceous|herb[áa]ce[ao])\b/i, "Caule tenro, sem madeira, geralmente verde."),
+    ]],
+    ["outros", [
+      T("com espinhos", /\b(thorns?|spines?|prickles?|espinhos?|ac[úu]leos?)\b/i, "Estruturas pontiagudas no caule."),
+      T("com látex", /\b(latex|milky sap|l[áa]tex)\b/i, "Seiva leitosa que escorre quando o caule é ferido."),
+    ]],
+  ],
+  folha: [
+    ["composição", [
+      T("composta bipinada", /\b(bipinnate|bipinad[ao])\b/i, "Folha composta em que os folíolos se organizam em duas ordens de divisão."),
+      T("composta pinada", /\b(pinnate(ly compound)?|imparipinnate|paripinnate|pinad[ao]|imparipinad[ao]|paripinad[ao])\b/i, "Folha composta com folíolos dispostos dos dois lados de um eixo."),
+      T("composta palmada", /\b(palmately compound|digitate|palmad[ao]|digitad[ao])\b/i, "Folha composta com folíolos saindo de um mesmo ponto, como dedos."),
+      T("composta trifoliolada", /\b(trifoliolate|trifoliate|trifoliolad[ao])\b/i, "Folha composta com três folíolos."),
+      T("composta", /\b(compound leaves|leaflets|fol[ií]olos|compuest[ao]s?)\b/i, "Limbo dividido em folíolos."),
+      T("simples", /\b(simple|simples)\b/i, "Folha com um único limbo, não dividido em folíolos."),
+    ]],
+    ["filotaxia", [
+      T("verticilada", /\b(whorled|verticillate|verticilad[ao]s?)\b/i, "Três ou mais folhas em cada nó."),
+      T("oposta", /\b(opposite|opost[ao]s?|opuest[ao]s?|decussate|decussad[ao]s?)\b/i, "Duas folhas em cada nó, uma em frente da outra."),
+      T("dística", /\b(distichous|d[ií]stic[ao]s?)\b/i, "Folhas alternas dispostas em dois planos opostos."),
+      T("alterna", /\b(alternate|altern[ao]s?|spiral(ly)?|espiralad[ao]s?)\b/i, "Uma folha em cada nó, alternando de lado."),
+    ]],
+    ["forma do limbo", [
+      T("lanceolada", /\b(lanceolate|lanceolad[ao])\b/i, "Mais longa que larga, mais larga abaixo do meio e afinando no ápice."),
+      T("elíptica", /\b(elliptic(al)?|el[ií]ptic[ao])\b/i, "Contorno de elipse, mais larga no meio."),
+      T("oblonga", /\b(oblong|oblong[ao])\b/i, "Mais longa que larga, com lados quase paralelos."),
+      T("ovada", /\b(ovate|ovad[ao]|aovad[ao])\b/i, "Forma de ovo, mais larga perto da base."),
+      T("obovada", /\b(obovate|obovad[ao])\b/i, "Forma de ovo invertido, mais larga perto do ápice."),
+      T("cordada", /\b(cordate|cordiform|cordad[ao]|cordiforme)\b/i, "Base em forma de coração."),
+      T("linear", /\b(linear)\b/i, "Muito estreita e longa, com lados paralelos."),
+      T("orbicular", /\b(orbicular|circular)\b/i, "Contorno quase circular."),
+      T("peltada", /\b(peltate|peltad[ao])\b/i, "Pecíolo preso no meio da face inferior do limbo."),
+      T("lobada", /\b(lobed|lobad[ao]|lobulad[ao])\b/i, "Limbo com recortes que não chegam à nervura central."),
+    ]],
+    ["margem", [
+      T("serreada", /\b(serrate|serrulate|serread[ao]|aserrad[ao])\b/i, "Margem com dentes inclinados para o ápice, como serra."),
+      T("denteada", /\b(dentate|denticulate|dentead[ao]|dentad[ao])\b/i, "Margem com dentes voltados para fora."),
+      T("crenada", /\b(crenate|crenad[ao])\b/i, "Margem com recortes arredondados."),
+      T("inteira", /\b(entire|inteir[ao]|enter[ao])\b/i, "Borda contínua, sem dentes nem recortes."),
+    ]],
+    ["nervação", [
+      T("paralelinérvea", /\b(parallel(-| )?vein(ed|s)?|paraleliner[vb]e[ao]|paralel[ao]s)\b/i, "Nervuras paralelas entre si, comum nas monocotiledôneas."),
+      T("palminérvea", /\b(palmate(ly)? vein(ed)?|palmatinerved|palminer[vb]e[ao])\b/i, "Várias nervuras principais saindo da base do limbo."),
+      T("peninérvea", /\b(pinnate(ly)? vein(ed)?|pinninerved|peniner[vb]e[ao]|midrib|nervura central)\b/i, "Nervuras secundárias saindo de uma nervura central."),
+    ]],
+  ],
+  flor: [
+    ["inflorescência", [
+      T("capítulo", /\b(capitul(a|um)|flower ?heads?|cap[ií]tulos?)\b/i, "Flores sem pedicelo reunidas sobre um receptáculo comum, como no girassol."),
+      T("espádice", /\b(spadix|esp[áa]dices?)\b/i, "Espiga carnosa envolvida por uma bráctea (espata)."),
+      T("umbela", /\b(umbels?|umbelas?)\b/i, "Flores com pedicelos saindo de um mesmo ponto."),
+      T("panícula", /\b(panicles?|pan[ií]culas?)\b/i, "Inflorescência ramificada, de contorno geralmente piramidal."),
+      T("racemo (cacho)", /\b(racemes?|racemos?|cachos?)\b/i, "Eixo com flores pediceladas ao longo dele."),
+      T("espiga", /\b(spikes?|espigas?)\b/i, "Eixo com flores sem pedicelo."),
+      T("corimbo", /\b(corymbs?|corimbos?)\b/i, "Flores em alturas parecidas, com pedicelos de tamanhos diferentes."),
+      T("cimeira", /\b(cymes?|cimeiras?|cimas?)\b/i, "Inflorescência em que o eixo termina em flor."),
+      T("flor solitária", /\b(solitary|solit[áa]ri[ao]s?)\b/i, "Uma flor isolada, não reunida em inflorescência."),
+    ]],
+    ["sexo", [
+      T("dioica", /\b(dioecious|dioic[ao])\b/i, "Flores masculinas e femininas em plantas diferentes."),
+      T("monoica", /\b(monoecious|monoic[ao])\b/i, "Flores masculinas e femininas na mesma planta."),
+      T("unissexuada", /\b(unisexual|unissexuad[ao]s?|unisexuales)\b/i, "Flor só com estames ou só com pistilo."),
+      T("hermafrodita", /\b(bisexual|hermaphrodite|perfect flowers?|hermafrodit[ao]s?|monoclin[ao]s?)\b/i, "Flor com estames e pistilo."),
+    ]],
+    ["simetria", [
+      T("zigomorfa", /\b(zygomorphic|bilateral(ly)? symmetric|zigomorf[ao]s?)\b/i, "Um único plano de simetria (simetria bilateral)."),
+      T("actinomorfa", /\b(actinomorphic|radial(ly)? symmetric|regular flowers?|actinomorf[ao]s?)\b/i, "Vários planos de simetria (simetria radial)."),
+    ]],
+    ["número de peças", [
+      T("trímera", /\b(3-merous|trimerous|tr[ií]mer[ao]s?)\b/i, "Peças florais em número de três ou múltiplos de três."),
+      T("tetrâmera", /\b(4-merous|tetramerous|tetr[âa]mer[ao]s?)\b/i, "Peças florais em número de quatro."),
+      T("pentâmera", /\b(5-merous|pentamerous|pent[âa]mer[ao]s?)\b/i, "Peças florais em número de cinco."),
+    ]],
+    ["ovário", [
+      T("ovário ínfero", /\b(inferior ovary|ovary inferior|ov[áa]rio [ií]nfero)\b/i, "Ovário abaixo da inserção das outras peças florais."),
+      T("ovário súpero", /\b(superior ovary|ovary superior|ov[áa]rio s[úu]pero)\b/i, "Ovário acima da inserção das outras peças florais."),
+    ]],
+  ],
+  fruto: [
+    ["tipo", [
+      T("hesperídio", /\b(hesperidium|hesper[ií]dio)\b/i, "Baga com casca rica em óleos e polpa em gomos, como na laranja."),
+      T("pepônio", /\b(pepo|pep[ôo]nio)\b/i, "Baga de casca dura, como na abóbora e na melancia."),
+      T("sicônio", /\b(syconi(um|a)|sic[ôo]nio)\b/i, "Infrutescência com flores dentro de um receptáculo oco, como no figo."),
+      T("drupa", /\b(drupes?|drupas?|drupac(eous|e[ao]))\b/i, "Fruto carnoso com caroço duro envolvendo a semente."),
+      T("baga", /\b(berr(y|ies)|bagas?|bayas?)\b/i, "Fruto carnoso sem caroço, geralmente com várias sementes."),
+      T("legume (vagem)", /\b(legumes?|pods?|vagens?|vainas?)\b/i, "Fruto seco que se abre em duas fendas, típico das leguminosas."),
+      T("cápsula", /\b(capsules?|c[áa]psulas?)\b/i, "Fruto seco que se abre e se forma de vários carpelos."),
+      T("síliqua", /\b(siliques?|siliquas?|s[ií]liquas?)\b/i, "Fruto seco alongado com um septo central, típico das brassicáceas."),
+      T("folículo", /\b(follicles?|fol[ií]culos?)\b/i, "Fruto seco que se abre por uma única fenda."),
+      T("aquênio", /\b(achenes?|aqu[êe]nios?)\b/i, "Fruto seco pequeno, indeiscente, com uma semente solta."),
+      T("cipsela", /\b(cypselas?|cipselas?)\b/i, "Aquênio originado de ovário ínfero, como nas asteráceas."),
+      T("cariopse", /\b(caryops(is|es)|cariopses?)\b/i, "Fruto seco com a semente soldada à parede, típico dos capins."),
+      T("sâmara", /\b(samaras?|s[âa]maras?|winged fruits?)\b/i, "Fruto seco com asa, dispersado pelo vento."),
+      T("noz", /\b(nuts?|nozes|noz)\b/i, "Fruto seco indeiscente de parede dura."),
+      T("esquizocarpo", /\b(schizocarps?|esquizocarpos?|mericarps?)\b/i, "Fruto seco que se divide em partes com uma semente cada."),
+    ]],
+    ["consistência", [
+      T("carnoso", /\b(fleshy|carnos[ao]s?)\b/i, "Pericarpo suculento."),
+      T("seco", /\b(dry (fruits?|capsules?)|fruits? (is |are )?dry|frutos? sec[ao]s?)\b/i, "Pericarpo seco na maturidade."),
+    ]],
+    ["abertura", [
+      T("indeiscente", /\b(indehiscent|indeiscentes?)\b/i, "Não se abre sozinho."),
+      T("deiscente", /\b(dehiscent|dehiscing|deiscentes?)\b/i, "Abre-se sozinho para liberar as sementes."),
+    ]],
+  ],
+  semente: [
+    ["quantidade", [
+      T("numerosas", /\b(seeds? (many|numerous)|many(-| )seeded|numerous seeds|sementes numerosas|muitas sementes)\b/i, "Muitas sementes por fruto."),
+      T("uma por fruto", /\b(1-seeded|one-seeded|single seed|seed solitary|uma semente|semente [úu]nica)\b/i, "Uma semente por fruto."),
+    ]],
+    ["características", [
+      T("alada", /\b(winged seeds?|seeds? winged|sementes? aladas?)\b/i, "Semente com expansão em forma de asa."),
+      T("com arilo", /\b(aril(late)?|arilo|arilad[ao])\b/i, "Semente envolvida por um tecido carnoso extra (arilo)."),
+      T("poliembriônica", /\b(polyembryon(ic|y)|poliembri[ôo]nic[ao]|poliembrionia)\b/i, "Mais de um embrião na mesma semente."),
+      T("reniforme", /\b(reniform|reniforme)\b/i, "Em forma de rim."),
+      T("com endosperma", /\b(endosperm(ic)?|albuminos[ao]|endosperma)\b/i, "Semente com tecido de reserva (endosperma)."),
+    ]],
+  ],
+};
+
+/** Reconhece os tipos de um órgão num texto. Retorna [{categoria, rotulo, definicao}]. */
+function reconhecerTipos(orgao, texto) {
+  const cats = GLOSSARIO[orgao] || [];
+  const achados = [];
+  for (const [categoria, termos] of cats) {
+    const t = termos.find((x) => x.re.test(texto));
+    if (t) achados.push({ categoria, rotulo: t.rotulo, definicao: t.definicao });
+  }
+  return achados;
+}
+
+return { GLOSSARIO, reconhecerTipos };
+})();
+
 // ===== identificacao.js =====
 const M_identificacao = (() => {
 const { CONFIG } = M_config;
@@ -1260,6 +1614,8 @@ return { ORGAOS_FICHA, identificacaoConfigurada, identificar, buscarNome };
 const M_ficha = (() => {
 const { obterFicha, SECOES } = M_acervo;
 const { lista, texto, slugEspecie } = M_util;
+const { traduzir, codigoLingua, cotaTraducaoEsgotada } = M_traduzir;
+const { reconhecerTipos } = M_glossario;
 // ETAPA 2 — Montagem da ficha botânica.
 //
 //  1. Ficha VERIFICADA do acervo (dados/especies/<slug>.json), com referência por item.
@@ -1267,6 +1623,8 @@ const { lista, texto, slugEspecie } = M_util;
 //     nomes populares do GBIF e do iNaturalist, e trechos originais das floras que
 //     publicam descrições no GBIF, separados por órgão. Nada é inventado: órgão sem
 //     descrição nas bases aparece como "sem dados".
+
+
 
 
 
@@ -1311,7 +1669,7 @@ function frases(t) {
   return t
     .split(/(?<=[.;])\s+(?=[A-ZÀ-Ý0-9])/)
     .map((s) => s.trim())
-    .filter((s) => s.length > 15);
+    .filter((s) => s.length > 8);
 }
 
 function cortar(t, n = 420) {
@@ -1319,7 +1677,7 @@ function cortar(t, n = 420) {
 }
 
 // ---------- cache local (7 dias) ----------
-const CACHE = "herbario.fichas.v1.";
+const CACHE = "herbario.fichas.v2.";
 function lerCache(slug) {
   try {
     const c = JSON.parse(localStorage.getItem(CACHE + slug) || "null");
@@ -1337,7 +1695,7 @@ async function carregarFicha(nome, { extra = {}, signal, onParcial, onEtapa } = 
   const slug = slugEspecie(nome);
   onEtapa?.("Consultando o acervo verificado…");
   const verificada = await obterFicha(slug);
-  if (verificada) return { ...verificada, fonte: "acervo-verificado" };
+  if (verificada) return { ...verificada, tipos: tiposDaFicha(verificada), fonte: "acervo-verificado" };
 
   const emCache = lerCache(slug);
   if (emCache) return emCache;
@@ -1410,45 +1768,90 @@ async function montarDeBasesAbertas(nome, extra, signal) {
 
   const sinonimos = sins.status === "fulfilled" ? lista(sins.value.results).map((s) => texto(s.scientificName)).filter(Boolean).slice(0, 12) : [];
 
-  // Trechos das descrições por órgão
+  // Descrições: da espécie e dos seus sinônimos (mesma espécie); do gênero só como complemento.
+  const chavesSin = sins.status === "fulfilled" ? lista(sins.value.results).map((x) => x.key).filter(Boolean).slice(0, 5) : [];
+  const extrasSin = await Promise.allSettled(chavesSin.map((k) => json(`https://api.gbif.org/v1/species/${k}/descriptions?limit=40`, signal)));
+  const descricoesEspecie = [
+    ...(descs.status === "fulfilled" ? lista(descs.value.results) : []),
+    ...extrasSin.flatMap((r) => (r.status === "fulfilled" ? lista(r.value.results) : [])),
+  ];
+
   const porOrgao = { raiz: [], caule: [], folha: [], flor: [], fruto: [], semente: [], habito: [], distribuicao: [] };
-  if (descs.status === "fulfilled") {
-    for (const d of lista(descs.value.results)) {
+  const vistosTxt = new Set();
+  const distribuir = (lst, nivel) => {
+    for (const d of lst) {
       const txt = limparHtml(d.description);
       if (txt.length < 20) continue;
       const fonte = texto(d.source) || "Descrição publicada no GBIF";
-      const idR = ref(cortar(fonte, 260) + (d.license ? ` Licença: ${String(d.license).replace(/^https?:\/\//, "")}.` : ""), `https://www.gbif.org/species/${d.sourceTaxonKey || key}`);
-      const idioma = IDIOMAS[String(d.language || "").toLowerCase()] || d.language || "";
+      const idR = ref(cortar(fonte, 260) + (d.license ? ` Licença: ${String(d.license).replace(/^https?:\/\//, "")}.` : ""), `https://www.gbif.org/species/${d.sourceTaxonKey || d.taxonKey || key}`);
       const agrupado = {};
       for (const fr of frases(txt)) {
         for (const [org, re] of Object.entries(CHAVES)) {
           if (re.test(fr)) {
             (agrupado[org] ??= []).push(fr);
-            break; // cada frase vai para o primeiro órgão correspondente
+            break;
           }
         }
       }
-      for (const [org, lst] of Object.entries(agrupado)) {
+      for (const [org, l] of Object.entries(agrupado)) {
+        if (nivel === "genero" && porOrgao[org].some((t) => t.nivel === "especie")) continue;
         if (porOrgao[org].length >= 4) continue;
-        porOrgao[org].push({ texto: cortar(lst.slice(0, 3).join(" ")), fonte: idR, idioma, tipo: texto(d.type) });
+        const t = cortar(l.slice(0, 3).join(" "));
+        if (vistosTxt.has(t)) continue;
+        vistosTxt.add(t);
+        porOrgao[org].push({ texto: t, fonte: idR, lingua: d.language, idioma: IDIOMAS[String(d.language || "").toLowerCase()] || d.language || "", nivel });
+      }
+    }
+  };
+  distribuir(descricoesEspecie, "especie");
+
+  // Gênero: só para órgãos sem nenhuma descrição da espécie.
+  const faltam = ["raiz", "caule", "folha", "flor", "fruto", "semente"].filter((o) => !porOrgao[o].length);
+  if (faltam.length && especie.genusKey) {
+    try {
+      const g = await json(`https://api.gbif.org/v1/species/${especie.genusKey}/descriptions?limit=40`, signal);
+      const antes = Object.fromEntries(Object.entries(porOrgao).map(([k, v]) => [k, v.length]));
+      distribuir(lista(g.results), "genero");
+      for (const o of Object.keys(porOrgao)) if (!faltam.includes(o)) porOrgao[o] = porOrgao[o].slice(0, antes[o]);
+    } catch {}
+  }
+
+  // Tradução para o português (cota diária gratuita; o resto fica no original).
+  let orcamento = 4500;
+  for (const lst of Object.values(porOrgao)) {
+    for (const t of lst) {
+      if (codigoLingua(t.lingua) === "pt" || orcamento <= 0) continue;
+      orcamento -= t.texto.length;
+      const tr = await traduzir(t.texto, t.lingua, { signal });
+      if (tr) {
+        t.original = t.texto;
+        t.texto = tr.texto;
+        t.servico = tr.servico;
       }
     }
   }
 
   const item = (caractere, valor, fontes, extraItem = {}) => ({ caractere, valor, termos: [], certeza: "media", origem: "literatura", fontes, ...extraItem });
-  const trechoItens = (org) =>
-    porOrgao[org].map((t) => item(`Descrição de flora${t.idioma ? ` (texto original, ${t.idioma})` : ""}`, t.texto, [t.fonte]));
+  const rotuloTrecho = (t, base) =>
+    `${t.nivel === "genero" ? `${base} do gênero ${texto(especie.genus)}` : base}`;
+  const extraTrecho = (t) => ({
+    original: t.original || "",
+    traducao: t.servico || "",
+    idioma: t.idioma,
+    certeza: t.nivel === "genero" ? "baixa" : "media",
+  });
+  const trechoItens = (org) => porOrgao[org].map((t) => item(rotuloTrecho(t, "Descrição de flora"), t.texto, [t.fonte], extraTrecho(t)));
 
   const secoes = {};
   const agora = new Date().toISOString();
-  const LIM = "Trechos originais das floras que publicam descrições no GBIF, sem revisão do Herbário. Podem estar em outro idioma ou descrever o gênero.";
+  const LIM = "Trechos das floras que publicam descrições no GBIF, traduzidos automaticamente e sem revisão do Herbário. Descrições do gênero aparecem só quando falta a da espécie e podem não valer para ela.";
   for (const org of ["raiz", "caule", "folha", "flor", "fruto", "semente"]) {
     const itens = trechoItens(org);
     secoes[org] = {
       status: "fontes_abertas",
       atualizado_em: agora,
       conteudo: itens.length
-        ? { resumo: "", itens, variacao: "", divergencias: [], limitacoes: LIM }
+        ? { resumo: "", itens, variacao: "", divergencias: [], limitacoes: LIM + (cotaTraducaoEsgotada() ? " A cota diária de tradução acabou: alguns trechos ficaram no idioma original." : "") }
         : { resumo: "", itens: [], variacao: "", divergencias: [], limitacoes: `Nenhuma descrição de ${ROTULOS[org].toLowerCase()} foi encontrada nas bases abertas consultadas. Esta espécie ainda não tem ficha verificada no Herbário; confira as bases indicadas em Referências.` },
     };
   }
@@ -1458,8 +1861,8 @@ async function montarDeBasesAbertas(nome, extra, signal) {
     item("Status taxonômico no GBIF", especie.taxonomicStatus === "ACCEPTED" ? "aceito" : texto(especie.taxonomicStatus).toLowerCase(), [rGbif], { certeza: "alta" }),
   ];
   if (populares.size) geralItens.push(item("Nomes populares", [...populares].slice(0, 8).join(", "), [rInat, rGbif].filter(Boolean), { certeza: "media" }));
-  for (const t of porOrgao.habito.slice(0, 2)) geralItens.push(item(`Hábito — descrição de flora${t.idioma ? ` (${t.idioma})` : ""}`, t.texto, [t.fonte]));
-  for (const t of porOrgao.distribuicao.slice(0, 3)) geralItens.push(item(`Distribuição e habitat — descrição de flora${t.idioma ? ` (${t.idioma})` : ""}`, t.texto, [t.fonte]));
+  for (const t of porOrgao.habito.slice(0, 2)) geralItens.push(item(rotuloTrecho(t, "Hábito — descrição de flora"), t.texto, [t.fonte], extraTrecho(t)));
+  for (const t of porOrgao.distribuicao.slice(0, 3)) geralItens.push(item(rotuloTrecho(t, "Distribuição e habitat — descrição de flora"), t.texto, [t.fonte], extraTrecho(t)));
   secoes.geral = {
     status: "fontes_abertas",
     atualizado_em: agora,
@@ -1474,9 +1877,24 @@ async function montarDeBasesAbertas(nome, extra, signal) {
   }
   const usadas = new Set(SECOES.flatMap((s) => lista(secoes[s]?.conteudo?.itens).flatMap((i) => i.fontes)));
 
+  const tipos = {};
+  for (const org of ["raiz", "caule", "folha", "flor", "fruto", "semente"]) {
+    const doEsp = porOrgao[org].filter((t) => t.nivel === "especie");
+    const base = doEsp.length ? doEsp : porOrgao[org];
+    const txt = base.map((t) => `${t.texto} ${t.original || ""}`).join(" ");
+    const achados = reconhecerTipos(org, txt);
+    tipos[org] = {
+      valor: achados.map((a) => a.rotulo).join(", "),
+      termos: achados,
+      nivel: doEsp.length ? "especie" : base.length ? "genero" : "",
+      origem: "termos reconhecidos nas descrições",
+    };
+  }
+
   return {
     slug: slugEspecie(aceito),
     fonte: "bases-abertas",
+    tipos,
     cabecalho: {
       nome_cientifico: aceito,
       autoria: texto(especie.authorship),
@@ -1496,11 +1914,22 @@ async function montarDeBasesAbertas(nome, extra, signal) {
   };
 }
 
-function normalizarSecao(_, s) {
-  return s;
+/** Quadro-resumo de uma ficha verificada: usa o campo "tipos" do JSON, se houver. */
+function tiposDaFicha(f) {
+  const out = {};
+  for (const org of ["raiz", "caule", "folha", "flor", "fruto", "semente"]) {
+    const t = f.cabecalho?.tipos?.[org];
+    if (t) out[org] = { valor: t, termos: [], nivel: "especie", origem: "ficha verificada" };
+    else {
+      const itens = lista(f.secoes?.[org]?.conteudo?.itens);
+      const achados = reconhecerTipos(org, itens.map((i) => `${i.caractere}: ${i.valor}`).join(" "));
+      out[org] = { valor: achados.map((a) => a.rotulo).join(", "), termos: achados, nivel: "especie", origem: "ficha verificada" };
+    }
+  }
+  return out;
 }
 
-return { ROTULOS, carregarFicha, normalizarSecao };
+return { ROTULOS, carregarFicha, tiposDaFicha };
 })();
 
 // ===== render.js =====
@@ -1631,6 +2060,9 @@ function secaoOrgao(secao, dados, ctx) {
               "dd",
               {},
               h("span", { class: "valor" }, it.valor),
+              it.original
+                ? h("details", { class: "original" }, h("summary", {}, `Tradução automática (${it.traducao}) · ver texto original${it.idioma ? " em " + it.idioma : ""}`), h("span", { lang: "en" }, it.original))
+                : null,
               h(
                 "span",
                 { class: "meta" },
@@ -1700,7 +2132,7 @@ function rodapeSecao(secao, dados, ctx) {
   const rod = h(
     "div",
     { class: "secao-rodape" },
-    h("span", {}, dados.status === "verificada" ? "Seção verificada" : "Seção gerada por IA", dados.atualizado_em ? ` · atualizada em ${formatarData(dados.atualizado_em)}` : "")
+    h("span", {}, dados.status === "verificada" ? "Seção verificada" : dados.status === "fontes_abertas" ? "Dados de bases abertas, sem revisão" : "Seção gerada por IA", dados.atualizado_em ? ` · atualizada em ${formatarData(dados.atualizado_em)}` : "")
   );
   if (dados.status !== "verificada" && ctx.onRegenerar) {
     const btn = h("button", { class: "btn-link", type: "button" }, "Gerar esta seção novamente");
@@ -1830,6 +2262,41 @@ function montarFicha(ctxInicial) {
     );
   }
 
+  function quadroResumo() {
+    const t = ctx.tipos;
+    if (!t) return null;
+    const linhas = [["raiz", "Raiz"], ["caule", "Caule"], ["folha", "Folha"], ["flor", "Flor"], ["fruto", "Fruto"], ["semente", "Semente"]];
+    const verificada = (ctx.cabecalho?.status) === "verificada";
+    return h(
+      "section",
+      { class: "quadro-resumo", "aria-label": "Resumo morfológico" },
+      h("h3", {}, "Resumo morfológico"),
+      h(
+        "dl",
+        {},
+        linhas.map(([k, rot]) => {
+          const v = t[k] || {};
+          return h(
+            "div",
+            { class: "qr-linha" + (v.valor ? "" : " vazio") },
+            h("dt", {}, icone(k), rot),
+            h(
+              "dd",
+              {},
+              v.valor || "não informado nas fontes consultadas",
+              v.nivel === "genero" && v.valor ? h("span", { class: "qr-nota" }, " (descrição do gênero)") : null
+            )
+          );
+        })
+      ),
+      h(
+        "p",
+        { class: "qr-rodape" },
+        verificada ? "Resumo da ficha verificada." : "Termos reconhecidos automaticamente nas descrições das floras; confira os detalhes em cada aba."
+      )
+    );
+  }
+
   function abas() {
     const ids = [...SECOES, "referencias"];
     const nav = h("nav", { class: "abas", role: "tablist", "aria-label": "Seções da ficha" });
@@ -1878,7 +2345,7 @@ function montarFicha(ctxInicial) {
 
   function render() {
     raiz.replaceChildren(
-      cabecalho(),
+      ...[cabecalho(), quadroResumo()].filter(Boolean),
       abas(),
       tudo ? h("div", { class: "painel-todos" }, [...SECOES, "referencias"].map(painel)) : painel(abaAtiva)
     );
@@ -1976,7 +2443,7 @@ const { identificar, buscarNome, identificacaoConfigurada } = M_identificacao;
 const { carregarFicha } = M_ficha;
 const { listarEspecies, registrarHistorico, listarHistorico } = M_acervo;
 const { montarFicha, montarIdentificacao } = M_render;
-const { BIBLIOGRAFIA_BASE } = M_fontes;
+const { BIBLIOGRAFIA_BASE, BIBLIOTECA } = M_fontes;
 // Herbário — controlador da aplicação.
 
 
@@ -2307,11 +2774,11 @@ async function carregarFichaEm(area, nome, { extra = {}, observacoes = null, avi
       signal: ctl.signal,
       onEtapa: (m) => (progresso.children[1].textContent = m),
       onParcial: (p) => {
-        vista.ctx = { ...vista.ctx, cabecalho: p.cabecalho, secoes: { ...p.secoes } };
+        vista.ctx = { ...vista.ctx, cabecalho: p.cabecalho, secoes: { ...p.secoes }, tipos: p.tipos };
         vista.ficha.atualizar(vista.ctx);
       },
     });
-    vista.ctx = { ...vista.ctx, cabecalho: r.cabecalho, secoes: r.secoes };
+    vista.ctx = { ...vista.ctx, cabecalho: r.cabecalho, secoes: r.secoes, tipos: r.tipos };
     vista.ficha.atualizar(vista.ctx);
     progresso.remove();
   } catch (e) {
@@ -2496,9 +2963,14 @@ function renderSobre() {
     ),
     h("h2", {}, "Bases botânicas"),
     h("p", {}, "Pl@ntNet (identificação), GBIF e iNaturalist (nomes e descrições), Flora e Funga do Brasil e Herbário Virtual Reflora (Jardim Botânico do Rio de Janeiro), Plants of the World Online (Kew) e World Flora Online. Cada ficha traz links de consulta direta pelo nome da espécie."),
-    h("h2", {}, "Bibliografia de base"),
-    h("ul", { class: "lista-biblio" }, BIBLIOGRAFIA_BASE.map((b) => h("li", {}, b.citacao))),
-    h("p", { class: "explica" }, "Essas obras fundamentam a terminologia. O Herbário não reproduz trechos delas; as descrições das fichas verificadas são paráfrases científicas."),
+    h("h2", { id: "biblioteca" }, "Biblioteca"),
+    h("p", { class: "explica" }, "Livros de morfologia e anatomia vegetal que fundamentam o glossário e as fichas verificadas. O site não lê esses livros automaticamente: as fichas verificadas são pesquisadas e escritas por paráfrase, com a fonte de cada informação. As obras de acesso aberto têm link."),
+    ...BIBLIOTECA.flatMap((g) => [
+      h("h3", { class: "biblio-grupo" }, g.grupo),
+      h("ul", { class: "lista-biblio" }, g.obras.map((o) => h("li", {}, o.citacao, o.url ? [" ", h("a", { href: o.url, target: "_blank", rel: "noopener" }, "Acessar")] : null))),
+    ]),
+    h("h2", {}, "Tradução"),
+    h("p", {}, "Trechos de floras em outros idiomas são traduzidos automaticamente para o português: no Chrome de computador, pelo tradutor do próprio navegador; nos demais aparelhos, pelo serviço gratuito MyMemory, com cota diária. O texto original fica disponível em cada item."),
     h("h2", {}, "Privacidade"),
     h("p", {}, "As fotos são reduzidas no próprio aparelho e enviadas ao Pl@ntNet apenas para a identificação. O Herbário não as guarda. O histórico fica só neste aparelho e guarda apenas os nomes das espécies e a data."),
     h("h2", {}, "Limitações"),
