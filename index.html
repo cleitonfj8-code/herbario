@@ -407,6 +407,15 @@ details.original span { display: block; padding: 6px 10px; border-left: 2px soli
 .biblio-grupo { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--oliva); margin: 18px 0 8px; }
 .rodape a { color: inherit; }
 
+.parte-titulo { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--terra); margin: 18px 0 2px; padding-top: 10px; border-top: 1px dashed var(--linha); }
+.parte-titulo:first-of-type { border-top: 0; margin-top: 4px; padding-top: 0; }
+.caractere.sem-rotulo { grid-template-columns: 1fr; }
+.valor.traduzindo { opacity: 0.6; }
+.valor.traduzindo::after { content: " · traduzindo…"; font-size: 0.8rem; color: var(--cinza); }
+.sem-traducao { display: block; font-size: 0.78rem; color: var(--cinza); margin-top: 3px; }
+.lista-diag { padding-left: 20px; margin: 0; font-size: 0.9rem; }
+.lista-diag li { margin-bottom: 4px; }
+
 </style>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231F3A2B'/%3E%3Cpath d='M9 24C9 14 15 8 24 8c0 9-6 15-15 16z' fill='none' stroke='%23F3EEE2' stroke-width='2'/%3E%3Cpath d='M9 24l9-9' stroke='%23F3EEE2' stroke-width='2'/%3E%3C/svg%3E">
 </head>
@@ -1244,7 +1253,19 @@ function cotaTraducaoEsgotada() {
   return cotaEsgotada;
 }
 
-return { codigoLingua, traduzir, cotaTraducaoEsgotada };
+/** Tradução já guardada neste aparelho (consulta síncrona), ou null. */
+function traducaoEmCache(texto, linguaGbif) {
+  const origem = codigoLingua(linguaGbif);
+  if (!texto || origem === "pt") return null;
+  try {
+    const c = localStorage.getItem(chave(texto, origem));
+    return c ? JSON.parse(c) : null;
+  } catch {
+    return null;
+  }
+}
+
+return { codigoLingua, traduzir, cotaTraducaoEsgotada, traducaoEmCache };
 })();
 
 // ===== glossario.js =====
@@ -1427,6 +1448,319 @@ function reconhecerTipos(orgao, texto) {
 }
 
 return { GLOSSARIO, reconhecerTipos };
+})();
+
+// ===== fontesExternas.js =====
+const M_fontesExternas = (() => {
+const { lista, texto } = M_util;
+// Consultas às bases botânicas externas: POWO (Kew), Flora e Funga do Brasil (JBRJ)
+// e Wikidata. Cada consulta é independente: se uma base bloquear ou cair, as
+// outras seguem. Todas devolvem "trechos" no mesmo formato:
+//   { orgao, parte, texto, lingua, fonte: {citacao, url} }
+
+
+async function buscarJson(url, { signal, timeout = 15000, opcoes = {} } = {}) {
+  const ctl = new AbortController();
+  const t = setTimeout(() => ctl.abort(), timeout);
+  const repassa = () => ctl.abort();
+  signal?.addEventListener("abort", repassa, { once: true });
+  try {
+    const r = await fetch(url, { ...opcoes, signal: ctl.signal });
+    if (!r.ok) throw Object.assign(new Error(`HTTP ${r.status}`), { status: r.status });
+    return await r.json();
+  } finally {
+    clearTimeout(t);
+    signal?.removeEventListener("abort", repassa);
+  }
+}
+
+function limparHtml(t) {
+  const d = document.createElement("div");
+  d.innerHTML = String(t || "");
+  return (d.textContent || "").replace(/\s+/g, " ").trim();
+}
+
+// ---------------------------------------------------------------------------
+// POWO — Plants of the World Online (Royal Botanic Gardens, Kew)
+// Tipos de descrição: https://github.com/RBGKew/powop/blob/master/bin/description-types
+// ---------------------------------------------------------------------------
+
+const MAPA_POWO = [
+  // [prefixo do tipo, órgão, parte]
+  ["morphology:root", "raiz", "Raiz"],
+  ["morphology:trunk:buttress", "raiz", "Raízes tabulares"],
+  ["vegetativeMultiplication:rhizome", "caule", "Rizoma"],
+  ["vegetativeMultiplication:stolon", "caule", "Estolão"],
+  ["vegetativeMultiplication:tuber", "caule", "Tubérculo"],
+  ["vegetativeMultiplication:bulb", "caule", "Bulbo"],
+  ["vegetativeMultiplication:corm", "caule", "Cormo"],
+  ["vegetativeMultiplication:pseudobulb", "caule", "Pseudobulbo"],
+  ["morphology:general:bark", "caule", "Casca"],
+  ["morphology:trunk:slash", "caule", "Casca"],
+  ["morphology:general:exudate", "caule", "Exsudato"],
+  ["morphology:general:spine", "caule", "Espinhos e acúleos"],
+  ["morphology:general:thorn", "caule", "Espinhos e acúleos"],
+  ["morphology:general:prickle", "caule", "Espinhos e acúleos"],
+  ["morphology:general:tendril", "caule", "Gavinhas"],
+  ["morphology:stem:cladode", "caule", "Cladódio"],
+  ["morphology:trunk", "caule", "Tronco"],
+  ["morphology:bole", "caule", "Tronco"],
+  ["morphology:culm", "caule", "Colmo"],
+  ["morphology:stem", "caule", "Caule"],
+  ["morphology:branch", "caule", "Ramos"],
+  ["morphology:twig", "caule", "Ramos"],
+  ["morphology:general:wood", "caule", "Madeira"],
+  ["morphology:leaf:lamina:margin", "folha", "Margem"],
+  ["morphology:leaf:lamina", "folha", "Lâmina (limbo)"],
+  ["morphology:leaf:venation", "folha", "Nervação"],
+  ["morphology:leaf:petiole", "folha", "Pecíolo"],
+  ["morphology:leaf:stipule", "folha", "Estípulas"],
+  ["morphology:leaf:stipel", "folha", "Estípulas"],
+  ["morphology:leaf:sheath", "folha", "Bainha"],
+  ["morphology:leaf:ligule", "folha", "Lígula"],
+  ["morphology:leaf:leaflet", "folha", "Folíolos"],
+  ["morphology:leaf:pinna", "folha", "Folíolos"],
+  ["morphology:leaf:pinnule", "folha", "Folíolos"],
+  ["morphology:leaf:rachis", "folha", "Raque"],
+  ["morphology:leaf:phyllode", "folha", "Filódio"],
+  ["morphology:leaf", "folha", "Folha"],
+  ["morphology:reproductive:inflorescence:bract", "flor", "Brácteas"],
+  ["morphology:reproductive:inflorescence:bracteole", "flor", "Brácteas"],
+  ["morphology:reproductive:inflorescence", "flor", "Inflorescência"],
+  ["morphology:reproductive:flower:calyx", "flor", "Cálice"],
+  ["morphology:reproductive:flower:epicalyx", "flor", "Cálice"],
+  ["morphology:reproductive:flower:corolla", "flor", "Corola"],
+  ["morphology:reproductive:flower:perianth", "flor", "Perianto"],
+  ["morphology:reproductive:flower:tepal", "flor", "Perianto"],
+  ["morphology:reproductive:flower:androecium", "flor", "Androceu"],
+  ["morphology:reproductive:flower:gynoecium", "flor", "Gineceu"],
+  ["morphology:reproductive:flower:disc", "flor", "Disco e nectários"],
+  ["morphology:reproductive:flower:nectary", "flor", "Disco e nectários"],
+  ["morphology:reproductive:flower:pedicel", "flor", "Pedicelo"],
+  ["morphology:reproductive:flower:hypanthium", "flor", "Hipanto"],
+  ["morphology:reproductive:flower", "flor", "Flor"],
+  ["floralDiagram", "flor", "Flor"],
+  ["morphology:reproductive:fruit:infructescence", "fruto", "Infrutescência"],
+  ["morphology:reproductive:fruit", "fruto", "Fruto"],
+  ["morphology:reproductive:seed:embryo", "semente", "Embrião e cotilédones"],
+  ["morphology:reproductive:seed:cotyledon", "semente", "Embrião e cotilédones"],
+  ["morphology:reproductive:seed:endosperm", "semente", "Endosperma"],
+  ["morphology:reproductive:seed:testa", "semente", "Tegumento"],
+  ["morphology:reproductive:seed:aril", "semente", "Arilo"],
+  ["morphology:reproductive:seed:hilum", "semente", "Hilo"],
+  ["morphology:reproductive:seed:germination", "semente", "Germinação"],
+  ["lifeStage:seedling", "semente", "Plântula"],
+  ["morphology:reproductive:seed", "semente", "Semente"],
+  ["morphology:general:habit", "geral", "Hábito"],
+  ["morphology:general:height", "geral", "Hábito"],
+  ["morphology:general:crown", "geral", "Hábito"],
+  ["constructionalOrganisation", "geral", "Hábito"],
+  ["morphology:general:indumentum", "geral", "Indumento"],
+  ["morphology:general:gland", "geral", "Glândulas"],
+  ["morphology:general", "geral", "Descrição geral"],
+  ["diagnostic", "geral", "Caracteres diagnósticos"],
+  ["distribution", "geral", "Distribuição"],
+  ["ecology", "geral", "Habitat e ecologia"],
+  ["use", "geral", "Usos"],
+  ["conservation", "geral", "Conservação"],
+];
+
+function classificarPowo(tipo) {
+  const t = String(tipo || "");
+  const m = MAPA_POWO.find(([p]) => t === p || t.startsWith(p + ":"));
+  return m ? { orgao: m[1], parte: m[2] } : null;
+}
+
+/** Coleta {type, description, source} em qualquer formato de resposta do POWO. */
+function coletarDescricoesPowo(json) {
+  const achados = [];
+  const visitar = (no, fonteHerdada) => {
+    if (!no || typeof no !== "object") return;
+    if (Array.isArray(no)) return no.forEach((x) => visitar(x, fonteHerdada));
+    const s = no.source;
+    const fonteAqui = typeof s === "string" ? s : s && typeof s === "object" ? texto(s.title || s.citation || s.name) : "";
+    const fonte = fonteAqui || fonteHerdada;
+    if (typeof no.type === "string" && typeof no.description === "string") {
+      achados.push({ tipo: no.type, texto: limparHtml(no.description), fonte, deSinonimo: !!no.fromSynonym });
+    }
+    for (const [k, v] of Object.entries(no)) {
+      if (v && typeof v === "object" && k !== "source") visitar(v, fonte);
+    }
+  };
+  visitar(json?.descriptions ?? json, "");
+  return achados;
+}
+
+async function consultarPowo(nome, idPowo, { signal } = {}) {
+  let fqId = idPowo ? `urn:lsid:ipni.org:names:${String(idPowo).replace(/^urn:lsid:ipni\.org:names:/, "")}` : null;
+  const base = "https://powo.science.kew.org/api/2";
+  if (!fqId) {
+    const s = await buscarJson(`${base}/search?q=${encodeURIComponent(nome)}&f=species_f`, { signal });
+    const r = lista(s.results).find((x) => texto(x.name) === nome && x.accepted !== false) || lista(s.results).find((x) => texto(x.name) === nome);
+    fqId = r?.fqId || null;
+    if (!fqId) return { trechos: [], url: null };
+  }
+  const tx = await buscarJson(`${base}/taxon/${encodeURIComponent(fqId)}?fields=descriptions`, { signal });
+  // Se o nome consultado é sinônimo, segue para o nome aceito.
+  let dados = tx;
+  if (tx?.accepted?.fqId && tx.taxonomicStatus && tx.taxonomicStatus !== "Accepted") {
+    try {
+      dados = await buscarJson(`${base}/taxon/${encodeURIComponent(tx.accepted.fqId)}?fields=descriptions`, { signal });
+      fqId = tx.accepted.fqId;
+    } catch {}
+  }
+  const url = `https://powo.science.kew.org/taxon/${fqId}`;
+  const trechos = [];
+  for (const d of coletarDescricoesPowo(dados)) {
+    const c = classificarPowo(d.tipo);
+    if (!c || d.texto.length < 3) continue;
+    trechos.push({
+      orgao: c.orgao,
+      parte: c.parte,
+      texto: d.texto,
+      lingua: "en",
+      fonte: { citacao: `POWO — Plants of the World Online. Royal Botanic Gardens, Kew.${d.fonte ? " Descrição de: " + d.fonte + "." : ""}`, url },
+    });
+  }
+  return { trechos, url };
+}
+
+// ---------------------------------------------------------------------------
+// Flora e Funga do Brasil (JBRJ) — https://servicos.jbrj.gov.br/v2/flora/taxon/{nome}
+// O formato do JSON não é documentado publicamente: a leitura é tolerante.
+// ---------------------------------------------------------------------------
+
+const ROTULOS_FFB = [
+  ["raiz", "Raiz", /^ra[ií]z(es)?$/i],
+  ["caule", "Caule", /^caule|^tronco/i],
+  ["folha", "Folha", /^folha/i],
+  ["flor", "Inflorescência", /^infloresc/i],
+  ["flor", "Flor", /^flor/i],
+  ["fruto", "Fruto", /^fruto/i],
+  ["semente", "Semente", /^semente/i],
+];
+
+function textoDeDescricaoFfb(json) {
+  const textos = [];
+  const visitar = (no, chave = "") => {
+    if (no == null) return;
+    if (typeof no === "string") {
+      if (/descri|morfolog/i.test(chave) && no.length > 20) textos.push(limparHtml(no));
+      return;
+    }
+    if (Array.isArray(no)) return no.forEach((x) => visitar(x, chave));
+    if (typeof no === "object") for (const [k, v] of Object.entries(no)) visitar(v, k);
+  };
+  visitar(json);
+  return [...new Set(textos)];
+}
+
+function camposFfb(json) {
+  const out = {};
+  const visitar = (no, chave = "") => {
+    if (no == null) return;
+    if (typeof no === "string" || typeof no === "number") {
+      const k = chave.toLowerCase();
+      const v = String(no).trim();
+      if (!v) return;
+      const add = (c) => ((out[c] ??= new Set()).add(v));
+      if (/formavida|lifeform|forma_vida/.test(k)) add("Forma de vida");
+      else if (/substrat/.test(k)) add("Substrato");
+      else if (/^origem$|origin$/.test(k)) add("Origem no Brasil");
+      else if (/endemi/.test(k)) add("Endemismo");
+      else if (/dominio|fitogeograf|phytogeograph/.test(k)) add("Domínios fitogeográficos");
+      else if (/tipovegeta|vegetationtype|tipo_vegetacao/.test(k)) add("Tipos de vegetação");
+      else if (/vernac|nomepopular|nomes_populares/.test(k)) add("Nomes populares");
+      return;
+    }
+    if (Array.isArray(no)) return no.forEach((x) => visitar(x, chave));
+    if (typeof no === "object") for (const [k, v] of Object.entries(no)) visitar(v, k);
+  };
+  visitar(json);
+  return Object.fromEntries(Object.entries(out).map(([k, s]) => [k, [...s].slice(0, 12).join(", ")]));
+}
+
+async function consultarFloraBrasil(nome, { signal } = {}) {
+  const json = await buscarJson(`https://servicos.jbrj.gov.br/v2/flora/taxon/${encodeURIComponent(nome)}`, { signal });
+  const fonte = { citacao: "Flora e Funga do Brasil. Jardim Botânico do Rio de Janeiro.", url: "https://floradobrasil.jbrj.gov.br/consulta/" };
+  const trechos = [];
+  for (const t of textoDeDescricaoFfb(json)) {
+    // Descrições em campos controlados: "Raiz: … Caule: … Folha: … Flor: …"
+    const partes = t.split(/(?=\b(?:Raiz|Ra[ií]zes|Caule|Tronco|Folhas?|Infloresc[êe]ncias?|Flor(?:es)?|Frutos?|Sementes?)\s*:)/);
+    let usado = false;
+    for (const p of partes) {
+      const m = p.match(/^([A-Za-zÀ-ú]+)\s*:\s*([\s\S]+)$/);
+      if (!m) continue;
+      const r = ROTULOS_FFB.find(([, , re]) => re.test(m[1]));
+      if (!r) continue;
+      trechos.push({ orgao: r[0], parte: r[1], texto: m[2].trim().replace(/[.;,]?$/, "."), lingua: "pt", fonte });
+      usado = true;
+    }
+    if (!usado) trechos.push({ orgao: "geral", parte: "Descrição (Flora e Funga do Brasil)", texto: t, lingua: "pt", fonte });
+  }
+  return { trechos, campos: camposFfb(json), fonte };
+}
+
+// ---------------------------------------------------------------------------
+// Wikidata — tipo de fruto (propriedade "has fruit type"), buscada pelo rótulo
+// ---------------------------------------------------------------------------
+
+async function consultarWikidata(nome, { signal } = {}) {
+  const q = `SELECT ?item ?fruitLabel WHERE {
+    ?item wdt:P225 "${nome.replace(/"/g, "")}" .
+    ?prop rdfs:label "has fruit type"@en ; wikibase:directClaim ?claim .
+    ?item ?claim ?fruit .
+    SERVICE wikibase:label { bd:serviceParam wikibase:language "pt-br,pt,en". }
+  } LIMIT 10`;
+  const json = await buscarJson(`https://query.wikidata.org/sparql?format=json&query=${encodeURIComponent(q)}`, {
+    signal,
+    opcoes: { headers: { Accept: "application/sparql-results+json" } },
+  });
+  const linhas = lista(json?.results?.bindings);
+  const tipos = [...new Set(linhas.map((l) => texto(l.fruitLabel?.value)).filter(Boolean))];
+  const item = linhas[0]?.item?.value || null;
+  return {
+    tipos,
+    fonte: item ? { citacao: `Wikidata. ${nome} (${item.split("/").pop()}).`, url: item } : null,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Divisão em partes das frases soltas (GBIF), por palavras-chave
+// ---------------------------------------------------------------------------
+
+const PARTES = {
+  folha: [
+    ["Pecíolo", /\b(petioles?|pec[ií]olos?)\b/i],
+    ["Estípulas", /\b(stipules?|est[ií]pulas?)\b/i],
+    ["Folíolos", /\b(leaflets?|fol[ií]olos?|pinnae)\b/i],
+    ["Margem", /\b(margins?|margens?|serrate|dentate|crenate|entire)\b/i],
+    ["Nervação", /\b(veins?|venation|nerv(ura|ação)s?|midrib)\b/i],
+    ["Lâmina (limbo)", /\b(blades?|lamina|l[âa]minas?|limbo)\b/i],
+  ],
+  flor: [
+    ["Inflorescência", /\b(inflorescences?|panicles?|racemes?|cymes?|spikes?|umbels?|infloresc[êe]ncias?|pan[ií]culas?|racemos?)\b/i],
+    ["Cálice", /\b(calyx|sepals?|c[áa]lice|s[ée]palas?)\b/i],
+    ["Corola", /\b(corolla|petals?|corola|p[ée]talas?)\b/i],
+    ["Androceu", /\b(stamens?|anthers?|filaments?|staminodes?|estames?|anteras?|filetes?)\b/i],
+    ["Gineceu", /\b(ovary|ovaries|styles?|stigmas?|carpels?|pistils?|ov[áa]rio|estiletes?|estigmas?|carpelos?)\b/i],
+  ],
+  caule: [
+    ["Casca", /\b(bark|casca|corteza)\b/i],
+    ["Ramos", /\b(branch(es|lets)?|twigs?|ramos?|ramas?)\b/i],
+    ["Tronco", /\b(trunks?|troncos?|bole)\b/i],
+  ],
+  semente: [["Embrião e cotilédones", /\b(embryos?|cotyledons?|embri[ãa]o|cotil[ée]dones?)\b/i]],
+  fruto: [],
+  raiz: [],
+};
+
+function parteDaFrase(orgao, frase) {
+  const p = (PARTES[orgao] || []).find(([, re]) => re.test(frase));
+  return p ? p[0] : { raiz: "Raiz", caule: "Caule", folha: "Folha", flor: "Flor", fruto: "Fruto", semente: "Semente" }[orgao] || "";
+}
+
+return { consultarPowo, consultarFloraBrasil, consultarWikidata, parteDaFrase };
 })();
 
 // ===== identificacao.js =====
@@ -1614,15 +1948,22 @@ return { ORGAOS_FICHA, identificacaoConfigurada, identificar, buscarNome };
 const M_ficha = (() => {
 const { obterFicha, SECOES } = M_acervo;
 const { lista, texto, slugEspecie } = M_util;
-const { traduzir, codigoLingua, cotaTraducaoEsgotada } = M_traduzir;
+const { codigoLingua } = M_traduzir;
 const { reconhecerTipos } = M_glossario;
+const { consultarPowo, consultarFloraBrasil, consultarWikidata, parteDaFrase } = M_fontesExternas;
 // ETAPA 2 — Montagem da ficha botânica.
 //
 //  1. Ficha VERIFICADA do acervo (dados/especies/<slug>.json), com referência por item.
-//  2. Para as demais espécies, ficha de "bases abertas": nome aceito, sinônimos e
-//     nomes populares do GBIF e do iNaturalist, e trechos originais das floras que
-//     publicam descrições no GBIF, separados por órgão. Nada é inventado: órgão sem
-//     descrição nas bases aparece como "sem dados".
+//  2. Para as demais espécies, ficha de "bases abertas", consultando em paralelo:
+//       • POWO (Kew) — descrições já separadas por parte do órgão;
+//       • Flora e Funga do Brasil (JBRJ) — descrições em campos controlados,
+//         forma de vida, origem, endemismo, domínios;
+//       • GBIF — nome aceito, sinônimos, nomes populares e descrições de floras
+//         parceiras (da espécie, dos sinônimos e, se faltar, do gênero);
+//       • iNaturalist — nome popular e foto de referência;
+//       • Wikidata — tipo de fruto.
+//     Nada é inventado: órgão sem descrição aparece como "sem dados".
+
 
 
 
@@ -1639,10 +1980,12 @@ const ROTULOS = {
   curiosidades: "Curiosidades botânicas",
 };
 
-// Palavras-chave (pt/en/es) para separar frases por órgão.
+const ORGAOS = ["raiz", "caule", "folha", "flor", "fruto", "semente"];
+
+// Palavras-chave (pt/en/es) para separar frases soltas por órgão.
 const CHAVES = {
-  raiz: /\b(roots?|rooted|taproot|ra[ií]z(es)?|radicular|rizoma|rhizomes?)\b/i,
-  caule: /\b(stems?|trunks?|bark|branch(es|lets)?|twigs?|caules?|troncos?|casca|ramos?|tallos?|corteza|culms?|colmos?)\b/i,
+  raiz: /\b(roots?|rooted|taproot|ra[ií]z(es)?|radicular)\b/i,
+  caule: /\b(stems?|trunks?|bark|branch(es|lets)?|twigs?|caules?|troncos?|casca|ramos?|tallos?|corteza|culms?|colmos?|rhizomes?|rizomas?)\b/i,
   folha: /\b(lea(f|ves)|leaflets?|petioles?|blades?|stipules?|folhas?|fol[ií]olos?|limbo|pec[ií]olo|hojas?|est[ií]pulas?)\b/i,
   flor: /\b(flowers?|inflorescences?|panicles?|racemes?|petals?|sepals?|stamens?|anthers?|ovary|style|stigma|corolla|calyx|flor(es)?|inflorescências?|p[ée]talas?|s[ée]palas?|estames?|ov[áa]rio|corola|c[áa]lice)\b/i,
   fruto: /\b(fruits?|drupes?|berr(y|ies)|capsules?|pods?|legumes?|achenes?|samaras?|frutos?|bagas?|drupas?|c[áa]psulas?|vagens?)\b/i,
@@ -1651,7 +1994,7 @@ const CHAVES = {
   distribuicao: /\b(native|distribut\w*|habitat|occurs?|found in|cultivated|naturali[sz]ed|nativ[ao]|distribui\w*|ocorre|cultivad[ao]|bioma|forests?|florestas?)\b/i,
 };
 
-const IDIOMAS = { eng: "inglês", en: "inglês", por: "português", pt: "português", spa: "espanhol", es: "espanhol", fra: "francês", fr: "francês", deu: "alemão", de: "alemão" };
+const IDIOMAS = { en: "inglês", es: "espanhol", fr: "francês", de: "alemão", it: "italiano", nl: "holandês", la: "latim", pt: "português" };
 
 async function json(url, signal) {
   const r = await fetch(url, { signal });
@@ -1672,12 +2015,12 @@ function frases(t) {
     .filter((s) => s.length > 8);
 }
 
-function cortar(t, n = 420) {
+function cortar(t, n = 600) {
   return t.length > n ? t.slice(0, n).replace(/\s+\S*$/, "") + "…" : t;
 }
 
 // ---------- cache local (7 dias) ----------
-const CACHE = "herbario.fichas.v2.";
+const CACHE = "herbario.fichas.v3.";
 function lerCache(slug) {
   try {
     const c = JSON.parse(localStorage.getItem(CACHE + slug) || "null");
@@ -1691,7 +2034,7 @@ function gravarCache(slug, f) {
   } catch {}
 }
 
-async function carregarFicha(nome, { extra = {}, signal, onParcial, onEtapa } = {}) {
+async function carregarFicha(nome, { extra = {}, signal, onEtapa } = {}) {
   const slug = slugEspecie(nome);
   onEtapa?.("Consultando o acervo verificado…");
   const verificada = await obterFicha(slug);
@@ -1700,10 +2043,18 @@ async function carregarFicha(nome, { extra = {}, signal, onParcial, onEtapa } = 
   const emCache = lerCache(slug);
   if (emCache) return emCache;
 
-  onEtapa?.("Consultando GBIF e iNaturalist…");
-  const f = await montarDeBasesAbertas(nome, extra, signal, onEtapa);
+  onEtapa?.("Consultando POWO (Kew), Flora e Funga do Brasil, GBIF, iNaturalist e Wikidata…");
+  const f = await montarDeBasesAbertas(nome, extra, signal);
   if (f) gravarCache(slug, f);
   return f;
+}
+
+function statusDe(res, n) {
+  if (res.status === "rejected") {
+    const st = res.reason?.status;
+    return st === 404 ? "sem registro" : res.reason?.name === "AbortError" ? "não respondeu a tempo" : "indisponível ou bloqueou o acesso";
+  }
+  return n ? `${n} trecho(s)` : "sem descrição para esta espécie";
 }
 
 async function montarDeBasesAbertas(nome, extra, signal) {
@@ -1713,17 +2064,11 @@ async function montarDeBasesAbertas(nome, extra, signal) {
   try {
     if (!chave) {
       const m = await json(`https://api.gbif.org/v1/species/match?name=${encodeURIComponent(nome)}&kingdom=Plantae`, signal);
-      if (!m.usageKey || m.matchType === "NONE") {
-        const e = new Error("não encontrada");
-        e.code = "nao_reconhecida";
-        throw e;
-      }
+      if (!m.usageKey || m.matchType === "NONE") throw Object.assign(new Error("não encontrada"), { code: "nao_reconhecida" });
       chave = m.acceptedUsageKey || m.usageKey;
     }
     especie = await json(`https://api.gbif.org/v1/species/${chave}`, signal);
-    if (especie.acceptedKey && especie.acceptedKey !== especie.key) {
-      especie = await json(`https://api.gbif.org/v1/species/${especie.acceptedKey}`, signal);
-    }
+    if (especie.acceptedKey && especie.acceptedKey !== especie.key) especie = await json(`https://api.gbif.org/v1/species/${especie.acceptedKey}`, signal);
   } catch (e) {
     if (e?.name === "AbortError") throw Object.assign(new Error("cancelado"), { code: "cancelled" });
     if (e?.code) throw e;
@@ -1732,11 +2077,15 @@ async function montarDeBasesAbertas(nome, extra, signal) {
   const key = especie.key;
   const aceito = texto(especie.canonicalName) || nome;
 
-  const [vern, sins, descs, inat] = await Promise.allSettled([
+  // 2. Todas as fontes em paralelo
+  const [vern, sins, descs, inat, powo, ffb, wd] = await Promise.allSettled([
     json(`https://api.gbif.org/v1/species/${key}/vernacularNames?limit=300`, signal),
     json(`https://api.gbif.org/v1/species/${key}/synonyms?limit=30`, signal),
     json(`https://api.gbif.org/v1/species/${key}/descriptions?limit=60`, signal),
     json(`https://api.inaturalist.org/v1/taxa?q=${encodeURIComponent(aceito)}&rank=species&locale=pt-BR&per_page=5`, signal),
+    consultarPowo(aceito, extra.powo, { signal }),
+    consultarFloraBrasil(aceito, { signal }),
+    consultarWikidata(aceito, { signal }),
   ]);
 
   const referencias = [];
@@ -1749,11 +2098,67 @@ async function montarDeBasesAbertas(nome, extra, signal) {
   };
   const rGbif = ref(`GBIF Secretariat. ${aceito} ${texto(especie.authorship)}. GBIF Backbone Taxonomy.`, `https://www.gbif.org/species/${key}`);
 
-  // Nomes populares em português (GBIF + iNaturalist)
-  const populares = new Set(lista(extra.nome_popular).map((s) => s.toLowerCase()));
-  if (vern.status === "fulfilled")
-    for (const v of lista(vern.value.results)) if (/^(por|pt)/i.test(v.language || "")) populares.add(String(v.vernacularName).toLowerCase());
+  // 3. Trechos de todas as fontes: {orgao, parte, texto, lingua, fonteId, nivel}
+  const trechos = [];
+  const vistos = new Set();
+  const addTrecho = (t) => {
+    const chaveTxt = t.texto.slice(0, 160).toLowerCase();
+    if (vistos.has(chaveTxt)) return;
+    vistos.add(chaveTxt);
+    trechos.push(t);
+  };
 
+  const nPowo = powo.status === "fulfilled" ? powo.value.trechos.length : 0;
+  if (nPowo) for (const t of powo.value.trechos) addTrecho({ ...t, texto: cortar(t.texto), fonteId: ref(t.fonte.citacao, t.fonte.url), nivel: "especie" });
+
+  const nFfb = ffb.status === "fulfilled" ? ffb.value.trechos.length : 0;
+  if (nFfb) for (const t of ffb.value.trechos) addTrecho({ ...t, texto: cortar(t.texto), fonteId: ref(t.fonte.citacao, t.fonte.url), nivel: "especie" });
+
+  // GBIF: descrições da espécie e dos sinônimos (mesma espécie)
+  const chavesSin = sins.status === "fulfilled" ? lista(sins.value.results).map((x) => x.key).filter(Boolean).slice(0, 5) : [];
+  const extrasSin = await Promise.allSettled(chavesSin.map((k) => json(`https://api.gbif.org/v1/species/${k}/descriptions?limit=40`, signal)));
+  const descricoesGbif = [
+    ...(descs.status === "fulfilled" ? lista(descs.value.results) : []),
+    ...extrasSin.flatMap((r) => (r.status === "fulfilled" ? lista(r.value.results) : [])),
+  ];
+  const doGbif = (lst, nivel) => {
+    let n = 0;
+    for (const d of lst) {
+      const txt = limparHtml(d.description);
+      if (txt.length < 20) continue;
+      const fonteId = ref(
+        cortar(texto(d.source) || "Descrição publicada no GBIF", 260) + (d.license ? ` Licença: ${String(d.license).replace(/^https?:\/\//, "")}.` : ""),
+        `https://www.gbif.org/species/${d.sourceTaxonKey || d.taxonKey || key}`
+      );
+      const lingua = codigoLingua(d.language);
+      for (const fr of frases(txt)) {
+        const org = Object.keys(CHAVES).find((o) => CHAVES[o].test(fr));
+        if (!org) continue;
+        const destino = org === "habito" || org === "distribuicao" ? "geral" : org;
+        const parte = org === "habito" ? "Hábito" : org === "distribuicao" ? "Distribuição" : parteDaFrase(org, fr);
+        addTrecho({ orgao: destino, parte, texto: cortar(fr, 400), lingua, fonteId, nivel });
+        n++;
+      }
+    }
+    return n;
+  };
+  const nGbif = doGbif(descricoesGbif, "especie");
+
+  // Gênero: só para órgãos ainda sem nenhuma descrição
+  const faltam = ORGAOS.filter((o) => !trechos.some((t) => t.orgao === o));
+  if (faltam.length && especie.genusKey) {
+    try {
+      const g = await json(`https://api.gbif.org/v1/species/${especie.genusKey}/descriptions?limit=40`, signal);
+      const antes = trechos.length;
+      doGbif(lista(g.results), "genero");
+      const novos = trechos.splice(antes);
+      trechos.push(...novos.filter((t) => faltam.includes(t.orgao)));
+    } catch {}
+  }
+
+  // 4. Nomes populares e foto
+  const populares = new Set(lista(extra.nome_popular).map((s) => s.toLowerCase()));
+  if (vern.status === "fulfilled") for (const v of lista(vern.value.results)) if (/^(por|pt)/i.test(v.language || "")) populares.add(String(v.vernacularName).toLowerCase());
   let foto = null;
   let rInat = null;
   if (inat.status === "fulfilled") {
@@ -1765,131 +2170,97 @@ async function montarDeBasesAbertas(nome, extra, signal) {
       if (p?.medium_url && p.license_code) foto = { url: p.medium_url, atribuicao: texto(p.attribution), fonte: `https://www.inaturalist.org/taxa/${t.id}` };
     }
   }
-
   const sinonimos = sins.status === "fulfilled" ? lista(sins.value.results).map((s) => texto(s.scientificName)).filter(Boolean).slice(0, 12) : [];
 
-  // Descrições: da espécie e dos seus sinônimos (mesma espécie); do gênero só como complemento.
-  const chavesSin = sins.status === "fulfilled" ? lista(sins.value.results).map((x) => x.key).filter(Boolean).slice(0, 5) : [];
-  const extrasSin = await Promise.allSettled(chavesSin.map((k) => json(`https://api.gbif.org/v1/species/${k}/descriptions?limit=40`, signal)));
-  const descricoesEspecie = [
-    ...(descs.status === "fulfilled" ? lista(descs.value.results) : []),
-    ...extrasSin.flatMap((r) => (r.status === "fulfilled" ? lista(r.value.results) : [])),
-  ];
-
-  const porOrgao = { raiz: [], caule: [], folha: [], flor: [], fruto: [], semente: [], habito: [], distribuicao: [] };
-  const vistosTxt = new Set();
-  const distribuir = (lst, nivel) => {
-    for (const d of lst) {
-      const txt = limparHtml(d.description);
-      if (txt.length < 20) continue;
-      const fonte = texto(d.source) || "Descrição publicada no GBIF";
-      const idR = ref(cortar(fonte, 260) + (d.license ? ` Licença: ${String(d.license).replace(/^https?:\/\//, "")}.` : ""), `https://www.gbif.org/species/${d.sourceTaxonKey || d.taxonKey || key}`);
-      const agrupado = {};
-      for (const fr of frases(txt)) {
-        for (const [org, re] of Object.entries(CHAVES)) {
-          if (re.test(fr)) {
-            (agrupado[org] ??= []).push(fr);
-            break;
-          }
-        }
-      }
-      for (const [org, l] of Object.entries(agrupado)) {
-        if (nivel === "genero" && porOrgao[org].some((t) => t.nivel === "especie")) continue;
-        if (porOrgao[org].length >= 4) continue;
-        const t = cortar(l.slice(0, 3).join(" "));
-        if (vistosTxt.has(t)) continue;
-        vistosTxt.add(t);
-        porOrgao[org].push({ texto: t, fonte: idR, lingua: d.language, idioma: IDIOMAS[String(d.language || "").toLowerCase()] || d.language || "", nivel });
-      }
-    }
-  };
-  distribuir(descricoesEspecie, "especie");
-
-  // Gênero: só para órgãos sem nenhuma descrição da espécie.
-  const faltam = ["raiz", "caule", "folha", "flor", "fruto", "semente"].filter((o) => !porOrgao[o].length);
-  if (faltam.length && especie.genusKey) {
-    try {
-      const g = await json(`https://api.gbif.org/v1/species/${especie.genusKey}/descriptions?limit=40`, signal);
-      const antes = Object.fromEntries(Object.entries(porOrgao).map(([k, v]) => [k, v.length]));
-      distribuir(lista(g.results), "genero");
-      for (const o of Object.keys(porOrgao)) if (!faltam.includes(o)) porOrgao[o] = porOrgao[o].slice(0, antes[o]);
-    } catch {}
-  }
-
-  // Tradução para o português (cota diária gratuita; o resto fica no original).
-  let orcamento = 4500;
-  for (const lst of Object.values(porOrgao)) {
-    for (const t of lst) {
-      if (codigoLingua(t.lingua) === "pt" || orcamento <= 0) continue;
-      orcamento -= t.texto.length;
-      const tr = await traduzir(t.texto, t.lingua, { signal });
-      if (tr) {
-        t.original = t.texto;
-        t.texto = tr.texto;
-        t.servico = tr.servico;
-      }
-    }
-  }
-
-  const item = (caractere, valor, fontes, extraItem = {}) => ({ caractere, valor, termos: [], certeza: "media", origem: "literatura", fontes, ...extraItem });
-  const rotuloTrecho = (t, base) =>
-    `${t.nivel === "genero" ? `${base} do gênero ${texto(especie.genus)}` : base}`;
-  const extraTrecho = (t) => ({
-    original: t.original || "",
-    traducao: t.servico || "",
-    idioma: t.idioma,
+  // 5. Itens das seções
+  const item = (t) => ({
+    parte: t.parte,
+    caractere: t.nivel === "genero" ? `${t.parte} — descrição do gênero ${texto(especie.genus)}` : t.parte,
+    valor: t.texto,
+    lingua: t.lingua,
+    idioma: IDIOMAS[t.lingua] || "",
+    termos: [],
     certeza: t.nivel === "genero" ? "baixa" : "media",
+    origem: "literatura",
+    fontes: [t.fonteId],
   });
-  const trechoItens = (org) => porOrgao[org].map((t) => item(rotuloTrecho(t, "Descrição de flora"), t.texto, [t.fonte], extraTrecho(t)));
 
+  const ordemPartes = {};
   const secoes = {};
   const agora = new Date().toISOString();
-  const LIM = "Trechos das floras que publicam descrições no GBIF, traduzidos automaticamente e sem revisão do Herbário. Descrições do gênero aparecem só quando falta a da espécie e podem não valer para ela.";
-  for (const org of ["raiz", "caule", "folha", "flor", "fruto", "semente"]) {
-    const itens = trechoItens(org);
+  const LIM = "Trechos das bases abertas (POWO, Flora e Funga do Brasil, floras do GBIF), sem revisão do Herbário; os textos em outros idiomas são traduzidos automaticamente. Descrições do gênero aparecem só quando falta a da espécie e podem não valer para ela.";
+
+  // Wikidata: tipo de fruto
+  const tiposFrutoWd = wd.status === "fulfilled" ? wd.value.tipos : [];
+  if (tiposFrutoWd.length && wd.value.fonte) {
+    addTrecho({ orgao: "fruto", parte: "Tipo de fruto", texto: tiposFrutoWd.join(", "), lingua: "pt", fonteId: ref(wd.value.fonte.citacao, wd.value.fonte.url), nivel: "especie" });
+  }
+
+  for (const org of ORGAOS) {
+    const doOrgao = trechos.filter((t) => t.orgao === org);
+    // Agrupa por parte mantendo a ordem de aparecimento
+    doOrgao.forEach((t) => (ordemPartes[t.parte] ??= Object.keys(ordemPartes).length));
+    doOrgao.sort((a, b) => ordemPartes[a.parte] - ordemPartes[b.parte]);
+    const itens = doOrgao.slice(0, 16).map(item);
     secoes[org] = {
       status: "fontes_abertas",
       atualizado_em: agora,
       conteudo: itens.length
-        ? { resumo: "", itens, variacao: "", divergencias: [], limitacoes: LIM + (cotaTraducaoEsgotada() ? " A cota diária de tradução acabou: alguns trechos ficaram no idioma original." : "") }
-        : { resumo: "", itens: [], variacao: "", divergencias: [], limitacoes: `Nenhuma descrição de ${ROTULOS[org].toLowerCase()} foi encontrada nas bases abertas consultadas. Esta espécie ainda não tem ficha verificada no Herbário; confira as bases indicadas em Referências.` },
+        ? { resumo: "", itens, variacao: "", divergencias: [], limitacoes: LIM }
+        : { resumo: "", itens: [], variacao: "", divergencias: [], limitacoes: `Nenhuma descrição de ${ROTULOS[org].toLowerCase()} foi encontrada nas bases consultadas. Esta espécie ainda não tem ficha verificada no Herbário.` },
     };
   }
+
+  const fixo = (caractere, valor, fontes, certeza = "alta") => ({ parte: "Nomenclatura", caractere, valor, termos: [], certeza, origem: "literatura", fontes, lingua: "pt" });
   const geralItens = [
-    item("Nome aceito", `${aceito} ${texto(especie.authorship)}`.trim(), [rGbif], { certeza: "alta" }),
-    item("Família", texto(especie.family) || "—", [rGbif], { certeza: "alta" }),
-    item("Status taxonômico no GBIF", especie.taxonomicStatus === "ACCEPTED" ? "aceito" : texto(especie.taxonomicStatus).toLowerCase(), [rGbif], { certeza: "alta" }),
+    fixo("Nome aceito", `${aceito} ${texto(especie.authorship)}`.trim(), [rGbif]),
+    fixo("Família", texto(especie.family) || "—", [rGbif]),
+    fixo("Status taxonômico no GBIF", especie.taxonomicStatus === "ACCEPTED" ? "aceito" : texto(especie.taxonomicStatus).toLowerCase(), [rGbif]),
   ];
-  if (populares.size) geralItens.push(item("Nomes populares", [...populares].slice(0, 8).join(", "), [rInat, rGbif].filter(Boolean), { certeza: "media" }));
-  for (const t of porOrgao.habito.slice(0, 2)) geralItens.push(item(rotuloTrecho(t, "Hábito — descrição de flora"), t.texto, [t.fonte], extraTrecho(t)));
-  for (const t of porOrgao.distribuicao.slice(0, 3)) geralItens.push(item(rotuloTrecho(t, "Distribuição e habitat — descrição de flora"), t.texto, [t.fonte], extraTrecho(t)));
+  if (populares.size) geralItens.push({ ...fixo("Nomes populares", [...populares].slice(0, 8).join(", "), [rInat, rGbif].filter(Boolean), "media") });
+  if (ffb.status === "fulfilled") {
+    const rF = ref(ffb.value.fonte.citacao, ffb.value.fonte.url);
+    for (const [k, v] of Object.entries(ffb.value.campos || {})) {
+      if (k === "Nomes populares") continue;
+      geralItens.push({ ...fixo(k, v, [rF], "alta"), parte: "No Brasil (Flora e Funga do Brasil)" });
+    }
+  }
+  for (const t of trechos.filter((t) => t.orgao === "geral").slice(0, 10)) geralItens.push(item(t));
   secoes.geral = {
     status: "fontes_abertas",
     atualizado_em: agora,
-    conteudo: { resumo: "", itens: geralItens, variacao: "", divergencias: [], limitacoes: "Origem, biomas e importância ecológica e econômica entram quando a espécie receber ficha verificada." },
+    conteudo: { resumo: "", itens: geralItens, variacao: "", divergencias: [], limitacoes: "Importância ecológica e econômica detalhadas entram quando a espécie receber ficha verificada." },
   };
   secoes.curiosidades = { status: "fontes_abertas", atualizado_em: agora, conteudo: { itens: [], sem_curiosidades: true, limitacoes: "" } };
 
-  // Marca em que seções cada referência foi usada
-  for (const s of SECOES) for (const it of lista(secoes[s]?.conteudo?.itens)) for (const id of lista(it.fontes)) {
-    const r = referencias.find((x) => x.id === id);
-    if (r && !r.secoes.includes(s)) r.secoes.push(s);
-  }
+  for (const s of SECOES)
+    for (const it of lista(secoes[s]?.conteudo?.itens))
+      for (const id of lista(it.fontes)) {
+        const r = referencias.find((x) => x.id === id);
+        if (r && !r.secoes.includes(s)) r.secoes.push(s);
+      }
   const usadas = new Set(SECOES.flatMap((s) => lista(secoes[s]?.conteudo?.itens).flatMap((i) => i.fontes)));
 
+  // 6. Quadro-resumo: termos reconhecidos (+ tipo de fruto do Wikidata)
   const tipos = {};
-  for (const org of ["raiz", "caule", "folha", "flor", "fruto", "semente"]) {
-    const doEsp = porOrgao[org].filter((t) => t.nivel === "especie");
-    const base = doEsp.length ? doEsp : porOrgao[org];
-    const txt = base.map((t) => `${t.texto} ${t.original || ""}`).join(" ");
-    const achados = reconhecerTipos(org, txt);
-    tipos[org] = {
-      valor: achados.map((a) => a.rotulo).join(", "),
-      termos: achados,
-      nivel: doEsp.length ? "especie" : base.length ? "genero" : "",
-      origem: "termos reconhecidos nas descrições",
-    };
+  for (const org of ORGAOS) {
+    const doEsp = trechos.filter((t) => t.orgao === org && t.nivel === "especie");
+    const base = doEsp.length ? doEsp : trechos.filter((t) => t.orgao === org);
+    const achados = reconhecerTipos(org, base.map((t) => `${t.parte}: ${t.texto}`).join(" "));
+    let valor = achados.map((a) => a.rotulo).join(", ");
+    if (org === "fruto" && tiposFrutoWd.length && !achados.some((a) => a.rotulo !== "carnoso" && a.rotulo !== "seco")) {
+      valor = [tiposFrutoWd.join(", "), valor].filter(Boolean).join(", ");
+    }
+    tipos[org] = { valor, termos: achados, nivel: doEsp.length ? "especie" : base.length ? "genero" : "" };
   }
+
+  const diagnostico = [
+    { fonte: "POWO (Kew)", status: statusDe(powo, nPowo) },
+    { fonte: "Flora e Funga do Brasil", status: statusDe(ffb, nFfb) },
+    { fonte: "GBIF", status: statusDe(descs, nGbif) },
+    { fonte: "iNaturalist", status: inat.status === "fulfilled" ? (rInat ? "ok" : "sem registro") : "indisponível" },
+    { fonte: "Wikidata", status: wd.status === "fulfilled" ? (tiposFrutoWd.length ? `tipo de fruto: ${tiposFrutoWd.join(", ")}` : "sem tipo de fruto") : statusDe(wd, 0) },
+  ];
 
   return {
     slug: slugEspecie(aceito),
@@ -1908,6 +2279,7 @@ async function montarDeBasesAbertas(nome, extra, signal) {
       nota_taxonomica: "",
       status: "fontes_abertas",
       foto,
+      diagnostico,
       referencias: referencias.filter((r) => usadas.has(r.id)),
     },
     secoes,
@@ -1917,13 +2289,13 @@ async function montarDeBasesAbertas(nome, extra, signal) {
 /** Quadro-resumo de uma ficha verificada: usa o campo "tipos" do JSON, se houver. */
 function tiposDaFicha(f) {
   const out = {};
-  for (const org of ["raiz", "caule", "folha", "flor", "fruto", "semente"]) {
+  for (const org of ORGAOS) {
     const t = f.cabecalho?.tipos?.[org];
-    if (t) out[org] = { valor: t, termos: [], nivel: "especie", origem: "ficha verificada" };
+    if (t) out[org] = { valor: t, termos: [], nivel: "especie" };
     else {
       const itens = lista(f.secoes?.[org]?.conteudo?.itens);
       const achados = reconhecerTipos(org, itens.map((i) => `${i.caractere}: ${i.valor}`).join(" "));
-      out[org] = { valor: achados.map((a) => a.rotulo).join(", "), termos: achados, nivel: "especie", origem: "ficha verificada" };
+      out[org] = { valor: achados.map((a) => a.rotulo).join(", "), termos: achados, nivel: "especie" };
     }
   }
   return out;
@@ -1938,7 +2310,9 @@ const { h, lista, texto, formatarData } = M_util;
 const { ROTULOS } = M_ficha;
 const { SECOES } = M_acervo;
 const { BIBLIOGRAFIA_BASE, basesParaEspecie } = M_fontes;
+const { traduzir, traducaoEmCache, cotaTraducaoEsgotada } = M_traduzir;
 // Renderização da ficha botânica e dos blocos de resultado.
+
 
 
 
@@ -2034,6 +2408,42 @@ function blocoObservado(obs) {
   );
 }
 
+function linhaCaractere(it, ctx, parteDoGrupo) {
+  const precisaTraduzir = it.lingua && it.lingua !== "pt" && !it.original;
+  const cache = precisaTraduzir ? traducaoEmCache(it.valor, it.lingua) : null;
+  const valorEl = h("span", { class: "valor" }, cache ? cache.texto : it.valor);
+  const originalEl = h("details", { class: "original", hidden: !(it.original || cache) },
+    h("summary", {}, `Tradução automática${(it.traducao || cache?.servico) ? " (" + (it.traducao || cache.servico) + ")" : ""} · ver texto original${it.idioma ? " em " + it.idioma : ""}`),
+    h("span", { lang: it.lingua || "en" }, it.original || it.valor));
+  if (precisaTraduzir && !cache) {
+    valorEl.classList.add("traduzindo");
+    traduzir(it.valor, it.lingua).then((tr) => {
+      valorEl.classList.remove("traduzindo");
+      if (tr) {
+        valorEl.textContent = tr.texto;
+        originalEl.hidden = false;
+        originalEl.querySelector("summary").textContent = `Tradução automática (${tr.servico}) · ver texto original${it.idioma ? " em " + it.idioma : ""}`;
+      } else {
+        valorEl.after(h("span", { class: "sem-traducao" }, cotaTraducaoEsgotada() ? "Cota diária de tradução esgotada: texto no idioma original." : `Texto original${it.idioma ? " em " + it.idioma : ""}.`));
+      }
+    });
+  }
+  const rotulo = parteDoGrupo && it.caractere === parteDoGrupo ? "" : it.caractere;
+  return h(
+    "div",
+    { class: "caractere" + (rotulo ? "" : " sem-rotulo") },
+    rotulo ? h("dt", {}, rotulo) : null,
+    h(
+      "dd",
+      {},
+      valorEl,
+      originalEl,
+      h("span", { class: "meta" }, origemBadge(it, ctx.refsMap), it.certeza ? h("span", { class: `certeza certeza-${it.certeza}` }, ROTULO_CERTEZA[it.certeza]) : null),
+      termos(it.termos)
+    )
+  );
+}
+
 function secaoOrgao(secao, dados, ctx) {
   const c = dados?.conteudo || {};
   const corpo = h("div", { class: "secao-corpo" });
@@ -2047,34 +2457,18 @@ function secaoOrgao(secao, dados, ctx) {
 
   const itens = lista(c.itens);
   if (itens.length) {
-    corpo.append(
-      h(
-        "dl",
-        { class: "caracteres" },
-        itens.map((it) =>
-          h(
-            "div",
-            { class: "caractere" },
-            h("dt", {}, it.caractere || "—"),
-            h(
-              "dd",
-              {},
-              h("span", { class: "valor" }, it.valor),
-              it.original
-                ? h("details", { class: "original" }, h("summary", {}, `Tradução automática (${it.traducao}) · ver texto original${it.idioma ? " em " + it.idioma : ""}`), h("span", { lang: "en" }, it.original))
-                : null,
-              h(
-                "span",
-                { class: "meta" },
-                origemBadge(it, ctx.refsMap),
-                it.certeza ? h("span", { class: `certeza certeza-${it.certeza}` }, ROTULO_CERTEZA[it.certeza]) : null
-              ),
-              termos(it.termos)
-            )
-          )
-        )
-      )
-    );
+    // Agrupa os itens por parte do órgão (Lâmina, Margem, Cálice, Corola…)
+    const grupos = [];
+    for (const it of itens) {
+      const g = grupos.find((x) => x.parte === (it.parte || ""));
+      if (g) g.itens.push(it);
+      else grupos.push({ parte: it.parte || "", itens: [it] });
+    }
+    const comTitulos = grupos.length > 1 || (grupos[0] && grupos[0].parte && grupos[0].itens.length > 1);
+    for (const g of grupos) {
+      if (comTitulos && g.parte) corpo.append(h("h4", { class: "parte-titulo" }, g.parte));
+      corpo.append(h("dl", { class: "caracteres" }, g.itens.map((it) => linhaCaractere(it, ctx, comTitulos ? g.parte : ""))));
+    }
   } else if (!c.resumo) {
     corpo.append(h("p", { class: "vazio" }, "Sem informações para esta seção nas fontes consultadas."));
   }
@@ -2181,6 +2575,12 @@ function secaoReferencias(ctx) {
         "Nenhuma fonte foi encontrada para esta ficha. Use as bases abaixo para consultar a espécie."
       )
     );
+  }
+
+  const diag = lista(cabecalho?.diagnostico);
+  if (diag.length) {
+    corpo.append(h("h4", {}, "Bases consultadas nesta ficha"));
+    corpo.append(h("ul", { class: "lista-diag" }, diag.map((d) => h("li", {}, h("strong", {}, d.fonte), ": " + d.status))));
   }
 
   corpo.append(h("h4", {}, "Bases para conferência"));
