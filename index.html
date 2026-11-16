@@ -1,0 +1,2555 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Herbário — identificação e morfologia vegetal</title>
+<meta name="description" content="Identifique plantas por fotografia e consulte fichas de morfologia vegetal: raiz, caule, folha, flor, fruto e semente.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* HERBÁRIO — identidade visual
+   Paleta: verde-floresta, verde-oliva, bege, branco e tons terrosos. */
+
+:root {
+  --floresta: #1f3a2b;
+  --floresta-2: #2d4f3b;
+  --floresta-3: #3f6a50;
+  --oliva: #6b7a3a;
+  --oliva-claro: #a8b07a;
+  --oliva-fundo: #eef0e0;
+  --bege: #f2ecdf;
+  --papel: #fbf8f1;
+  --branco: #ffffff;
+  --terra: #8a5a3b;
+  --terra-fundo: #f6ebe1;
+  --ambar: #a7741c;
+  --ambar-fundo: #fbf2df;
+  --tinta: #1c221e;
+  --tinta-2: #48504a;
+  --cinza: #6f746d;
+  --linha: #ddd5c3;
+  --linha-2: #e9e3d4;
+  --erro: #a23b2a;
+  --erro-fundo: #fbebe7;
+
+  --serif: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --raio: 14px;
+  --raio-p: 9px;
+  --sombra: 0 1px 2px rgba(31, 58, 43, 0.06), 0 6px 24px -12px rgba(31, 58, 43, 0.18);
+  --larg: 1080px;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--tinta);
+  background: var(--papel);
+  background-image: radial-gradient(circle at 1px 1px, rgba(31, 58, 43, 0.045) 1px, transparent 0);
+  background-size: 22px 22px;
+}
+img { max-width: 100%; display: block; }
+a { color: var(--floresta-3); }
+button { font: inherit; cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: 0.5; }
+:focus-visible { outline: 2px solid var(--oliva); outline-offset: 2px; }
+[hidden] { display: none !important; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.pular { position: absolute; left: -999px; top: 8px; background: var(--floresta); color: #fff; padding: 8px 12px; border-radius: 8px; z-index: 50; }
+.pular:focus { left: 8px; }
+
+h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; margin: 0 0 0.5em; color: var(--floresta); }
+h1 { font-size: clamp(1.9rem, 4.5vw, 3rem); font-weight: 400; }
+h2 { font-size: 1.45rem; }
+h3 { font-size: 1.15rem; }
+p { margin: 0 0 0.8em; }
+
+/* ---------- Topo ---------- */
+.topo { position: sticky; top: 0; z-index: 20; background: rgba(251, 248, 241, 0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--linha); }
+.topo-in { max-width: var(--larg); margin: 0 auto; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.marca { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--floresta); }
+.marca-simbolo { width: 34px; height: 34px; }
+.marca-simbolo rect { fill: var(--floresta); }
+.marca-simbolo path { fill: none; stroke: var(--bege); stroke-width: 2; stroke-linecap: round; }
+.marca-texto { font-family: var(--serif); font-size: 1.25rem; letter-spacing: 0.22em; font-weight: 600; }
+.menu { display: flex; gap: 4px; }
+.menu a { text-decoration: none; color: var(--tinta-2); font-size: 0.92rem; padding: 7px 12px; border-radius: 999px; }
+.menu a:hover { background: var(--bege); }
+.menu a.ativo { background: var(--floresta); color: var(--bege); }
+
+main { max-width: var(--larg); margin: 0 auto; padding: 24px 20px 64px; }
+
+/* ---------- Hero ---------- */
+.hero { padding: 28px 0 22px; max-width: 760px; }
+.sobretitulo { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--oliva); margin-bottom: 12px; }
+.hero-texto { font-size: 1.06rem; color: var(--tinta-2); max-width: 640px; }
+
+/* ---------- Cartões ---------- */
+.cartao { background: var(--branco); border: 1px solid var(--linha); border-radius: var(--raio); padding: 22px; box-shadow: var(--sombra); margin-bottom: 20px; }
+.cartao-cab { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.contador { font-family: var(--mono); font-size: 0.8rem; color: var(--cinza); }
+
+/* ---------- Zona de envio ---------- */
+.zona { display: block; border: 1.5px dashed var(--oliva-claro); border-radius: var(--raio); background: var(--oliva-fundo); padding: 28px 16px; text-align: center; color: var(--tinta-2); cursor: pointer; transition: background 0.15s, border-color 0.15s; }
+.zona svg { width: 44px; height: 44px; fill: none; stroke: var(--oliva); stroke-width: 1.6; stroke-linejoin: round; margin: 0 auto 8px; }
+.zona p { margin: 0; }
+.zona-sub { font-size: 0.82rem; color: var(--cinza); margin-top: 4px !important; }
+.zona:hover, .zona.arrastando { background: #e5e9d1; border-color: var(--oliva); }
+.zona.cheia { opacity: 0.55; cursor: default; }
+.zona, .acoes-fotos label, .previa .ic { position: relative; }
+/* Campo de arquivo invisível, mas presente (não usar display:none). */
+/* O campo de arquivo transparente COBRE o botão inteiro: o toque cai direto nele. */
+.input-oculto { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; opacity: 0; cursor: pointer; z-index: 2; font-size: 16px; -webkit-appearance: none; appearance: none; }
+.zona, .acoes-fotos label, .previa label.ic { overflow: hidden; }
+label.btn { cursor: pointer; user-select: none; -webkit-user-select: none; }
+label.btn:focus-within { outline: 2px solid var(--oliva); outline-offset: 2px; }
+label.btn.desativado, .zona.cheia { opacity: 0.5; pointer-events: none; }
+label.ic { display: grid; place-items: center; cursor: pointer; }
+.msg-ok { background: var(--oliva-fundo); color: var(--floresta); border-radius: var(--raio-p); padding: 9px 12px; font-size: 0.9rem; margin: 6px 0; }
+
+.acoes-fotos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+
+/* ---------- Botões ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 999px; padding: 11px 18px; border: 1px solid transparent; font-weight: 500; font-size: 0.95rem; text-decoration: none; transition: background 0.15s, transform 0.05s; }
+.btn:active:not(:disabled) { transform: translateY(1px); }
+.btn svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.btn-primario { background: var(--floresta); color: var(--bege); }
+.btn-primario:hover:not(:disabled) { background: var(--floresta-2); }
+.btn-secundario { background: var(--branco); color: var(--floresta); border-color: var(--linha); }
+.btn-secundario:hover:not(:disabled) { background: var(--bege); }
+.btn-grande { width: 100%; padding: 15px; font-size: 1.05rem; margin-top: 6px; }
+.btn-link { background: none; border: 0; color: var(--floresta-3); text-decoration: underline; text-underline-offset: 3px; padding: 0; font-size: 0.88rem; }
+
+/* ---------- Prévias ---------- */
+.previas { list-style: none; padding: 0; margin: 4px 0 8px; display: grid; grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); gap: 10px; }
+.previa { position: relative; border: 1px solid var(--linha); border-radius: var(--raio-p); overflow: hidden; background: var(--bege); }
+.previa img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+.previa-n { position: absolute; top: 6px; left: 6px; background: rgba(31, 58, 43, 0.85); color: #fff; font-family: var(--mono); font-size: 0.72rem; border-radius: 999px; width: 22px; height: 22px; display: grid; place-items: center; }
+.previa-acoes { position: absolute; top: 6px; right: 6px; display: flex; gap: 4px; }
+.previa .ic { width: 30px; height: 30px; border-radius: 999px; border: 0; background: rgba(255, 255, 255, 0.93); color: var(--tinta); font-size: 1rem; line-height: 1; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); }
+.previa .ic:hover { background: #fff; color: var(--erro); }
+.previa select { width: 100%; border: 0; border-top: 1px solid var(--linha); background: var(--branco); padding: 7px 8px; font: inherit; font-size: 0.82rem; color: var(--tinta-2); }
+.dica-orgao { font-size: 0.84rem; color: var(--cinza); margin: 0 0 6px; }
+
+.mensagens .msg-erro, .msg-erro { background: var(--erro-fundo); color: var(--erro); border-radius: var(--raio-p); padding: 9px 12px; font-size: 0.9rem; margin: 6px 0; }
+.aviso-ia { background: var(--ambar-fundo); color: #6d4b10; border-radius: var(--raio-p); padding: 9px 12px; font-size: 0.88rem; margin: 10px 0 0; }
+.privacidade { font-size: 0.8rem; color: var(--cinza); text-align: center; margin: 10px 0 0; }
+
+/* ---------- Busca ---------- */
+.form-busca { display: flex; gap: 8px; }
+.form-busca input, .filtros input, .filtros select { flex: 1; min-width: 0; font: inherit; padding: 11px 16px; border: 1px solid var(--linha); border-radius: 999px; background: var(--papel); color: var(--tinta); }
+.form-busca input:focus, .filtros input:focus { outline: 2px solid var(--oliva-claro); border-color: var(--oliva); }
+.resultados-busca:not(:empty) { margin-top: 14px; }
+.rotulo-lista { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--oliva); margin: 10px 0 4px; }
+.lista-simples { list-style: none; padding: 0; margin: 0; }
+.lista-simples li { border-bottom: 1px solid var(--linha-2); }
+.lista-simples a { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; padding: 10px 4px; text-decoration: none; color: var(--tinta); }
+.lista-simples a:hover { background: var(--papel); }
+.lista-simples .sub { color: var(--cinza); font-size: 0.86rem; }
+.lista-simples .obs { flex-basis: 100%; color: var(--terra); font-size: 0.83rem; }
+.lista-simples .selo { margin-left: auto; }
+
+/* ---------- Recursos ---------- */
+.recursos { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 8px 0 24px; }
+.recursos article { padding: 18px; border-top: 2px solid var(--floresta); background: rgba(255, 255, 255, 0.6); border-radius: 0 0 var(--raio-p) var(--raio-p); }
+.recursos h3 { font-size: 1.05rem; margin-bottom: 6px; }
+.recursos p { font-size: 0.9rem; color: var(--tinta-2); margin: 0; }
+.rec-n { font-family: var(--mono); font-size: 0.75rem; color: var(--oliva); }
+
+/* ---------- Processando ---------- */
+.processando { max-width: 520px; margin: 40px auto; text-align: center; }
+.lupa svg { width: 92px; height: 92px; margin: 0 auto 10px; }
+.p-folha { fill: var(--oliva-fundo); stroke: var(--floresta); stroke-width: 2; }
+.p-nervura { fill: none; stroke: var(--floresta); stroke-width: 1.6; stroke-linecap: round; stroke-dasharray: 80; animation: desenhar 2.2s ease-in-out infinite; }
+@keyframes desenhar { 0% { stroke-dashoffset: 80; } 60%, 100% { stroke-dashoffset: 0; } }
+.etapas { list-style: none; padding: 0; margin: 18px 0; text-align: left; display: grid; gap: 8px; }
+.etapas li { padding: 10px 14px 10px 40px; border-radius: var(--raio-p); background: var(--branco); border: 1px solid var(--linha); position: relative; color: var(--cinza); font-size: 0.93rem; }
+.etapas li::before { content: ""; position: absolute; left: 14px; top: 50%; width: 14px; height: 14px; margin-top: -7px; border-radius: 50%; border: 1.5px solid var(--linha); }
+.etapas li.atual { color: var(--floresta); border-color: var(--oliva-claro); }
+.etapas li.atual::before { border-color: var(--oliva); border-top-color: transparent; animation: girar 0.9s linear infinite; }
+.etapas li.feita { color: var(--floresta); }
+.etapas li.feita::before { background: var(--floresta); border-color: var(--floresta); }
+.proc-msg { color: var(--tinta-2); min-height: 1.5em; }
+@keyframes girar { to { transform: rotate(360deg); } }
+.spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid var(--linha); border-top-color: var(--oliva); border-radius: 50%; animation: girar 0.8s linear infinite; vertical-align: middle; }
+.spinner.pequeno { width: 14px; height: 14px; margin-right: 8px; }
+.carregando-secao, .progresso-ficha { color: var(--cinza); font-size: 0.92rem; display: flex; align-items: center; gap: 4px; padding: 6px 0; }
+.progresso-ficha { background: var(--branco); border: 1px solid var(--linha); border-radius: 999px; padding: 9px 16px; margin: 0 0 14px; gap: 6px; }
+.progresso-ficha .btn-link { margin-left: auto; }
+
+/* ---------- Resultado da identificação ---------- */
+.voltar { margin-bottom: 14px; font-size: 0.92rem; }
+.voltar a { text-decoration: none; }
+.identificacao { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 22px; background: var(--branco); border: 1px solid var(--linha); border-radius: var(--raio); padding: 20px; box-shadow: var(--sombra); margin-bottom: 22px; }
+.galeria { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; align-content: start; }
+.galeria figure { margin: 0; position: relative; border-radius: var(--raio-p); overflow: hidden; background: var(--bege); }
+.galeria figure.principal { grid-column: 1 / -1; }
+.galeria img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+.galeria figure.principal img { aspect-ratio: 4 / 3; }
+.galeria figcaption { position: absolute; bottom: 4px; left: 4px; font-family: var(--mono); font-size: 0.65rem; background: rgba(255, 255, 255, 0.9); padding: 1px 6px; border-radius: 999px; }
+.nivel { display: inline-block; font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 10px; border-radius: 999px; }
+.nivel-alta { background: var(--floresta); color: var(--bege); }
+.nivel-media { background: var(--ambar-fundo); color: #6d4b10; }
+.nivel-baixa, .nivel-inconclusiva { background: var(--erro-fundo); color: var(--erro); }
+.id-popular { font-family: var(--serif); font-size: 1.1rem; color: var(--terra); margin: 10px 0 0; text-transform: capitalize; }
+.id-nome { font-size: 1.9rem; font-weight: 400; margin: 2px 0 2px; }
+.id-familia { font-family: var(--mono); font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--oliva); }
+.status-id { font-weight: 500; font-size: 0.95rem; padding: 8px 12px; border-radius: var(--raio-p); }
+.status-id.ok { background: var(--oliva-fundo); color: var(--floresta); }
+.status-id.aviso { background: var(--ambar-fundo); color: #6d4b10; }
+.status-id.erro { background: var(--erro-fundo); color: var(--erro); }
+.justificativa { color: var(--tinta-2); font-size: 0.94rem; }
+.candidatas { grid-column: 1 / -1; border-top: 1px solid var(--linha-2); padding-top: 16px; }
+.candidata { border: 1px solid var(--linha); border-radius: var(--raio-p); padding: 14px; margin-bottom: 10px; background: var(--papel); }
+.candidata.primeira { border-color: var(--oliva-claro); }
+.cand-topo { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; margin-bottom: 8px; }
+.cand-n { width: 28px; height: 28px; border-radius: 50%; background: var(--floresta); color: var(--bege); display: grid; place-items: center; font-family: var(--mono); font-size: 0.85rem; }
+.cand-nome { margin: 0; font-size: 1.08rem; }
+.cand-sub { margin: 0; color: var(--cinza); font-size: 0.86rem; }
+.medidor { position: relative; width: 104px; height: 24px; background: var(--linha-2); border-radius: 999px; overflow: hidden; }
+.medidor span { position: absolute; inset: 0 auto 0 0; background: var(--oliva); border-radius: 999px; }
+.medidor b { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--mono); font-size: 0.76rem; font-weight: 500; color: var(--tinta); mix-blend-mode: normal; text-shadow: 0 0 3px #fff; }
+.cand-lista { font-size: 0.89rem; margin-bottom: 8px; }
+.cand-lista strong { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.cand-lista ul { margin: 4px 0 0; padding-left: 18px; }
+.a-favor strong { color: var(--floresta-3); }
+.contra strong { color: var(--terra); }
+.candidata .btn { margin-top: 4px; }
+
+/* ---------- Ficha ---------- */
+.ficha { margin-bottom: 30px; }
+.etiqueta { background: var(--bege); border: 1px solid var(--linha); border-radius: var(--raio); padding: 22px 24px; position: relative; overflow: hidden; }
+.etiqueta::after { content: ""; position: absolute; right: -40px; bottom: -40px; width: 180px; height: 180px; border: 1px solid rgba(107, 122, 58, 0.25); border-radius: 50%; }
+.etiqueta-topo { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; border-bottom: 1px solid var(--linha); padding-bottom: 10px; margin-bottom: 12px; }
+.etiqueta-marca { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--floresta); }
+.etiqueta-popular { font-family: var(--serif); color: var(--terra); font-size: 1.1rem; margin: 0; text-transform: capitalize; }
+.etiqueta-nome { font-size: clamp(1.6rem, 3.6vw, 2.3rem); font-weight: 400; margin: 2px 0 12px; }
+.autoria { font-style: normal; color: var(--tinta-2); font-size: 0.72em; }
+.etiqueta-dados { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 8px 22px; margin: 0; position: relative; z-index: 1; }
+.etiqueta-dados div { border-top: 1px dotted var(--oliva-claro); padding-top: 6px; }
+.etiqueta-dados dt { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--oliva); }
+.etiqueta-dados dd { margin: 2px 0 0; font-size: 0.95rem; }
+.etiqueta-nota { font-size: 0.86rem; color: var(--tinta-2); margin: 12px 0 0; position: relative; z-index: 1; }
+
+.selo { display: inline-block; font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+.selo-verificada { background: var(--floresta); color: var(--bege); }
+.selo-ia { background: var(--ambar-fundo); color: #6d4b10; border: 1px solid #ecd9ae; }
+
+.abas { display: flex; gap: 6px; overflow-x: auto; padding: 14px 2px 10px; scrollbar-width: thin; position: sticky; top: 55px; background: var(--papel); z-index: 5; }
+.aba { flex: none; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--linha); background: var(--branco); color: var(--tinta-2); border-radius: 999px; padding: 7px 13px; font-size: 0.88rem; }
+.aba:hover { border-color: var(--oliva-claro); }
+.aba.ativa { background: var(--floresta); border-color: var(--floresta); color: var(--bege); }
+.aba.pendente { opacity: 0.7; }
+.aba-tudo { margin-left: auto; font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.04em; }
+.icone { display: inline-flex; width: 17px; height: 17px; }
+.icone svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+.painel { background: var(--branco); border: 1px solid var(--linha); border-radius: var(--raio); padding: 20px 22px; margin-bottom: 14px; }
+.secao-titulo { display: flex; align-items: center; gap: 10px; font-size: 1.35rem; border-bottom: 1px solid var(--linha-2); padding-bottom: 10px; margin-bottom: 14px; }
+.secao-titulo .icone { width: 24px; height: 24px; color: var(--oliva); }
+.resumo { font-size: 1.02rem; color: var(--tinta); }
+
+.caracteres { margin: 6px 0 0; }
+.caractere { display: grid; grid-template-columns: minmax(130px, 210px) 1fr; gap: 6px 18px; padding: 11px 0; border-top: 1px solid var(--linha-2); }
+.caractere dt { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--floresta-3); padding-top: 3px; }
+.caractere dd { margin: 0; }
+.valor { display: block; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
+.origem, .certeza { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.04em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; white-space: nowrap; }
+.origem-foto { background: #e3eef6; color: #27506d; }
+.origem-lit { background: var(--oliva-fundo); color: var(--floresta); }
+.origem-lit .ref-link { color: inherit; font-weight: 600; text-decoration: none; margin-left: 2px; }
+.origem-ia { background: var(--ambar-fundo); color: #6d4b10; }
+.certeza { background: var(--linha-2); color: var(--tinta-2); }
+.certeza-baixa { background: var(--erro-fundo); color: var(--erro); }
+
+.termos { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; }
+.termo { font-size: 0.82rem; }
+.termo summary { list-style: none; cursor: pointer; display: inline-block; padding: 2px 9px; border-radius: 999px; border: 1px dashed var(--oliva-claro); color: var(--floresta-3); }
+.termo summary::-webkit-details-marker { display: none; }
+.termo[open] { flex-basis: 100%; }
+.termo[open] summary { background: var(--oliva-fundo); border-style: solid; }
+.termo-def { display: block; padding: 6px 10px; color: var(--tinta-2); border-left: 2px solid var(--oliva-claro); margin: 5px 0 0 6px; }
+
+.observado { background: #eef4f8; border: 1px solid #cfe0eb; border-radius: var(--raio-p); padding: 10px 14px; margin-bottom: 14px; }
+.observado-tit { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: #27506d; }
+.observado ul { margin: 6px 0 0; padding-left: 18px; font-size: 0.93rem; }
+.ponto-foto { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #3f7fa8; }
+
+.nota { border-radius: var(--raio-p); padding: 10px 14px; margin: 12px 0 0; font-size: 0.9rem; }
+.nota strong { display: block; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 3px; }
+.nota p { margin: 0; }
+.nota ul { margin: 0; padding-left: 18px; }
+.nota-variacao { background: var(--papel); border: 1px solid var(--linha-2); }
+.nota-divergencia { background: var(--terra-fundo); color: #5d3b25; }
+.nota-limite { background: var(--ambar-fundo); color: #6d4b10; }
+.nota-dica { background: var(--oliva-fundo); color: var(--floresta); }
+.aviso-candidata { margin: 0 0 14px; font-weight: 500; }
+.vazio { color: var(--cinza); font-style: italic; }
+.secao-rodape { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 16px; padding-top: 10px; border-top: 1px solid var(--linha-2); font-size: 0.8rem; color: var(--cinza); }
+
+.curiosidades { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.curiosidade { background: var(--papel); border: 1px solid var(--linha-2); border-radius: var(--raio-p); padding: 14px; }
+.curiosidade h4 { font-size: 1.02rem; margin: 6px 0; }
+.curiosidade p { font-size: 0.92rem; color: var(--tinta-2); }
+.categoria { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--terra); }
+
+.referencias h4 { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--oliva); margin: 20px 0 8px; }
+.referencias h4:first-child { margin-top: 0; }
+.lista-refs, .lista-biblio, .lista-bases { padding-left: 22px; margin: 0; font-size: 0.92rem; }
+.lista-refs li, .lista-biblio li, .lista-bases li { margin-bottom: 8px; }
+.lista-refs li:target { background: var(--oliva-fundo); }
+.consultado, .usado-em, .uso { color: var(--cinza); font-size: 0.86rem; }
+.explica { font-size: 0.88rem; color: var(--tinta-2); }
+
+/* ---------- Acervo ---------- */
+.cabecalho-pagina { padding: 18px 0 10px; max-width: 760px; }
+.cabecalho-pagina p { color: var(--tinta-2); }
+.filtros { display: flex; gap: 10px; margin: 6px 0 18px; }
+.filtros select { flex: 0 0 170px; }
+.grade-acervo { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+.cartao-especie { background: var(--branco); border: 1px solid var(--linha); border-radius: var(--raio); padding: 16px; text-decoration: none; color: var(--tinta); transition: border-color 0.15s, transform 0.15s; display: block; }
+.cartao-especie:hover { border-color: var(--oliva); transform: translateY(-2px); }
+.ce-popular { margin: 10px 0 0; font-family: var(--serif); color: var(--terra); text-transform: capitalize; }
+.ce-nome { font-family: var(--serif); font-size: 1.18rem; margin: 0; color: var(--floresta); }
+.ce-familia { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--oliva); margin: 4px 0 0; }
+.ce-data { font-size: 0.78rem; color: var(--cinza); margin: 8px 0 0; }
+
+/* ---------- Texto longo ---------- */
+.texto-longo { background: var(--branco); border: 1px solid var(--linha); border-radius: var(--raio); padding: 24px 26px; max-width: 820px; }
+.texto-longo h2 { font-size: 1.25rem; margin-top: 1.4em; }
+.texto-longo h2:first-child { margin-top: 0; }
+.texto-longo ul { padding-left: 20px; }
+.texto-longo li { margin-bottom: 6px; }
+
+/* ---------- Câmera ---------- */
+.modal { position: fixed; inset: 0; background: rgba(15, 25, 19, 0.88); z-index: 40; display: grid; place-items: center; padding: 16px; }
+.modal-caixa.camera { width: min(720px, 100%); }
+.camera video { width: 100%; max-height: 72vh; border-radius: var(--raio); background: #000; object-fit: cover; }
+.camera-acoes { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-top: 14px; }
+.btn-disparo { width: 70px; height: 70px; border-radius: 50%; border: 4px solid var(--bege); background: rgba(255, 255, 255, 0.25); }
+.btn-disparo:active { background: var(--bege); }
+.cam-cont { justify-self: end; color: var(--bege); font-family: var(--mono); }
+
+/* ---------- Toast e rodapé ---------- */
+.toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); background: var(--floresta); color: var(--bege); padding: 11px 18px; border-radius: 999px; font-size: 0.9rem; z-index: 60; box-shadow: var(--sombra); max-width: calc(100% - 32px); }
+.rodape { border-top: 1px solid var(--linha); padding: 22px 20px 34px; text-align: center; font-size: 0.82rem; color: var(--cinza); }
+.rodape p { max-width: 720px; margin: 0 auto 6px; }
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 760px) {
+  main { padding: 16px 14px 48px; }
+  .topo-in { padding: 8px 14px; }
+  .marca-texto { font-size: 1.05rem; letter-spacing: 0.16em; }
+  .menu a { padding: 6px 9px; font-size: 0.82rem; }
+  .menu a[data-nav="sobre"] { display: none; }
+  .hero { padding: 12px 0 14px; }
+  .cartao { padding: 16px; }
+  .identificacao { grid-template-columns: 1fr; padding: 14px; }
+  .caractere { grid-template-columns: 1fr; gap: 2px; }
+  .painel { padding: 16px; }
+  .etiqueta { padding: 18px; }
+  .abas { top: 51px; }
+  .cand-topo { grid-template-columns: auto 1fr; }
+  .medidor { grid-column: 1 / -1; width: 100%; }
+  .form-busca { flex-direction: column; }
+  .filtros { flex-direction: column; }
+  .filtros select { flex-basis: auto; }
+  .previas { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 400px) {
+  .previas { grid-template-columns: repeat(2, 1fr); }
+  .acoes-fotos { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+.aviso-app-removido { background: var(--ambar-fundo); border: 1px solid #ecd9ae; color: #5c400d; border-radius: var(--raio-p); padding: 12px 14px; margin: 4px 0 10px; font-size: 0.92rem; }
+.aviso-app .btn { width: 100%; margin: 6px 0 4px; }
+.aviso-link { font-family: var(--mono); font-size: 0.78rem; text-align: center; margin: 4px 0 0; user-select: all; -webkit-user-select: all; word-break: break-all; }
+
+.etiqueta-foto { float: right; width: 132px; margin: 0 0 10px 16px; position: relative; z-index: 1; }
+.etiqueta-foto img { width: 132px; height: 132px; object-fit: cover; border-radius: var(--raio-p); border: 1px solid var(--linha); }
+.etiqueta-foto figcaption { font-size: 0.66rem; color: var(--cinza); margin-top: 3px; line-height: 1.3; }
+.etiqueta-foto figcaption a { color: inherit; }
+.etiqueta-dados { clear: both; }
+.cand-imgs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 4px 0 10px; }
+.cand-imgs figure { margin: 0; }
+.cand-imgs img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 7px; background: var(--bege); }
+.cand-imgs figcaption { font-size: 0.64rem; color: var(--cinza); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 760px) { .etiqueta-foto { width: 96px; } .etiqueta-foto img { width: 96px; height: 96px; } }
+
+</style>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231F3A2B'/%3E%3Cpath d='M9 24C9 14 15 8 24 8c0 9-6 15-15 16z' fill='none' stroke='%23F3EEE2' stroke-width='2'/%3E%3Cpath d='M9 24l9-9' stroke='%23F3EEE2' stroke-width='2'/%3E%3C/svg%3E">
+</head>
+<body>
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+<header class="topo">
+  <div class="topo-in">
+    <a class="marca" href="#inicio" aria-label="Herbário — início">
+      <svg class="marca-simbolo" viewBox="0 0 40 40" aria-hidden="true">
+        <rect x="1" y="1" width="38" height="38" rx="9"/>
+        <path d="M11 30C11 18 18 10 30 10c0 12-7 19-19 20z"/>
+        <path d="M11 30l11-11M17 24h5M20 21v-5"/>
+      </svg>
+      <span class="marca-texto">HERBÁRIO</span>
+    </a>
+    <nav class="menu" aria-label="Navegação principal">
+      <a href="#inicio" data-nav="inicio">Identificar</a>
+      <a href="#acervo" data-nav="acervo">Acervo</a>
+      <a href="#sobre" data-nav="sobre">Método e fontes</a>
+    </nav>
+  </div>
+</header>
+
+<main id="conteudo">
+
+  <!-- ============ INÍCIO ============ -->
+  <section class="vista" data-vista="inicio">
+    <div class="hero">
+      <p class="sobretitulo">Identificação e morfologia vegetal</p>
+      <h1>Fotografe uma planta.<br>Conheça sua organografia completa.</h1>
+      <p class="hero-texto">O Herbário analisa até cinco fotografias, propõe a espécie com o grau de confiança e monta uma ficha de raiz, caule, folha, flor, fruto e semente — mesmo dos órgãos que não aparecem nas fotos —, separando o que foi visto do que vem da literatura.</p>
+    </div>
+
+    <div class="cartao identificar" id="identificar">
+      <div class="cartao-cab">
+        <h2>Identificar planta</h2>
+        <span class="contador" id="contador">0 de 5 fotos</span>
+      </div>
+
+      <!-- Os campos de arquivo ficam DENTRO dos rótulos: o toque abre o seletor
+           nativamente, sem depender de input.click(), que alguns visualizadores bloqueiam. -->
+      <label class="zona" id="zona" aria-label="Adicionar fotografias">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 34l10-12 8 9 5-6 9 9"/><rect x="5" y="9" width="38" height="30" rx="4"/><circle cx="33" cy="17" r="3"/></svg>
+        <p><strong>Toque para escolher fotos</strong> ou arraste-as aqui</p>
+        <p class="zona-sub">JPG, PNG, WEBP ou HEIC (iPhone) · até 5 fotos da mesma planta · 15 MB cada</p>
+        <input type="file" id="input-zona" class="input-oculto" accept="image/*" multiple tabindex="-1">
+      </label>
+
+      <div class="acoes-fotos">
+        <label class="btn btn-secundario" id="btn-camera">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+          Tirar foto
+          <input type="file" id="input-camera" class="input-oculto" accept="image/*" capture="environment">
+        </label>
+        <label class="btn btn-secundario" id="btn-arquivos">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg>
+          Escolher fotos
+          <input type="file" id="input-arquivos" class="input-oculto" accept="image/*" multiple>
+        </label>
+      </div>
+
+      <div class="mensagens" id="mensagens" role="alert" aria-live="polite"></div>
+      <ul class="previas" id="previas" aria-label="Fotos selecionadas"></ul>
+      <p class="dica-orgao" id="dica-orgao" hidden>Indique o órgão de cada foto, se souber: isso melhora a identificação.</p>
+
+      <button class="btn btn-primario btn-grande" type="button" id="btn-identificar" disabled>Identificar planta</button>
+      <p class="aviso-ia" id="aviso-ia" hidden></p>
+      <p class="privacidade">As fotos são enviadas ao Pl@ntNet só para a identificação. O Herbário não as guarda.</p>
+    </div>
+
+    <div class="cartao busca">
+      <h2>Consultar espécie</h2>
+      <form id="form-busca" class="form-busca" role="search">
+        <label for="campo-busca" class="sr">Nome popular ou científico</label>
+        <input id="campo-busca" type="search" placeholder="Nome popular ou científico — ex.: mangueira, Mangifera indica" autocomplete="off" maxlength="120">
+        <button class="btn btn-primario" type="submit">Buscar</button>
+      </form>
+      <div id="resultados-busca" class="resultados-busca"></div>
+    </div>
+
+    <div class="recursos">
+      <article><span class="rec-n">01</span><h3>Identificação por imagem</h3><p>Até cinco fotos da mesma planta, com o órgão de cada uma, comparadas pelo Pl@ntNet com milhões de imagens de referência.</p></article>
+      <article><span class="rec-n">02</span><h3>Sem forçar resultado</h3><p>Com evidência insuficiente, o Herbário mostra até três candidatas, com fotos de referência para comparar.</p></article>
+      <article><span class="rec-n">03</span><h3>Morfologia completa</h3><p>Seis seções organográficas, termos técnicos explicados e curiosidades fundamentadas.</p></article>
+      <article><span class="rec-n">04</span><h3>Origem de cada dado</h3><p>Visto na foto ou literatura com referência: cada informação diz de onde veio.</p></article>
+    </div>
+
+    <div class="cartao historico" id="bloco-historico" hidden>
+      <h2>Suas identificações recentes</h2>
+      <ul id="lista-historico" class="lista-simples"></ul>
+    </div>
+  </section>
+
+  <!-- ============ PROCESSAMENTO ============ -->
+  <section class="vista" data-vista="processando" hidden>
+    <div class="processando">
+      <div class="lupa" aria-hidden="true">
+        <svg viewBox="0 0 80 80"><path class="p-folha" d="M18 62C18 38 32 20 60 18c0 28-16 42-42 44z"/><path class="p-nervura" d="M18 62l26-26M30 50h10M34 46v-10M40 40h10"/></svg>
+      </div>
+      <h2 id="proc-titulo">Analisando…</h2>
+      <ol class="etapas" id="etapas">
+        <li data-etapa="1">Etapa 1 — Identificação pelas fotografias</li>
+        <li data-etapa="2">Etapa 2 — Pesquisa morfológica da espécie</li>
+      </ol>
+      <p id="proc-msg" class="proc-msg" aria-live="polite"></p>
+      <button class="btn btn-secundario" type="button" id="btn-cancelar">Cancelar</button>
+    </div>
+  </section>
+
+  <!-- ============ RESULTADO ============ -->
+  <section class="vista" data-vista="resultado" hidden>
+    <div class="voltar"><a href="#inicio">← Nova identificação</a></div>
+    <div id="area-identificacao"></div>
+    <div id="area-ficha"></div>
+  </section>
+
+  <!-- ============ FICHA (consulta por nome / acervo) ============ -->
+  <section class="vista" data-vista="ficha" hidden>
+    <div class="voltar"><a href="#acervo">← Acervo</a></div>
+    <div id="area-ficha-consulta"></div>
+  </section>
+
+  <!-- ============ ACERVO ============ -->
+  <section class="vista" data-vista="acervo" hidden>
+    <div class="cabecalho-pagina">
+      <p class="sobretitulo">Acervo</p>
+      <h1>Espécies catalogadas</h1>
+      <p>Espécies com ficha <span class="selo selo-verificada">verificada</span>: conferida com literatura e bases botânicas, com referência em cada informação. As demais espécies têm ficha montada a partir de bases abertas.</p>
+    </div>
+    <div class="filtros">
+      <input id="filtro-acervo" type="search" placeholder="Filtrar por nome ou família" aria-label="Filtrar acervo">
+      <select id="filtro-status" aria-label="Filtrar por situação">
+        <option value="">Todas</option>
+        <option value="verificada">Verificadas</option>
+        <option value="gerada_ia">Geradas por IA</option>
+      </select>
+    </div>
+    <div id="lista-acervo" class="grade-acervo"></div>
+  </section>
+
+  <!-- ============ SOBRE ============ -->
+  <section class="vista" data-vista="sobre" hidden>
+    <div class="cabecalho-pagina">
+      <p class="sobretitulo">Método e fontes</p>
+      <h1>Como o Herbário trabalha</h1>
+    </div>
+    <div class="texto-longo" id="texto-sobre"></div>
+  </section>
+</main>
+
+<!-- Câmera ao vivo (quando o navegador permitir) -->
+<div class="modal" id="modal-camera" hidden role="dialog" aria-modal="true" aria-label="Câmera">
+  <div class="modal-caixa camera">
+    <video id="video-camera" playsinline muted></video>
+    <div class="camera-acoes">
+      <button class="btn btn-secundario" type="button" id="cam-fechar">Fechar</button>
+      <button class="btn-disparo" type="button" id="cam-disparar" aria-label="Capturar foto"></button>
+      <span class="cam-cont" id="cam-cont"></span>
+    </div>
+  </div>
+</div>
+
+<footer class="rodape">
+  <p><strong>HERBÁRIO</strong> — plataforma de identificação vegetal e consulta morfológica.</p>
+  <p>Identificação por Pl@ntNet. Identificações automáticas podem errar. Confirme espécies de interesse científico, alimentar ou medicinal com um especialista e com as bases indicadas em cada ficha.</p>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+window.__HERBARIO_DADOS__ = {"indice": {"atualizado_em": "2026-11-15", "especies": [{"slug": "mangifera-indica", "nome_cientifico": "Mangifera indica", "autoria": "L.", "familia": "Anacardiaceae", "nome_popular": ["mangueira", "manga"], "sinonimos": ["Mangifera laxiflora Desr.", "Mangifera rubra Bojer", "Mangifera equina Crevost & Lemarié", "Mangifera rostrata Blanco"], "status": "verificada", "atualizado_em": "2026-11-15"}]}, "fichas": {"mangifera-indica": {"cabecalho": {"nome_cientifico": "Mangifera indica", "autoria": "L.", "familia": "Anacardiaceae", "genero": "Mangifera", "epiteto": "indica", "nome_popular": ["mangueira", "manga (fruto)", "manguita", "manguinha"], "sinonimos": ["Mangifera laxiflora Desr.", "Mangifera rubra Bojer", "Mangifera equina Crevost & Lemarié", "Mangifera rostrata Blanco", "Mangifera austroyunnanensis Hu"], "nota_taxonomica": "Nome aceito, publicado por Lineu em Species Plantarum: 200 (1753) [R1]. Ordem Sapindales (APG IV). Diploide, 2n = 40 [R2, R10]. A lista completa de sinônimos heterotípicos está no POWO [R1].", "status": "verificada", "atualizado_em": "2026-11-15", "referencias": [{"id": "R1", "citacao": "POWO. Mangifera indica L. Plants of the World Online. Royal Botanic Gardens, Kew.", "url": "https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:69913-1", "consultado_em": "2026-11-15", "secoes": ["geral"]}, {"id": "R2", "citacao": "SUKONTHASING, S.; WONGRAKPANICH, M.; VERHEIJ, E. W. M. Mangifera indica L. In: VERHEIJ, E. W. M.; CORONEL, R. E. (ed.). Plant Resources of South-East Asia No. 2: Edible fruits and nuts. Bogor: PROSEA Foundation, 1991.", "url": "https://prosea.prota4u.org/view.aspx?id=1522", "consultado_em": "2026-11-15", "secoes": ["geral", "raiz", "caule", "folha", "flor", "fruto", "semente", "curiosidades"]}, {"id": "R3", "citacao": "ACEVEDO-RODRÍGUEZ, P. et al. Flora of St. John, U.S. Virgin Islands. Memoirs of the New York Botanical Garden, v. 78, p. 1–581, 1996. Tratamento de Mangifera indica.", "url": "https://sweetdev.nybg.org/science-dev/vh/monographs-details/?irn=28029", "consultado_em": "2026-11-15", "secoes": ["caule", "folha", "flor", "fruto", "semente", "curiosidades"]}, {"id": "R4", "citacao": "FLORA OF CHINA. Mangifera indica. eFloras.org, Missouri Botanical Garden & Harvard University Herbaria. Consultado em reprodução licenciada (CC BY-NC-SA 3.0) no Scratchpad myspecies.info.", "url": "https://nantiyaag2.myspecies.info/taxonomy/term/12/descriptions", "consultado_em": "2026-11-15", "secoes": ["fruto", "flor"]}, {"id": "R5", "citacao": "USDA NRCS. Mango, Mangifera indica L. Plant Guide. National Plant Data Center.", "url": "https://plants.usda.gov/DocumentLibrary/plantguide/pdf/cs_main3.pdf", "consultado_em": "2026-11-15", "secoes": ["raiz", "folha", "geral", "curiosidades"]}, {"id": "R6", "citacao": "FERREIRA, F. R. et al. Germoplasma de manga no Brasil. Embrapa (Repositório Alice).", "url": "https://www.alice.cnptia.embrapa.br/alice/bitstream/doc/137955/1/OPB784.pdf", "consultado_em": "2026-11-15", "secoes": ["geral"]}, {"id": "R7", "citacao": "SILVA-LUZ, C. L.; PIRANI, J. R.; PELL, S. K.; MITCHELL, J. D. Anacardiaceae. In: Flora e Funga do Brasil. Rio de Janeiro: Jardim Botânico do Rio de Janeiro, 2021 (atualização contínua).", "url": "https://floradobrasil.jbrj.gov.br/reflora/floradobrasil/FB44", "consultado_em": "2026-11-15", "secoes": ["geral"]}, {"id": "R8", "citacao": "Flora of Anacardiaceae in the Upper Paraná Atlantic Forest. Rodriguésia (SciELO).", "url": "https://www.scielo.br/j/rod/a/Tvn7JhvF4DpFjvZZDtbpgTS/?lang=en", "consultado_em": "2026-11-15", "secoes": ["geral"]}, {"id": "R9", "citacao": "YADAV, C. B. et al. Promoter insertion leads to polyembryony in mango — a case of convergent evolution with citrus. Horticulture Research, v. 10, n. 12, uhad227, 2023. DOI: 10.1093/hr/uhad227.", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10709545", "consultado_em": "2026-11-15", "secoes": ["semente", "geral", "curiosidades"]}, {"id": "R10", "citacao": "ALI, G. S. et al. GWAS identifies a polyembryony locus in mango: development of KASP and PACE markers for marker-assisted breeding. Frontiers in Plant Science, 2025. DOI: 10.3389/fpls.2025.1508027.", "url": "https://www.frontiersin.org/journals/plant-science/articles/10.3389/fpls.2025.1508027/pdf", "consultado_em": "2026-11-15", "secoes": ["semente", "curiosidades"]}, {"id": "R11", "citacao": "Fruit yield and root system distribution of 'Tommy Atkins' mango under different irrigation regimes. Revista Brasileira de Engenharia Agrícola e Ambiental (SciELO).", "url": "https://scielo.br/j/rbeaa/a/rWXXKgfPfpPZkXGG5pKPWRK", "consultado_em": "2026-11-15", "secoes": ["raiz"]}, {"id": "R12", "citacao": "Differential expression of polyembryony in certain mango genotypes. Indian Journal of Horticulture, v. 79, n. 4, p. 415–421, 2022. DOI: 10.5958/0974-0112.2022.00058.5.", "url": "https://journal.iahs.org.in/index.php/ijh/article/view/512", "consultado_em": "2026-11-15", "secoes": ["semente", "curiosidades"]}, {"id": "R13", "citacao": "PARROTTA, J. A. Mangifera indica L. Mango. Anacardiaceae. In: Árboles de Puerto Rico (USDA Forest Service).", "url": "https://npn.rngr.net/publications/arboles-de-puerto-rico/mangifera-indica/at_download/file", "consultado_em": "2026-11-15", "secoes": ["geral"]}, {"id": "R14", "citacao": "PARISOT, E. Étude de la croissance rythmique chez de jeunes manguiers (Mangifera indica L.). Première partie: description, germination et conservation de graines polyembryonnées. Fruits, v. 43, n. 2, p. 97–105, 1988.", "url": "https://revues.cirad.fr/index.php/fruits/article/download/35024/35503/38991", "consultado_em": "2026-11-15", "secoes": ["semente"]}, {"id": "R15", "citacao": "MUSEU NACIONAL/UFRJ. Horto Botânico: Mangifera indica.", "url": "https://www.museunacional.ufrj.br/hortobotanico/arvoresearbustos/mangiferaindica.html", "consultado_em": "2026-11-15", "secoes": ["geral"]}]}, "secoes": {"geral": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"resumo": "Árvore perenifólia de grande porte, originária da região indo-birmanesa e hoje cultivada em todas as regiões tropicais e subtropicais. No Brasil é exótica, introduzida pelos portugueses e amplamente cultivada pelos frutos.", "itens": [{"caractere": "Origem", "valor": "Região indo-birmanesa. O POWO delimita a área nativa de Assam ao sul de Yunnan (China), incluindo Himalaia Oriental, Mianmar e Tailândia.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R1", "R2"]}, {"caractere": "Distribuição geográfica", "valor": "Pantropical por cultivo. Difundiu-se pelo Sudeste Asiático há cerca de 1.500 anos, chegou à África Oriental há cerca de 1.000 anos e às Américas nos últimos séculos.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R13"]}, {"caractere": "Ocorrência no Brasil", "valor": "Espécie exótica, introduzida pelos portugueses provavelmente no século XVI e cultivada em todo o país. Consta na Flora e Funga do Brasil (tratamento de Anacardiaceae); estudos florísticos a registram como exótica cultivada, inclusive em unidades de conservação da Mata Atlântica.", "termos": [{"termo": "exótica", "definicao": "Espécie que ocorre fora da sua área de distribuição natural por introdução humana."}], "certeza": "alta", "origem": "literatura", "fontes": ["R6", "R7", "R8"]}, {"caractere": "Habitat", "valor": "Na área nativa, florestas do bioma tropical sazonalmente seco, em geral entre 300 e 900 m de altitude. Precisa de estação seca de mais de três meses para frutificar bem; temperatura ótima em torno de 24–27 °C.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R1", "R13", "R2"]}, {"caractere": "Hábito", "valor": "Árvore perenifólia, ereta e ramificada, de 10 a 45 m de altura, tronco com 60 a 120 cm de diâmetro e copa densa.", "termos": [{"termo": "perenifólia", "definicao": "Planta que mantém folhas durante o ano todo, sem perda total da folhagem em uma estação."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Ciclo de vida", "valor": "Perene e longeva: há registros de árvores com cerca de 300 anos ainda produzindo frutos. Plantas de semente começam a frutificar após 5 a 7 anos.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R5", "R2"]}, {"caractere": "Importância ecológica", "valor": "Flores visitadas e polinizadas principalmente por insetos (moscas e abelhas). Frutos e folhas servem de alimento a animais silvestres.", "termos": [], "certeza": "media", "origem": "literatura", "fontes": ["R2", "R5"]}, {"caractere": "Importância econômica", "valor": "Uma das frutíferas mais importantes do mundo, com produção anual acima de 57 milhões de toneladas, atrás apenas da banana entre as frutas tropicais e subtropicais. A madeira também é aproveitada.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R9", "R5"]}], "variacao": "Há centenas de cultivares, com grande variação no tamanho, forma e cor dos frutos e na presença de fibras na polpa.", "divergencias": ["A área nativa é descrita de forma ampla como Índia e Mianmar em várias fontes; o POWO a restringe a Assam, Himalaia Oriental, Mianmar, Tailândia e sul de Yunnan.", "A introdução no Brasil é datada no século XVI (Embrapa) ou, de forma menos precisa, antes do fim do século XVII (Parrotta)."], "limitacoes": "Não foi possível consultar diretamente a ficha da espécie na Flora e Funga do Brasil (situação de origem e domínios fitogeográficos); confira no link das bases."}}, "raiz": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"resumo": "Sistema radicular axial (pivotante), com raiz principal longa e profunda, combinada a uma densa massa de raízes absorventes superficiais.", "itens": [{"caractere": "Tipo de sistema", "valor": "Axial ou pivotante: uma raiz principal longa, pouco ramificada, que pode alcançar 6 a 8 m de profundidade.", "termos": [{"termo": "pivotante", "definicao": "Sistema em que a raiz primária, originada da radícula do embrião, cresce mais que as laterais e forma um eixo principal."}], "certeza": "alta", "origem": "literatura", "fontes": ["R5", "R2"]}, {"caractere": "Raízes absorventes", "valor": "Densa massa de raízes finas próximas à superfície, responsáveis pela absorção de água e nutrientes.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R5"]}, {"caractere": "Raízes de ancoragem", "valor": "As raízes superficiais emitem raízes descendentes de ancoragem, que penetram cerca de 1,2 m; a expansão lateral chega a 7,5 m.", "termos": [], "certeza": "media", "origem": "literatura", "fontes": ["R5"]}, {"caractere": "Função adaptativa", "valor": "A raiz profunda dá sustentação e permite obter água no período seco, o que ajuda a árvore a sobreviver a estiagens e a manter a floração.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R11"]}, {"caractere": "Plasticidade em cultivo", "valor": "Em pomares irrigados no semiárido baiano ('Tommy Atkins'), as raízes ficaram limitadas a cerca de 3–3,5 m do tronco e 1,4 m de profundidade; sem irrigação, o sistema radicular e a produção diminuem.", "termos": [], "certeza": "media", "origem": "literatura", "fontes": ["R11"]}, {"caractere": "Porta-enxertos", "valor": "Em plantios comerciais, a copa costuma ser enxertada sobre porta-enxerto obtido de sementes poliembriônicas; nesse caso, o sistema radicular é o do porta-enxerto.", "termos": [{"termo": "porta-enxerto", "definicao": "Planta que fornece o sistema radicular sobre o qual se enxerta a copa de outra variedade."}], "certeza": "alta", "origem": "literatura", "fontes": ["R9"]}], "variacao": "A profundidade e a extensão das raízes dependem do solo, do lençol freático e da irrigação.", "divergencias": [], "limitacoes": "Nenhuma das fontes descreve raízes modificadas (tabulares, escoras etc.) para a espécie; por isso não são listadas."}}, "caule": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"resumo": "Caule aéreo, ereto e lenhoso do tipo tronco, com casca castanho-acinzentada fissurada e seiva resinosa. O crescimento ocorre em fluxos rítmicos.", "itens": [{"caractere": "Tipo", "valor": "Tronco: caule aéreo, ereto, lenhoso e ramificado, com 60 a 120 cm de diâmetro em árvores adultas.", "termos": [{"termo": "tronco", "definicao": "Caule lenhoso e robusto das árvores, ramificado na parte superior."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Casca", "valor": "Castanho-acinzentada, com fissuras longitudinais.", "termos": [{"termo": "ritidoma", "definicao": "Camada externa morta da casca das árvores, que pode se fissurar ou desprender."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Exsudato", "valor": "Seiva resinosa e clara, que pode irritar a pele de pessoas sensíveis.", "termos": [{"termo": "exsudato", "definicao": "Substância (látex, resina, goma) que escorre de um órgão vegetal quando ferido."}], "certeza": "alta", "origem": "literatura", "fontes": ["R3"]}, {"caractere": "Arquitetura e ramificação", "valor": "Segue o modelo arquitetural de Scarrone: o tronco cresce em fluxos sucessivos e os ramos terminam em inflorescências terminais, o que leva à ramificação a partir das gemas abaixo delas.", "termos": [{"termo": "modelo arquitetural", "definicao": "Padrão de crescimento e ramificação geneticamente determinado de uma espécie (sistema de Hallé & Oldeman)."}], "certeza": "media", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Crescimento", "valor": "Rítmico, em fluxos: plantas jovens podem emitir até quatro fluxos de brotação por ano, se houver umidade. Em geral só as gemas da ponta comprimida dos ramos crescem ou florescem.", "termos": [{"termo": "fluxo de crescimento", "definicao": "Período curto de brotação intensa, separado por fases de repouso das gemas."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}], "variacao": "A copa pode ser arredondada e larga ou mais estreita e ereta, conforme cultivar e ambiente.", "divergencias": [], "limitacoes": "As fontes consultadas não detalham lenticelas, nós e entrenós dos ramos jovens. A explicação do modelo de Scarrone resume o conceito de Hallé & Oldeman e não detalha a espécie."}}, "folha": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"resumo": "Folhas simples, alternas espiraladas e agrupadas no ápice dos ramos, com limbo estreitamente elíptico a lanceolado, subcoriáceo e glabro, nervura central saliente e clara. As folhas novas são avermelhadas.", "itens": [{"caractere": "Classificação", "valor": "Simples.", "termos": [{"termo": "folha simples", "definicao": "Folha com um único limbo, não dividido em folíolos."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Filotaxia", "valor": "Alterna espiralada, com as folhas concentradas nas extremidades dos ramos.", "termos": [{"termo": "filotaxia", "definicao": "Modo de disposição das folhas no caule."}, {"termo": "espiralada", "definicao": "Uma folha por nó, dispostas ao longo de uma espiral em torno do caule."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Pecíolo", "valor": "Até 10 cm de comprimento (geralmente 1–5 cm), com pulvino na base.", "termos": [{"termo": "pulvino", "definicao": "Dilatação na base do pecíolo, ligada aos movimentos e à orientação da folha."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Formato do limbo", "valor": "Estreitamente elíptico a lanceolado ou oblongo-lanceolado, às vezes levemente falcado; cerca de 8–40 × 2–10 cm. Em ramos estéreis pode chegar a 50 cm.", "termos": [{"termo": "lanceolado", "definicao": "Limbo bem mais longo que largo, mais largo abaixo do meio e afinando para o ápice, como ponta de lança."}, {"termo": "falcado", "definicao": "Curvo como uma foice."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3", "R5"]}, {"caractere": "Ápice", "valor": "Acuminado.", "termos": [{"termo": "acuminado", "definicao": "Ápice que se estreita em ponta longa e fina."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Base", "valor": "Atenuada (estreitando-se gradualmente para o pecíolo), às vezes oblíqua.", "termos": [{"termo": "atenuada", "definicao": "Base que se estreita gradualmente em direção ao pecíolo."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Margem", "valor": "Inteira, muitas vezes ondulada.", "termos": [{"termo": "margem inteira", "definicao": "Borda contínua, sem dentes nem recortes."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Nervação", "valor": "Peninérvea, com nervura central proeminente, de cor amarelada ou esbranquiçada, e 12 a 30 pares de nervuras secundárias salientes.", "termos": [{"termo": "peninérvea", "definicao": "Nervação em que as nervuras secundárias saem de uma nervura central, como as barbas de uma pena."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R5"]}, {"caractere": "Consistência e superfície", "valor": "Subcoriácea, glabra; verde-escura e brilhante na face superior, mais clara na inferior.", "termos": [{"termo": "coriácea", "definicao": "Consistência firme e espessa, semelhante a couro."}, {"termo": "glabra", "definicao": "Sem pelos (tricomas)."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3", "R5"]}, {"caractere": "Folhas jovens", "valor": "Emitidas em fluxos, de cor avermelhada a bronzeada, tornando-se verde-escuras ao amadurecer.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R5"]}], "variacao": "As folhas variam bastante numa mesma árvore e entre cultivares, em tamanho e na cor dos brotos novos.", "divergencias": [], "limitacoes": "As fontes não mencionam estípulas; o gênero é descrito com folhas pecioladas e simples, sem estípulas citadas."}}, "flor": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"resumo": "Flores pequenas, pentâmeras, de simetria radial, reunidas em panículas terminais amplas que misturam flores masculinas e hermafroditas. Em geral só um dos cinco estames é fértil.", "itens": [{"caractere": "Inflorescência", "valor": "Panícula terminal, amplamente ramificada, densa e tomentosa, com até 60 cm (em geral 20–40 cm).", "termos": [{"termo": "panícula", "definicao": "Inflorescência racemosa composta, ramificada, em geral de contorno piramidal."}, {"termo": "tomentosa", "definicao": "Coberta por pelos curtos e densos."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Sistema sexual", "valor": "Flores masculinas e hermafroditas na mesma inflorescência (planta andromonoica); nas masculinas, o pistilo é abortivo.", "termos": [{"termo": "andromonoica", "definicao": "Planta que tem flores masculinas e flores hermafroditas no mesmo indivíduo."}, {"termo": "monoclina", "definicao": "Flor com androceu e gineceu (hermafrodita)."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Tamanho e cor", "valor": "5–8 mm de diâmetro, amarelo-esverdeadas; pétalas creme a rosadas, passando de verde-amareladas a avermelhadas.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Simetria", "valor": "Actinomorfa (radial).", "termos": [{"termo": "actinomorfa", "definicao": "Flor com vários planos de simetria, de aspecto radial."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Perianto", "valor": "Heteroclamídeo: cálice de 5 sépalas lanceoladas (cerca de 2 mm), pubescentes; corola de 5 pétalas livres, oblongas a espatuladas, com cerca do dobro do comprimento das sépalas (3–3,5 mm).", "termos": [{"termo": "heteroclamídeo", "definicao": "Perianto com cálice e corola distintos entre si."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Disco nectarífero", "valor": "Curto, cupuliforme, carnoso e com 5 lobos, entre a corola e o androceu.", "termos": [{"termo": "disco", "definicao": "Estrutura carnosa no receptáculo, muitas vezes nectarífera, comum nas Sapindales."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Androceu", "valor": "5 estames, geralmente só 1 fértil e maior, exserto além das pétalas; os demais são estaminódios.", "termos": [{"termo": "estaminódio", "definicao": "Estame estéril, sem pólen funcional."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Gineceu", "valor": "Ovário quase globoso e séssil; estilete lateral (sublateral) e curvo; estigma simples, puntiforme.", "termos": [{"termo": "estilete", "definicao": "Parte do pistilo que liga o ovário ao estigma."}, {"termo": "puntiforme", "definicao": "Em forma de ponto."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Carpelos e lóculos", "valor": "No gênero Mangifera, o ovário é unicarpelar e unilocular, com um único óvulo.", "termos": [{"termo": "unilocular", "definicao": "Ovário com uma só cavidade (lóculo)."}], "certeza": "media", "origem": "literatura", "fontes": ["R2"]}], "variacao": "A proporção de flores masculinas e hermafroditas varia entre cultivares e anos.", "divergencias": [], "limitacoes": "O item sobre carpelos descreve o gênero, não especificamente a espécie. As fontes consultadas não detalham a prefloração, a deiscência das anteras nem a posição do ovário em relação às demais peças."}}, "fruto": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"resumo": "Fruto simples, carnoso e indeiscente do tipo drupa, com mesocarpo comestível amarelo a alaranjado e endocarpo lenhoso e fibroso (o “caroço”) que envolve uma única semente.", "itens": [{"caractere": "Classificação", "valor": "Simples, carnoso e indeiscente: drupa.", "termos": [{"termo": "drupa", "definicao": "Fruto carnoso com endocarpo duro (caroço) envolvendo, em geral, uma semente."}, {"termo": "indeiscente", "definicao": "Fruto que não se abre espontaneamente ao amadurecer."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3", "R4"]}, {"caractere": "Forma e tamanho", "valor": "Muito variável; em geral ovoide-oblonga, com os lados bem desiguais, até cerca de 30 × 10 cm. Pende de pedúnculos longos.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Epicarpo (casca)", "valor": "Relativamente espesso, com pontuações glandulares; verde, amarelo, alaranjado ou avermelhado na maturação.", "termos": [{"termo": "epicarpo", "definicao": "Camada mais externa do pericarpo, a 'casca' do fruto."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Mesocarpo (polpa)", "valor": "Carnoso e comestível, amarelo a alaranjado, suculento; com ou sem fibras e de sabor doce a resinoso (terebintáceo).", "termos": [{"termo": "mesocarpo", "definicao": "Camada intermediária do pericarpo; nas drupas, geralmente a parte carnosa."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R4"]}, {"caractere": "Endocarpo (caroço)", "valor": "Espesso, lenhoso e fibroso, achatado, com 5–8 cm.", "termos": [{"termo": "endocarpo", "definicao": "Camada interna do pericarpo; nas drupas, endurecida em caroço."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3", "R4"]}, {"caractere": "Número de sementes", "valor": "Uma semente por fruto, dentro do endocarpo.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Desenvolvimento", "valor": "O vingamento é baixo: cerca de 1 fruto para cada mil flores perfeitas. O amadurecimento leva de 3 a 4 meses (até 5 nas cultivares tardias).", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Composição", "valor": "Em média, 11–18% de casca, 14–22% de polpa e 60–75% de caroço, conforme dados do PROSEA.", "termos": [], "certeza": "media", "origem": "literatura", "fontes": ["R2"]}], "variacao": "Forma, tamanho, cor e teor de fibras variam muito entre cultivares.", "divergencias": ["A Flora of China descreve frutos de 5–10 × 3–4,5 cm; o PROSEA cita até 30 × 10 cm. A diferença reflete a variação entre populações e cultivares.", "A proporção de polpa citada pelo PROSEA (14–22%) parece baixa para as cultivares comerciais atuais; trate como dado de referência a conferir."], "limitacoes": "As fontes consultadas não descrevem com detalhe o modo natural de dispersão na área nativa."}}, "semente": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"resumo": "Semente única, grande e achatada, dentro do endocarpo lenhoso. Conforme a cultivar, é monoembriônica (um embrião sexual) ou poliembriônica (um embrião sexual e vários embriões nucelares, clones da planta-mãe).", "itens": [{"caractere": "Quantidade", "valor": "Uma por fruto.", "termos": [], "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"caractere": "Forma", "valor": "Grande, achatada, ovoide-reniforme, não labiríntica.", "termos": [{"termo": "reniforme", "definicao": "Em forma de rim."}, {"termo": "labiríntica", "definicao": "Semente com cotilédones dobrados e reentrâncias irregulares, como ocorre em algumas outras espécies de Mangifera."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R3"]}, {"caractere": "Embrionia", "valor": "Mono ou poliembriônica conforme a cultivar. Nas poliembriônicas, um embrião vem da fecundação e os demais do nucelo (apomixia esporofítica), sendo geneticamente iguais à planta-mãe.", "termos": [{"termo": "poliembrionia", "definicao": "Formação de mais de um embrião em uma mesma semente."}, {"termo": "nucelo", "definicao": "Tecido do óvulo que envolve o saco embrionário."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R9", "R10"]}, {"caractere": "Embrião e cotilédones", "valor": "Nas sementes monoembriônicas, um único embrião com dois cotilédones ocupa todo o espaço da semente. Nas poliembriônicas, os embriões formam uma massa segmentada e podem diferir no número e no peso dos cotilédones.", "termos": [{"termo": "cotilédone", "definicao": "Folha embrionária, muitas vezes com reservas nutritivas."}], "certeza": "alta", "origem": "literatura", "fontes": ["R9", "R14"]}, {"caractere": "Grupos de cultivares", "valor": "Tradicionalmente, os tipos indianos são monoembriônicos e os do Sudeste Asiático, poliembriônicos.", "termos": [], "certeza": "media", "origem": "literatura", "fontes": ["R12"]}, {"caractere": "Germinação", "valor": "Sementes sem dormência, que germinam com facilidade, em cerca de 2 semanas. Uma semente poliembriônica pode originar várias plântulas.", "termos": [{"termo": "dormência", "definicao": "Estado em que a semente viável não germina mesmo em condições favoráveis."}], "certeza": "alta", "origem": "literatura", "fontes": ["R2", "R14", "R9"]}, {"caractere": "Viabilidade", "valor": "Curta: as sementes perdem rapidamente a capacidade de germinar e são tratadas como recalcitrantes na literatura agronômica.", "termos": [{"termo": "recalcitrante", "definicao": "Semente que não tolera secagem nem armazenamento prolongado."}], "certeza": "media", "origem": "literatura", "fontes": ["R14"]}], "variacao": "O número de embriões por semente varia com a cultivar e com o ano.", "divergencias": [], "limitacoes": "As fontes consultadas não detalham hilo, micrópila e tegumento, nem dizem se a semente madura conserva endosperma (durante o desenvolvimento os embriões dependem dele). O tipo de germinação (epígea ou hipógea) também não foi confirmado."}}, "curiosidades": {"status": "verificada", "atualizado_em": "2026-11-15", "conteudo": {"itens": [{"titulo": "Sementes que produzem clones", "texto": "Muitas cultivares formam sementes com vários embriões. Só um deles vem da fecundação; os outros nascem do nucelo e são clones da planta-mãe. Essa característica é a base da maioria dos porta-enxertos de mangueira. Em 2023, pesquisadores identificaram o gene MiRWP como responsável, num caso de evolução convergente com os citros.", "categoria": "evolução", "certeza": "alta", "origem": "literatura", "fontes": ["R9", "R10"]}, {"titulo": "Milhares de flores, poucos frutos", "texto": "As panículas reúnem flores masculinas e hermafroditas, mas apenas cerca de uma em cada mil flores perfeitas chega a formar fruto.", "categoria": "morfologia", "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"titulo": "Polinização por moscas e abelhas", "texto": "O vento contribui pouco: insetos, sobretudo moscas e abelhas, são os principais polinizadores. O estigma fica receptivo por pouco tempo, principalmente à noite e de manhã.", "categoria": "polinização", "certeza": "alta", "origem": "literatura", "fontes": ["R2"]}, {"titulo": "Parente da aroeira e do cajueiro", "texto": "Como outras Anacardiaceae, a mangueira tem seiva resinosa. A resina e a casca do fruto podem causar dermatite de contato em pessoas sensíveis.", "categoria": "outro", "certeza": "alta", "origem": "literatura", "fontes": ["R3", "R5"]}, {"titulo": "Árvores tricentenárias", "texto": "A espécie é muito longeva: há registros de mangueiras com cerca de 300 anos ainda produzindo frutos.", "categoria": "outro", "certeza": "media", "origem": "literatura", "fontes": ["R5"]}], "sem_curiosidades": false, "limitacoes": ""}}}}}};
+</script>
+<script type="module">
+// ===== config.js =====
+const M_config = (() => {
+
+// Configuração do Herbário.
+//
+// PLANTNET_API_KEY: chave gratuita obtida em https://my.plantnet.org (Settings).
+// Ela fica visível no código do site, o que é o uso previsto pelo Pl@ntNet para
+// sites estáticos: no painel do Pl@ntNet, marque "expose my API key" e, em
+// "Authorized domains", cadastre SOMENTE o domínio do Herbário
+// (ex.: seu-usuario.github.io). Pedidos de qualquer outro site são recusados.
+const CONFIG = {
+  PLANTNET_API_KEY: "2b10Iviu7zKmNc8PnvFwJ4Chu",
+  PLANTNET_PROJETO: "all", // "all" = flora mundial
+  LIMIAR_CONFIRMACAO: 0.5, // score mínimo do Pl@ntNet para tratar a identificação como confiável
+  MARGEM_MINIMA: 0.2, // distância mínima para a 2ª candidata
+};
+
+return { CONFIG };
+})();
+
+// ===== util.js =====
+const M_util = (() => {
+
+// Utilitários gerais do Herbário.
+
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+
+/** Cria um elemento: h("div", {class: "x", onclick: fn}, filhos...) */
+function h(tag, attrs = {}, ...filhos) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v === undefined || v === null || v === false) continue;
+    if (k === "class") el.className = v;
+    else if (k === "html") el.innerHTML = v;
+    else if (k.startsWith("on") && typeof v === "function") el.addEventListener(k.slice(2), v);
+    else if (k === "dataset") Object.assign(el.dataset, v);
+    else el.setAttribute(k, v === true ? "" : String(v));
+  }
+  for (const f of filhos.flat(Infinity)) {
+    if (f === undefined || f === null || f === false) continue;
+    el.append(f instanceof Node ? f : document.createTextNode(String(f)));
+  }
+  return el;
+}
+
+/** "Mangifera indica L." -> "mangifera-indica" (apenas gênero + epíteto). */
+function slugEspecie(nome) {
+  const partes = String(nome || "")
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[×x]\s+/i, "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+  const base = partes.slice(0, 2).join(" ");
+  // subespécies/variedades: "var." ou "subsp." + nome
+  const infra = partes.slice(2).join(" ").match(/\b(subsp|var|f)\.?\s+([a-z-]+)/i);
+  const txt = infra ? `${base} ${infra[1]} ${infra[2]}` : base;
+  return txt.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+/** Remove acentos e baixa caixa, para buscas. */
+function normalizar(t) {
+  return String(t || "")
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
+function formatarData(iso) {
+  if (!iso) return "";
+  try {
+    // "AAAA-MM-DD" sem horário é lido como data local (evita recuo de um dia pelo fuso).
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso));
+    const d = m ? new Date(+m[1], +m[2] - 1, +m[3]) : new Date(iso);
+    return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
+  } catch {
+    return iso;
+  }
+}
+
+function lista(v) {
+  if (Array.isArray(v)) return v.filter((x) => x !== null && x !== undefined && String(x).trim() !== "");
+  if (v === null || v === undefined || v === "") return [];
+  return [v];
+}
+
+function texto(v, padrao = "") {
+  if (v === null || v === undefined) return padrao;
+  return String(v).trim() || padrao;
+}
+
+/** Mensagem amigável para os códigos de erro da IA da plataforma. */
+function mensagemErroIA(e) {
+  const code = e?.code || "upstream_error";
+  const mapa = {
+    not_granted: "O uso do Claude não foi autorizado nesta página. Recarregue e permita o acesso para identificar plantas.",
+    sampling_disabled: "O Claude não está disponível para esta conta.",
+    not_declared: "A IA não está habilitada nesta versão da página.",
+    capability_disabled: "A IA não pode ser usada nesta visualização.",
+    images_unavailable: "Esta visualização não permite enviar imagens ao Claude. Abra o Herbário pelo app ou pelo site do Claude.",
+    image_rejected: "Uma das imagens foi recusada (tipo, tamanho ou arquivo corrompido). Tente outra foto.",
+    rate_limited: "Muitas consultas em pouco tempo ou limite de uso atingido. Aguarde alguns minutos e tente de novo.",
+    session_expired: "Sua sessão expirou. Entre novamente no Claude.",
+    refused: "A solicitação não pôde ser processada. Tente com outras fotos.",
+    empty_completion: "A IA não devolveu resposta. Tente novamente.",
+    invalid_json: "A resposta da IA veio incompleta. Tente novamente.",
+    prompt_too_large: "A consulta ficou grande demais. Tente com menos fotos.",
+    cancelled: "Consulta cancelada.",
+    nao_configurado: "A identificação ainda não foi configurada: falta a chave do Pl@ntNet em js/config.js.",
+    chave: "O Pl@ntNet recusou a chave. Confira se “expose my API key” está marcado e se o domínio do site está em “Authorized domains”.",
+    cota: "A cota diária gratuita do Pl@ntNet acabou. Tente novamente amanhã.",
+    rede: "Sem conexão com o serviço. Verifique a internet e tente de novo.",
+    servico: "O serviço de identificação está instável. Tente novamente em instantes.",
+    nao_reconhecida: "Espécie não encontrada nas bases botânicas.",
+  };
+  return mapa[code] || "Falha de conexão. Tente novamente em instantes.";
+}
+
+function aguardar(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+return { $, $$, h, slugEspecie, normalizar, formatarData, lista, texto, mensagemErroIA, aguardar };
+})();
+
+// ===== fontes.js =====
+const M_fontes = (() => {
+
+// Herbário — base bibliográfica e bases botânicas de referência.
+// As obras abaixo são citadas como fundamento terminológico. Elas NÃO são
+// reproduzidas: o site usa apenas paráfrases e referências.
+
+const BIBLIOGRAFIA_BASE = [
+  {
+    id: "L1",
+    citacao:
+      "GONÇALVES, E. G.; LORENZI, H. Morfologia vegetal: organografia e dicionário ilustrado de morfologia das plantas vasculares. 3. ed. Nova Odessa: Instituto Plantarum, 2025.",
+    uso: "Terminologia organográfica de raiz, caule, folha, flor, fruto e semente. (Dados da 3ª edição informados pelo projeto; a edição anterior é a 2ª, de 2011.)",
+  },
+  {
+    id: "L2",
+    citacao:
+      "VIDAL, W. N.; VIDAL, M. R. R.; PAULA, C. C. de. Botânica – organografia: quadros sinóticos ilustrados de fanerógamos. 5. ed. Viçosa: Editora UFV, 2021.",
+    uso: "Classificação sinótica dos órgãos vegetativos e reprodutivos.",
+  },
+  {
+    id: "L3",
+    citacao:
+      "EVERT, R. F.; EICHHORN, S. E. Raven: biologia vegetal. 8. ed. Rio de Janeiro: Guanabara Koogan, 2014.",
+    uso: "Fundamentos de estrutura, desenvolvimento e reprodução das plantas.",
+  },
+  {
+    id: "L4",
+    citacao:
+      "HARRIS, J. G.; HARRIS, M. W. Plant identification terminology: an illustrated glossary. 2. ed. Spring Lake: Spring Lake Publishing, 2001.",
+    uso: "Glossário de termos de identificação (equivalentes em inglês).",
+  },
+  {
+    id: "L5",
+    citacao: "SIMPSON, M. G. Plant systematics. 3. ed. London: Academic Press, 2019.",
+    uso: "Caracteres diagnósticos de famílias e terminologia floral e de frutos.",
+  },
+  {
+    id: "L6",
+    citacao:
+      "JUDD, W. S. et al. Plant systematics: a phylogenetic approach. 4. ed. Sunderland: Sinauer Associates, 2015.",
+    uso: "Circunscrição filogenética das famílias (APG).",
+  },
+];
+
+// Bases botânicas consultáveis. Os links abrem a busca pelo nome científico.
+function basesParaEspecie(nomeCientifico) {
+  const n = encodeURIComponent(nomeCientifico || "");
+  const plus = (nomeCientifico || "").trim().split(/\s+/).map(encodeURIComponent).join("+");
+  return [
+    {
+      nome: "Flora e Funga do Brasil (JBRJ)",
+      url: "https://floradobrasil.jbrj.gov.br/consulta/",
+      dica: `Pesquise “${nomeCientifico}” no campo de busca.`,
+    },
+    {
+      nome: "Herbário Virtual Reflora (JBRJ)",
+      url: "https://reflora.jbrj.gov.br/reflora/herbarioVirtual/",
+      dica: "Exsicatas digitalizadas de herbários brasileiros.",
+    },
+    {
+      nome: "Plants of the World Online (Kew)",
+      url: `https://powo.science.kew.org/results?q=${n}`,
+      dica: "Nome aceito, sinonímia e distribuição nativa.",
+    },
+    {
+      nome: "World Flora Online",
+      url: `https://www.worldfloraonline.org/search?query=${plus}`,
+      dica: "Lista taxonômica global de plantas.",
+    },
+    {
+      nome: "GBIF",
+      url: `https://www.gbif.org/species/search?q=${n}`,
+      dica: "Ocorrências e checklists.",
+    },
+    {
+      nome: "SciELO",
+      url: `https://search.scielo.org/?q=%22${plus}%22`,
+      dica: "Artigos científicos de acesso aberto.",
+    },
+    {
+      nome: "Biodiversity Heritage Library",
+      url: `https://www.biodiversitylibrary.org/search?searchTerm=${plus}`,
+      dica: "Obras históricas digitalizadas (domínio público).",
+    },
+  ];
+}
+
+return { BIBLIOGRAFIA_BASE, basesParaEspecie };
+})();
+
+// ===== imagens.js =====
+const M_imagens = (() => {
+
+// Seleção, validação, câmera e pré-visualização das fotografias.
+// As fotos ficam apenas na memória da página: nada é armazenado.
+
+const MAX_FOTOS = 5;
+const TIPOS_ACEITOS = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
+const EXTENSOES = /\.(jpe?g|png|webp|heic|heif)$/i;
+const MAX_BYTES = 15 * 1024 * 1024; // 15 MB por arquivo
+const LADO_MAX = 1600; // px — reduz o arquivo antes do envio
+
+const ORGAOS = [
+  { valor: "auto", rotulo: "Detectar" },
+  { valor: "folha", rotulo: "Folha" },
+  { valor: "flor", rotulo: "Flor" },
+  { valor: "fruto", rotulo: "Fruto" },
+  { valor: "semente", rotulo: "Semente" },
+  { valor: "caule", rotulo: "Caule/casca" },
+  { valor: "raiz", rotulo: "Raiz" },
+  { valor: "habito", rotulo: "Planta inteira" },
+];
+
+let _seq = 0;
+
+/** Lê os primeiros bytes para confirmar o formato real do arquivo. */
+async function formatoReal(arquivo) {
+  const b = new Uint8Array(await arquivo.slice(0, 12).arrayBuffer());
+  if (b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return "image/jpeg";
+  if (b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47) return "image/png";
+  if (
+    b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46 &&
+    b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50
+  ) return "image/webp";
+  // HEIC/HEIF (padrão das câmeras de iPhone): caixa "ftyp" com marca heic/heix/mif1/msf1
+  const marca = String.fromCharCode(...b.slice(4, 12));
+  if (/^ftyp(heic|heix|hevc|heim|heis|mif1|msf1)/.test(marca)) return "image/heic";
+  return null;
+}
+
+/** Valida um arquivo. Retorna {ok, erro}. */
+async function validarArquivo(arquivo) {
+  const nome = arquivo.name || "foto";
+  const tipoDeclarado = (arquivo.type || "").toLowerCase();
+  if (tipoDeclarado && !TIPOS_ACEITOS.includes(tipoDeclarado) && !EXTENSOES.test(nome)) {
+    return { ok: false, erro: `“${nome}”: formato não aceito. Use JPG, JPEG, PNG, WEBP ou HEIC.` };
+  }
+  if (arquivo.size > MAX_BYTES) {
+    return { ok: false, erro: `“${nome}”: arquivo maior que 15 MB.` };
+  }
+  if (arquivo.size < 1024) {
+    return { ok: false, erro: `“${nome}”: arquivo vazio ou corrompido.` };
+  }
+  const real = await formatoReal(arquivo);
+  if (!real) {
+    return { ok: false, erro: `“${nome}”: o conteúdo não é uma imagem JPG, PNG, WEBP ou HEIC válida.` };
+  }
+  return { ok: true, tipo: real };
+}
+
+/** Reduz a imagem (lado máximo 1600 px) e converte para JPEG, sem metadados. */
+async function prepararImagem(arquivo) {
+  let bitmap;
+  try {
+    bitmap = await createImageBitmap(arquivo, { imageOrientation: "from-image" });
+  } catch {
+    bitmap = await new Promise((res, rej) => {
+      const img = new Image();
+      img.onload = () => res(img);
+      img.onerror = () => rej(new Error("não foi possível ler a imagem"));
+      img.src = URL.createObjectURL(arquivo);
+    });
+  }
+  const w = bitmap.width, hh = bitmap.height;
+  const escala = Math.min(1, LADO_MAX / Math.max(w, hh));
+  const cw = Math.round(w * escala), ch = Math.round(hh * escala);
+  const canvas = document.createElement("canvas");
+  canvas.width = cw;
+  canvas.height = ch;
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(bitmap, 0, 0, cw, ch);
+  if (bitmap.close) bitmap.close();
+  const blob = await new Promise((res) => canvas.toBlob(res, "image/jpeg", 0.88));
+  if (!blob) throw new Error("falha ao converter a imagem");
+  return { blob, largura: cw, altura: ch };
+}
+
+/**
+ * Estado das fotos selecionadas. Emite "change" quando muda.
+ * foto = {id, blob, url, orgao, nome}
+ */
+class ColecaoFotos extends EventTarget {
+  constructor() {
+    super();
+    this.fotos = [];
+  }
+
+  get cheia() {
+    return this.fotos.length >= MAX_FOTOS;
+  }
+
+  _emitir() {
+    this.dispatchEvent(new Event("change"));
+  }
+
+  /** Adiciona arquivos; retorna lista de mensagens de erro. */
+  async adicionar(arquivos, { substituirId = null } = {}) {
+    const erros = [];
+    const lista = [...arquivos];
+    for (const arq of lista) {
+      if (!substituirId && this.cheia) {
+        erros.push(`Limite de ${MAX_FOTOS} fotos por consulta atingido. Remova uma foto para incluir outra.`);
+        break;
+      }
+      const v = await validarArquivo(arq);
+      if (!v.ok) {
+        erros.push(v.erro);
+        continue;
+      }
+      try {
+        const { blob } = await prepararImagem(arq);
+        const foto = { id: ++_seq, blob, url: URL.createObjectURL(blob), orgao: "auto", nome: arq.name || "foto" };
+        if (substituirId) {
+          const i = this.fotos.findIndex((f) => f.id === substituirId);
+          if (i >= 0) {
+            foto.orgao = this.fotos[i].orgao;
+            URL.revokeObjectURL(this.fotos[i].url);
+            this.fotos[i] = foto;
+          }
+          substituirId = null;
+        } else {
+          this.fotos.push(foto);
+        }
+      } catch {
+        erros.push(
+          v.tipo === "image/heic"
+            ? `“${arq.name || "foto"}”: este navegador não abre fotos HEIC. No iPhone, ative Ajustes › Câmera › Formatos › “Mais compatível”, ou envie a foto em JPG.`
+            : `“${arq.name || "foto"}”: não foi possível processar a imagem.`
+        );
+      }
+    }
+    this._emitir();
+    return erros;
+  }
+
+  remover(id) {
+    const i = this.fotos.findIndex((f) => f.id === id);
+    if (i >= 0) {
+      URL.revokeObjectURL(this.fotos[i].url);
+      this.fotos.splice(i, 1);
+      this._emitir();
+    }
+  }
+
+  definirOrgao(id, orgao) {
+    const f = this.fotos.find((x) => x.id === id);
+    if (f) f.orgao = orgao;
+  }
+
+  limpar() {
+    this.fotos.forEach((f) => URL.revokeObjectURL(f.url));
+    this.fotos = [];
+    this._emitir();
+  }
+}
+
+/**
+ * Câmera ao vivo via MediaDevices/getUserMedia, quando o navegador permitir.
+ * Retorna um controlador ou lança erro com .motivo:
+ *  "indisponivel" | "negada" | "sem-camera" | "erro".
+ */
+async function abrirCameraAoVivo(videoEl) {
+  if (!navigator.mediaDevices?.getUserMedia) {
+    const e = new Error("indisponível");
+    e.motivo = "indisponivel";
+    throw e;
+  }
+  let stream;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } },
+      audio: false,
+    });
+  } catch (err) {
+    const e = new Error(err?.message || "erro");
+    const n = err?.name || "";
+    e.motivo =
+      n === "NotAllowedError" || n === "SecurityError" ? "negada" :
+      n === "NotFoundError" || n === "OverconstrainedError" ? "sem-camera" :
+      n === "NotSupportedError" ? "indisponivel" : "erro";
+    // Em quadros protegidos (como o do Claude) a política bloqueia a câmera
+    // e o navegador informa NotAllowedError sem perguntar ao usuário.
+    if (e.motivo === "negada" && /policy|permissions/i.test(err?.message || "")) e.motivo = "indisponivel";
+    throw e;
+  }
+  videoEl.srcObject = stream;
+  await videoEl.play().catch(() => {});
+  return {
+    async capturar() {
+      const w = videoEl.videoWidth, hh = videoEl.videoHeight;
+      const c = document.createElement("canvas");
+      c.width = w;
+      c.height = hh;
+      c.getContext("2d").drawImage(videoEl, 0, 0, w, hh);
+      const blob = await new Promise((r) => c.toBlob(r, "image/jpeg", 0.92));
+      return new File([blob], `camera-${Date.now()}.jpg`, { type: "image/jpeg" });
+    },
+    fechar() {
+      stream.getTracks().forEach((t) => t.stop());
+      videoEl.srcObject = null;
+    },
+  };
+}
+
+return { MAX_FOTOS, TIPOS_ACEITOS, EXTENSOES, MAX_BYTES, ORGAOS, validarArquivo, ColecaoFotos, abrirCameraAoVivo };
+})();
+
+// ===== acervo.js =====
+const M_acervo = (() => {
+const { slugEspecie } = M_util;
+// Acervo do Herbário: fichas verificadas publicadas com o site (dados/especies/*.json)
+// e histórico de identificações guardado só neste aparelho.
+
+
+const SECOES = ["geral", "raiz", "caule", "folha", "flor", "fruto", "semente", "curiosidades"];
+
+let _indice = null;
+
+// Versão em arquivo único: os dados vêm embutidos na própria página.
+const EMBUTIDO = typeof window !== "undefined" ? window.__HERBARIO_DADOS__ : null;
+
+async function listarEspecies() {
+  if (_indice) return _indice;
+  if (EMBUTIDO) return (_indice = EMBUTIDO.indice.especies || []);
+  try {
+    const r = await fetch("dados/especies/index.json", { cache: "no-cache" });
+    _indice = r.ok ? (await r.json()).especies || [] : [];
+  } catch {
+    _indice = [];
+  }
+  return _indice;
+}
+
+/** Ficha verificada {slug, cabecalho, secoes} ou null. */
+async function obterFicha(nomeOuSlug) {
+  const slug = nomeOuSlug.includes(" ") ? slugEspecie(nomeOuSlug) : nomeOuSlug;
+  const idx = await listarEspecies();
+  if (!idx.some((e) => e.slug === slug)) return null;
+  if (EMBUTIDO?.fichas?.[slug]) {
+    const d = EMBUTIDO.fichas[slug];
+    return { slug, cabecalho: d.cabecalho, secoes: d.secoes };
+  }
+  try {
+    const r = await fetch(`dados/especies/${slug}.json`, { cache: "no-cache" });
+    if (!r.ok) return null;
+    const d = await r.json();
+    return { slug, cabecalho: d.cabecalho, secoes: d.secoes };
+  } catch {
+    return null;
+  }
+}
+
+// ---------- Histórico (localStorage, sem fotos) ----------
+const CHAVE = "herbario.historico.v1";
+
+function ler() {
+  try {
+    return JSON.parse(localStorage.getItem(CHAVE) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+async function registrarHistorico(res) {
+  try {
+    const h = ler();
+    h.unshift({
+      data: res.data,
+      confirmada: !!res.confirmada,
+      candidatas: (res.candidatas || []).map((c) => ({ nome_cientifico: c.nome_cientifico, nome_popular: c.nome_popular?.[0] || "", familia: c.familia, confianca: c.confianca })),
+    });
+    localStorage.setItem(CHAVE, JSON.stringify(h.slice(0, 30)));
+  } catch {
+    /* opcional */
+  }
+}
+
+async function listarHistorico(max = 8) {
+  return ler().slice(0, max);
+}
+
+return { SECOES, listarEspecies, obterFicha, registrarHistorico, listarHistorico };
+})();
+
+// ===== identificacao.js =====
+const M_identificacao = (() => {
+const { CONFIG } = M_config;
+const { lista, texto } = M_util;
+// ETAPA 1 — Identificação pelas fotografias, via API do Pl@ntNet.
+// Documentação: https://my.plantnet.org/doc/api/identify
+
+
+
+const ORGAOS_FICHA = ["raiz", "caule", "folha", "flor", "fruto", "semente"];
+
+// Órgãos aceitos pelo Pl@ntNet: leaf, flower, fruit, bark, auto.
+const PARA_PLANTNET = { folha: "leaf", flor: "flower", fruto: "fruit", caule: "bark" };
+const DE_PLANTNET = { leaf: "folha", flower: "flor", fruit: "fruto", bark: "caule", habit: "habito" };
+const ROTULO = { folha: "folha", flor: "flor", fruto: "fruto", caule: "caule/casca", habito: "planta inteira" };
+
+function identificacaoConfigurada() {
+  return !!CONFIG.PLANTNET_API_KEY;
+}
+
+function erro(code, message) {
+  const e = new Error(message);
+  e.code = code;
+  return e;
+}
+
+async function identificar(fotos, { signal, onEtapa } = {}) {
+  if (!identificacaoConfigurada()) throw erro("nao_configurado", "chave do Pl@ntNet ausente");
+  const usadas = fotos.slice(0, 5);
+  const form = new FormData();
+  usadas.forEach((f, i) => {
+    form.append("images", f.blob, `foto-${i + 1}.jpg`);
+    form.append("organs", PARA_PLANTNET[f.orgao] || "auto");
+  });
+  const url =
+    `https://my-api.plantnet.org/v2/identify/${encodeURIComponent(CONFIG.PLANTNET_PROJETO)}` +
+    `?api-key=${encodeURIComponent(CONFIG.PLANTNET_API_KEY)}&lang=pt&nb-results=5&include-related-images=true`;
+
+  onEtapa?.("Enviando as fotos ao Pl@ntNet…");
+  let resp;
+  try {
+    resp = await fetch(url, { method: "POST", body: form, signal });
+  } catch (e) {
+    if (e?.name === "AbortError") throw erro("cancelled", "cancelado");
+    throw erro("rede", "falha de conexão");
+  }
+  onEtapa?.("Comparando com o banco de imagens do Pl@ntNet…");
+
+  if (resp.status === 404) return resultadoVazio(usadas.length, "nenhuma");
+  if (resp.status === 401 || resp.status === 403) throw erro("chave", "chave recusada");
+  if (resp.status === 429) throw erro("cota", "cota diária esgotada");
+  if (!resp.ok) throw erro("servico", `Pl@ntNet respondeu ${resp.status}`);
+  const r = await resp.json();
+  return normalizar(r, usadas.length);
+}
+
+function resultadoVazio(n, motivo) {
+  return {
+    e_planta: motivo !== "nao_planta",
+    observacoes: {},
+    orgaos_por_foto: [],
+    candidatas: [],
+    justificativa: "O Pl@ntNet não reconheceu nenhuma espécie com estas fotos (a imagem pode não mostrar uma planta, estar desfocada ou enquadrar pouco do órgão).",
+    fotos_sugeridas: ["Folha inteira, frente e verso, sobre fundo neutro", "Flores ou frutos, se houver", "A planta inteira"],
+    confirmada: false,
+    nivel: "inconclusiva",
+    fotos_enviadas: n,
+    fotos_ignoradas: 0,
+    data: new Date().toISOString(),
+  };
+}
+
+function normalizar(r, n) {
+  // Órgão reconhecido em cada foto (o que de fato foi "visto").
+  const observacoes = {};
+  const orgaos_por_foto = [];
+  lista(r.predictedOrgans).forEach((p, i) => {
+    const o = DE_PLANTNET[p.organ] || null;
+    orgaos_por_foto[i] = o ? ROTULO[o] : "";
+    if (o) {
+      const chave = o === "habito" ? "habito" : o;
+      (observacoes[chave] ??= []).push(`Foto ${i + 1}: reconhecida como ${ROTULO[o]} (confiança ${Math.round((p.score || 0) * 100)}%).`);
+    }
+  });
+
+  const resultados = lista(r.results);
+  const candidatas = resultados.slice(0, 3).map((x) => {
+    const sp = x.species || {};
+    return {
+      nome_cientifico: texto(sp.scientificNameWithoutAuthor),
+      autoria: texto(sp.scientificNameAuthorship),
+      nome_popular: lista(sp.commonNames).map(String),
+      familia: texto(sp.family?.scientificNameWithoutAuthor),
+      genero: texto(sp.genus?.scientificNameWithoutAuthor),
+      confianca: Math.max(0, Math.min(1, Number(x.score) || 0)),
+      gbif: x.gbif?.id || null,
+      powo: x.powo?.id || null,
+      imagens: lista(x.images)
+        .slice(0, 3)
+        .map((im) => ({ url: im.url?.m || im.url?.s || "", autor: texto(im.author), licenca: texto(im.license), orgao: texto(im.organ) }))
+        .filter((im) => im.url),
+      a_favor: [],
+      contra_ou_faltando: [],
+    };
+  });
+
+  const [top, seg] = candidatas;
+  const confirmada = !!top && top.confianca >= CONFIG.LIMIAR_CONFIRMACAO && (!seg || top.confianca - seg.confianca >= CONFIG.MARGEM_MINIMA);
+  let nivel = "inconclusiva";
+  if (top) nivel = top.confianca >= CONFIG.LIMIAR_CONFIRMACAO ? "alta" : top.confianca >= 0.2 ? "media" : "baixa";
+
+  // Explicação honesta: o Pl@ntNet compara imagens; não lista caracteres.
+  for (const c of candidatas) {
+    c.a_favor.push(`Semelhança visual com fotos de referência: ${Math.round(c.confianca * 100)}%.`);
+    if (top && c !== top && c.genero && c.genero === top.genero) c.a_favor.push(`Mesmo gênero da 1ª candidata (${c.genero}).`);
+  }
+  const mesmoGenero = candidatas.length > 1 && candidatas.every((c) => c.genero && c.genero === top.genero);
+  const mesmaFamilia = candidatas.length > 1 && candidatas.every((c) => c.familia && c.familia === top.familia);
+
+  let justificativa = "";
+  if (!top) justificativa = "Nenhuma espécie provável.";
+  else if (confirmada) justificativa = `O Pl@ntNet atribuiu ${Math.round(top.confianca * 100)}% de semelhança a ${top.nome_cientifico}, bem à frente das demais candidatas.`;
+  else {
+    justificativa = `A semelhança mais alta foi ${Math.round(top.confianca * 100)}%, o que não basta para confirmar a espécie.`;
+    if (mesmoGenero) justificativa += ` As candidatas são todas do gênero ${top.genero}: o gênero é mais seguro que a espécie.`;
+    else if (mesmaFamilia) justificativa += ` As candidatas são todas da família ${top.familia}.`;
+  }
+
+  const sugestoes = [];
+  if (!observacoes.flor) sugestoes.push("Flores (de frente e de lado), se houver");
+  if (!observacoes.fruto) sugestoes.push("Frutos, se houver");
+  if (!observacoes.folha) sugestoes.push("Uma folha inteira, frente e verso");
+  if (!observacoes.caule) sugestoes.push("A casca do tronco ou do caule");
+
+  return {
+    e_planta: true,
+    observacoes,
+    orgaos_por_foto,
+    candidatas,
+    justificativa,
+    fotos_sugeridas: confirmada ? [] : sugestoes.slice(0, 3),
+    confirmada,
+    nivel,
+    restantes_hoje: r.remainingIdentificationRequests ?? null,
+    fotos_enviadas: n,
+    fotos_ignoradas: 0,
+    data: new Date().toISOString(),
+  };
+}
+
+// ---------- Busca por nome (GBIF + iNaturalist) ----------
+
+async function buscarNome(consulta, { signal } = {}) {
+  const q = consulta.trim().slice(0, 120);
+  const [gbif, inat] = await Promise.allSettled([
+    fetch(`https://api.gbif.org/v1/species/suggest?q=${encodeURIComponent(q)}&kingdomKey=6&rank=SPECIES&limit=8`, { signal }).then((r) => (r.ok ? r.json() : [])),
+    fetch(`https://api.inaturalist.org/v1/taxa/autocomplete?q=${encodeURIComponent(q)}&rank=species&iconic_taxa=Plantae&locale=pt-BR&per_page=8`, { signal }).then((r) => (r.ok ? r.json() : { results: [] })),
+  ]);
+  const vistos = new Map();
+  for (const x of inat.status === "fulfilled" ? lista(inat.value.results) : []) {
+    if (x.rank !== "species" || x.iconic_taxon_name !== "Plantae") continue;
+    vistos.set(x.name, { nome_cientifico: x.name, autoria: "", nome_popular: x.preferred_common_name ? [x.preferred_common_name] : [], familia: "", observacao: x.matched_term && x.matched_term !== x.name ? `encontrado por “${x.matched_term}”` : "" });
+  }
+  for (const x of gbif.status === "fulfilled" ? lista(gbif.value) : []) {
+    const nome = texto(x.canonicalName);
+    if (!nome || x.rank !== "SPECIES") continue;
+    const atual = vistos.get(nome);
+    const fam = texto(x.family);
+    const obs = x.status && x.status !== "ACCEPTED" ? "sinônimo no GBIF — o nome aceito aparece na ficha" : "";
+    if (atual) {
+      atual.familia ||= fam;
+      atual.observacao ||= obs;
+    } else vistos.set(nome, { nome_cientifico: nome, autoria: "", nome_popular: [], familia: fam, observacao: obs });
+  }
+  if (gbif.status === "rejected" && inat.status === "rejected") throw erro("rede", "falha de conexão");
+  return { resultados: [...vistos.values()].slice(0, 8), nota: "" };
+}
+
+return { ORGAOS_FICHA, identificacaoConfigurada, identificar, buscarNome };
+})();
+
+// ===== ficha.js =====
+const M_ficha = (() => {
+const { obterFicha, SECOES } = M_acervo;
+const { lista, texto, slugEspecie } = M_util;
+// ETAPA 2 — Montagem da ficha botânica.
+//
+//  1. Ficha VERIFICADA do acervo (dados/especies/<slug>.json), com referência por item.
+//  2. Para as demais espécies, ficha de "bases abertas": nome aceito, sinônimos e
+//     nomes populares do GBIF e do iNaturalist, e trechos originais das floras que
+//     publicam descrições no GBIF, separados por órgão. Nada é inventado: órgão sem
+//     descrição nas bases aparece como "sem dados".
+
+
+
+const ROTULOS = {
+  geral: "Identificação geral",
+  raiz: "Raiz",
+  caule: "Caule",
+  folha: "Folha",
+  flor: "Flor",
+  fruto: "Fruto",
+  semente: "Semente",
+  curiosidades: "Curiosidades botânicas",
+};
+
+// Palavras-chave (pt/en/es) para separar frases por órgão.
+const CHAVES = {
+  raiz: /\b(roots?|rooted|taproot|ra[ií]z(es)?|radicular|rizoma|rhizomes?)\b/i,
+  caule: /\b(stems?|trunks?|bark|branch(es|lets)?|twigs?|caules?|troncos?|casca|ramos?|tallos?|corteza|culms?|colmos?)\b/i,
+  folha: /\b(lea(f|ves)|leaflets?|petioles?|blades?|stipules?|folhas?|fol[ií]olos?|limbo|pec[ií]olo|hojas?|est[ií]pulas?)\b/i,
+  flor: /\b(flowers?|inflorescences?|panicles?|racemes?|petals?|sepals?|stamens?|anthers?|ovary|style|stigma|corolla|calyx|flor(es)?|inflorescências?|p[ée]talas?|s[ée]palas?|estames?|ov[áa]rio|corola|c[áa]lice)\b/i,
+  fruto: /\b(fruits?|drupes?|berr(y|ies)|capsules?|pods?|legumes?|achenes?|samaras?|frutos?|bagas?|drupas?|c[áa]psulas?|vagens?)\b/i,
+  semente: /\b(seeds?|sementes?|semillas?|embryos?|cotyledons?)\b/i,
+  habito: /\b(trees?|shrubs?|herbs?|climbers?|lianas?|vines?|palms?|árvores?|arbustos?|ervas?|trepadeiras?|[áa]rbol(es)?|perennial|annual|perene|anual)\b/i,
+  distribuicao: /\b(native|distribut\w*|habitat|occurs?|found in|cultivated|naturali[sz]ed|nativ[ao]|distribui\w*|ocorre|cultivad[ao]|bioma|forests?|florestas?)\b/i,
+};
+
+const IDIOMAS = { eng: "inglês", en: "inglês", por: "português", pt: "português", spa: "espanhol", es: "espanhol", fra: "francês", fr: "francês", deu: "alemão", de: "alemão" };
+
+async function json(url, signal) {
+  const r = await fetch(url, { signal });
+  if (!r.ok) throw new Error(`${r.status}`);
+  return r.json();
+}
+
+function limparHtml(t) {
+  const d = document.createElement("div");
+  d.innerHTML = String(t || "");
+  return (d.textContent || "").replace(/\s+/g, " ").trim();
+}
+
+function frases(t) {
+  return t
+    .split(/(?<=[.;])\s+(?=[A-ZÀ-Ý0-9])/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 15);
+}
+
+function cortar(t, n = 420) {
+  return t.length > n ? t.slice(0, n).replace(/\s+\S*$/, "") + "…" : t;
+}
+
+// ---------- cache local (7 dias) ----------
+const CACHE = "herbario.fichas.v1.";
+function lerCache(slug) {
+  try {
+    const c = JSON.parse(localStorage.getItem(CACHE + slug) || "null");
+    if (c && Date.now() - c.t < 7 * 864e5) return c.f;
+  } catch {}
+  return null;
+}
+function gravarCache(slug, f) {
+  try {
+    localStorage.setItem(CACHE + slug, JSON.stringify({ t: Date.now(), f }));
+  } catch {}
+}
+
+async function carregarFicha(nome, { extra = {}, signal, onParcial, onEtapa } = {}) {
+  const slug = slugEspecie(nome);
+  onEtapa?.("Consultando o acervo verificado…");
+  const verificada = await obterFicha(slug);
+  if (verificada) return { ...verificada, fonte: "acervo-verificado" };
+
+  const emCache = lerCache(slug);
+  if (emCache) return emCache;
+
+  onEtapa?.("Consultando GBIF e iNaturalist…");
+  const f = await montarDeBasesAbertas(nome, extra, signal, onEtapa);
+  if (f) gravarCache(slug, f);
+  return f;
+}
+
+async function montarDeBasesAbertas(nome, extra, signal) {
+  // 1. Nome aceito no GBIF
+  let chave = extra.gbif || null;
+  let especie;
+  try {
+    if (!chave) {
+      const m = await json(`https://api.gbif.org/v1/species/match?name=${encodeURIComponent(nome)}&kingdom=Plantae`, signal);
+      if (!m.usageKey || m.matchType === "NONE") {
+        const e = new Error("não encontrada");
+        e.code = "nao_reconhecida";
+        throw e;
+      }
+      chave = m.acceptedUsageKey || m.usageKey;
+    }
+    especie = await json(`https://api.gbif.org/v1/species/${chave}`, signal);
+    if (especie.acceptedKey && especie.acceptedKey !== especie.key) {
+      especie = await json(`https://api.gbif.org/v1/species/${especie.acceptedKey}`, signal);
+    }
+  } catch (e) {
+    if (e?.name === "AbortError") throw Object.assign(new Error("cancelado"), { code: "cancelled" });
+    if (e?.code) throw e;
+    throw Object.assign(new Error("rede"), { code: "rede" });
+  }
+  const key = especie.key;
+  const aceito = texto(especie.canonicalName) || nome;
+
+  const [vern, sins, descs, inat] = await Promise.allSettled([
+    json(`https://api.gbif.org/v1/species/${key}/vernacularNames?limit=300`, signal),
+    json(`https://api.gbif.org/v1/species/${key}/synonyms?limit=30`, signal),
+    json(`https://api.gbif.org/v1/species/${key}/descriptions?limit=60`, signal),
+    json(`https://api.inaturalist.org/v1/taxa?q=${encodeURIComponent(aceito)}&rank=species&locale=pt-BR&per_page=5`, signal),
+  ]);
+
+  const referencias = [];
+  const ref = (citacao, url) => {
+    const existente = referencias.find((r) => r.citacao === citacao);
+    if (existente) return existente.id;
+    const id = "R" + (referencias.length + 1);
+    referencias.push({ id, citacao, url, consultado_em: new Date().toISOString().slice(0, 10), secoes: [] });
+    return id;
+  };
+  const rGbif = ref(`GBIF Secretariat. ${aceito} ${texto(especie.authorship)}. GBIF Backbone Taxonomy.`, `https://www.gbif.org/species/${key}`);
+
+  // Nomes populares em português (GBIF + iNaturalist)
+  const populares = new Set(lista(extra.nome_popular).map((s) => s.toLowerCase()));
+  if (vern.status === "fulfilled")
+    for (const v of lista(vern.value.results)) if (/^(por|pt)/i.test(v.language || "")) populares.add(String(v.vernacularName).toLowerCase());
+
+  let foto = null;
+  let rInat = null;
+  if (inat.status === "fulfilled") {
+    const t = lista(inat.value.results).find((x) => x.name === aceito);
+    if (t) {
+      if (t.preferred_common_name) populares.add(t.preferred_common_name.toLowerCase());
+      rInat = ref(`iNaturalist. ${aceito}.`, `https://www.inaturalist.org/taxa/${t.id}`);
+      const p = t.default_photo;
+      if (p?.medium_url && p.license_code) foto = { url: p.medium_url, atribuicao: texto(p.attribution), fonte: `https://www.inaturalist.org/taxa/${t.id}` };
+    }
+  }
+
+  const sinonimos = sins.status === "fulfilled" ? lista(sins.value.results).map((s) => texto(s.scientificName)).filter(Boolean).slice(0, 12) : [];
+
+  // Trechos das descrições por órgão
+  const porOrgao = { raiz: [], caule: [], folha: [], flor: [], fruto: [], semente: [], habito: [], distribuicao: [] };
+  if (descs.status === "fulfilled") {
+    for (const d of lista(descs.value.results)) {
+      const txt = limparHtml(d.description);
+      if (txt.length < 20) continue;
+      const fonte = texto(d.source) || "Descrição publicada no GBIF";
+      const idR = ref(cortar(fonte, 260) + (d.license ? ` Licença: ${String(d.license).replace(/^https?:\/\//, "")}.` : ""), `https://www.gbif.org/species/${d.sourceTaxonKey || key}`);
+      const idioma = IDIOMAS[String(d.language || "").toLowerCase()] || d.language || "";
+      const agrupado = {};
+      for (const fr of frases(txt)) {
+        for (const [org, re] of Object.entries(CHAVES)) {
+          if (re.test(fr)) {
+            (agrupado[org] ??= []).push(fr);
+            break; // cada frase vai para o primeiro órgão correspondente
+          }
+        }
+      }
+      for (const [org, lst] of Object.entries(agrupado)) {
+        if (porOrgao[org].length >= 4) continue;
+        porOrgao[org].push({ texto: cortar(lst.slice(0, 3).join(" ")), fonte: idR, idioma, tipo: texto(d.type) });
+      }
+    }
+  }
+
+  const item = (caractere, valor, fontes, extraItem = {}) => ({ caractere, valor, termos: [], certeza: "media", origem: "literatura", fontes, ...extraItem });
+  const trechoItens = (org) =>
+    porOrgao[org].map((t) => item(`Descrição de flora${t.idioma ? ` (texto original, ${t.idioma})` : ""}`, t.texto, [t.fonte]));
+
+  const secoes = {};
+  const agora = new Date().toISOString();
+  const LIM = "Trechos originais das floras que publicam descrições no GBIF, sem revisão do Herbário. Podem estar em outro idioma ou descrever o gênero.";
+  for (const org of ["raiz", "caule", "folha", "flor", "fruto", "semente"]) {
+    const itens = trechoItens(org);
+    secoes[org] = {
+      status: "fontes_abertas",
+      atualizado_em: agora,
+      conteudo: itens.length
+        ? { resumo: "", itens, variacao: "", divergencias: [], limitacoes: LIM }
+        : { resumo: "", itens: [], variacao: "", divergencias: [], limitacoes: `Nenhuma descrição de ${ROTULOS[org].toLowerCase()} foi encontrada nas bases abertas consultadas. Esta espécie ainda não tem ficha verificada no Herbário; confira as bases indicadas em Referências.` },
+    };
+  }
+  const geralItens = [
+    item("Nome aceito", `${aceito} ${texto(especie.authorship)}`.trim(), [rGbif], { certeza: "alta" }),
+    item("Família", texto(especie.family) || "—", [rGbif], { certeza: "alta" }),
+    item("Status taxonômico no GBIF", especie.taxonomicStatus === "ACCEPTED" ? "aceito" : texto(especie.taxonomicStatus).toLowerCase(), [rGbif], { certeza: "alta" }),
+  ];
+  if (populares.size) geralItens.push(item("Nomes populares", [...populares].slice(0, 8).join(", "), [rInat, rGbif].filter(Boolean), { certeza: "media" }));
+  for (const t of porOrgao.habito.slice(0, 2)) geralItens.push(item(`Hábito — descrição de flora${t.idioma ? ` (${t.idioma})` : ""}`, t.texto, [t.fonte]));
+  for (const t of porOrgao.distribuicao.slice(0, 3)) geralItens.push(item(`Distribuição e habitat — descrição de flora${t.idioma ? ` (${t.idioma})` : ""}`, t.texto, [t.fonte]));
+  secoes.geral = {
+    status: "fontes_abertas",
+    atualizado_em: agora,
+    conteudo: { resumo: "", itens: geralItens, variacao: "", divergencias: [], limitacoes: "Origem, biomas e importância ecológica e econômica entram quando a espécie receber ficha verificada." },
+  };
+  secoes.curiosidades = { status: "fontes_abertas", atualizado_em: agora, conteudo: { itens: [], sem_curiosidades: true, limitacoes: "" } };
+
+  // Marca em que seções cada referência foi usada
+  for (const s of SECOES) for (const it of lista(secoes[s]?.conteudo?.itens)) for (const id of lista(it.fontes)) {
+    const r = referencias.find((x) => x.id === id);
+    if (r && !r.secoes.includes(s)) r.secoes.push(s);
+  }
+  const usadas = new Set(SECOES.flatMap((s) => lista(secoes[s]?.conteudo?.itens).flatMap((i) => i.fontes)));
+
+  return {
+    slug: slugEspecie(aceito),
+    fonte: "bases-abertas",
+    cabecalho: {
+      nome_cientifico: aceito,
+      autoria: texto(especie.authorship),
+      nome_consultado: nome,
+      nome_aceito_difere: slugEspecie(aceito) !== slugEspecie(nome),
+      familia: texto(especie.family),
+      genero: texto(especie.genus),
+      epiteto: aceito.split(" ")[1] || "",
+      nome_popular: [...populares],
+      sinonimos,
+      nota_taxonomica: "",
+      status: "fontes_abertas",
+      foto,
+      referencias: referencias.filter((r) => usadas.has(r.id)),
+    },
+    secoes,
+  };
+}
+
+function normalizarSecao(_, s) {
+  return s;
+}
+
+return { ROTULOS, carregarFicha, normalizarSecao };
+})();
+
+// ===== render.js =====
+const M_render = (() => {
+const { h, lista, texto, formatarData } = M_util;
+const { ROTULOS } = M_ficha;
+const { SECOES } = M_acervo;
+const { BIBLIOGRAFIA_BASE, basesParaEspecie } = M_fontes;
+// Renderização da ficha botânica e dos blocos de resultado.
+
+
+
+
+
+const ROTULO_CERTEZA = { alta: "certeza alta", media: "certeza média", baixa: "certeza baixa" };
+
+const ICONES = {
+  geral: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 8v.01M12 11v5"/></svg>`,
+  raiz: `<svg viewBox="0 0 24 24"><path d="M12 3v7M12 10c0 4-3 5-5 9M12 10c0 4 3 5 5 9M12 13c0 3 0 5 0 8M9 15l-2 1M15 15l2 1"/></svg>`,
+  caule: `<svg viewBox="0 0 24 24"><path d="M12 21V4M12 9c-2-2-4-2-6-1M12 14c2-2 4-2 6-1M10 21h4"/></svg>`,
+  folha: `<svg viewBox="0 0 24 24"><path d="M5 19C5 10 11 4 20 4c0 9-6 15-15 15z"/><path d="M5 19L14 10"/></svg>`,
+  flor: `<svg viewBox="0 0 24 24"><circle cx="12" cy="10" r="2.2"/><path d="M12 7.8c0-3 3-3 3-.5 2.5-1 3.5 2 1 3 2 1.5.5 4-1.5 3 0 2.5-3 3-3 .5-2 2-4.5.5-3-1.5-2.5-.5-2.5-3.5 0-3.5-1-2.5 2-3.5 3.5-1z"/><path d="M12 15v6"/></svg>`,
+  fruto: `<svg viewBox="0 0 24 24"><path d="M12 7c4.5 0 7 3 7 7s-3 7-7 7-7-3-7-7 2.5-7 7-7z"/><path d="M12 7c0-2 1-3.5 3-4"/></svg>`,
+  semente: `<svg viewBox="0 0 24 24"><path d="M12 3c4 4 5 8 5 11a5 5 0 0 1-10 0c0-3 1-7 5-11z"/><path d="M12 10v8"/></svg>`,
+  curiosidades: `<svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>`,
+  referencias: `<svg viewBox="0 0 24 24"><path d="M5 4h10l4 4v12H5z"/><path d="M15 4v4h4M8 12h8M8 16h6"/></svg>`,
+};
+
+function icone(nome) {
+  const span = h("span", { class: "icone", "aria-hidden": "true" });
+  span.innerHTML = ICONES[nome] || "";
+  return span;
+}
+
+function nomeCientifico(nome, autoria) {
+  return h("span", { class: "nome-cientifico" }, h("i", {}, nome), autoria ? h("span", { class: "autoria" }, " " + autoria) : null);
+}
+
+function selo(status) {
+  if (status === "fontes_abertas")
+    return h("span", { class: "selo selo-ia", title: "Montada automaticamente com dados do GBIF e do iNaturalist; ainda não revisada" }, "Bases abertas · não revisada");
+  if (status === "verificada")
+    return h("span", { class: "selo selo-verificada", title: "Conferida com literatura e bases botânicas, com referências" }, "Ficha verificada");
+  return h(
+    "span",
+    { class: "selo selo-ia", title: "Produzida pela IA a partir do conhecimento do modelo; ainda não conferida com as fontes" },
+    "Gerada por IA · conferir"
+  );
+}
+
+function termos(lst) {
+  const t = lista(lst);
+  if (!t.length) return null;
+  return h(
+    "div",
+    { class: "termos" },
+    t.map((x) => h("details", { class: "termo" }, h("summary", {}, x.termo), h("span", { class: "termo-def" }, x.definicao)))
+  );
+}
+
+function origemBadge(item, refsMap) {
+  if (item.origem === "foto") return h("span", { class: "origem origem-foto" }, "Observado na foto");
+  if (item.origem === "literatura") {
+    const ids = lista(item.fontes);
+    return h(
+      "span",
+      { class: "origem origem-lit" },
+      "Literatura ",
+      ids.map((id) => h("a", { href: "#ref-" + id, class: "ref-link", title: refsMap[id]?.citacao || "", onclick: irParaRef(id) }, `[${refsMap[id]?.n ?? id}]`))
+    );
+  }
+  return h("span", { class: "origem origem-ia", title: "Conhecimento do modelo de IA; confira nas bases indicadas" }, "IA · conferir");
+}
+
+function irParaRef(id) {
+  return (ev) => {
+    ev.preventDefault();
+    const raiz = ev.target.closest(".ficha");
+    raiz?.querySelector('[data-aba="referencias"]')?.click();
+    requestAnimationFrame(() => raiz?.querySelector("#ref-" + CSS.escape(id))?.scrollIntoView({ behavior: "smooth", block: "center" }));
+  };
+}
+
+function caixa(tipo, titulo, conteudo) {
+  if (!conteudo || (Array.isArray(conteudo) && !conteudo.length)) return null;
+  return h(
+    "div",
+    { class: `nota nota-${tipo}` },
+    h("strong", {}, titulo),
+    Array.isArray(conteudo) ? h("ul", {}, conteudo.map((c) => h("li", {}, c))) : h("p", {}, conteudo)
+  );
+}
+
+function blocoObservado(obs) {
+  const l = lista(obs);
+  if (!l.length) return null;
+  return h(
+    "div",
+    { class: "observado" },
+    h("div", { class: "observado-tit" }, h("span", { class: "ponto-foto" }), "Observado nas suas fotos"),
+    h("ul", {}, l.map((o) => h("li", {}, o)))
+  );
+}
+
+function secaoOrgao(secao, dados, ctx) {
+  const c = dados?.conteudo || {};
+  const corpo = h("div", { class: "secao-corpo" });
+  corpo.append(...[blocoObservado(ctx.observacoes?.[secao === "geral" ? "habito" : secao])].filter(Boolean));
+
+  if (!dados) {
+    corpo.append(h("div", { class: "carregando-secao" }, h("span", { class: "spinner pequeno" }), "Pesquisando esta seção…"));
+    return corpo;
+  }
+  if (c.resumo) corpo.append(h("p", { class: "resumo" }, c.resumo));
+
+  const itens = lista(c.itens);
+  if (itens.length) {
+    corpo.append(
+      h(
+        "dl",
+        { class: "caracteres" },
+        itens.map((it) =>
+          h(
+            "div",
+            { class: "caractere" },
+            h("dt", {}, it.caractere || "—"),
+            h(
+              "dd",
+              {},
+              h("span", { class: "valor" }, it.valor),
+              h(
+                "span",
+                { class: "meta" },
+                origemBadge(it, ctx.refsMap),
+                it.certeza ? h("span", { class: `certeza certeza-${it.certeza}` }, ROTULO_CERTEZA[it.certeza]) : null
+              ),
+              termos(it.termos)
+            )
+          )
+        )
+      )
+    );
+  } else if (!c.resumo) {
+    corpo.append(h("p", { class: "vazio" }, "Sem informações para esta seção nas fontes consultadas."));
+  }
+
+  corpo.append(
+    ...[
+      caixa("variacao", "Variação", c.variacao),
+      caixa("divergencia", "Divergências", lista(c.divergencias)),
+      caixa("limite", "Limitações", c.limitacoes),
+    ].filter(Boolean)
+  );
+  corpo.append(rodapeSecao(secao, dados, ctx));
+  return corpo;
+}
+
+function secaoCuriosidades(dados, ctx) {
+  const corpo = h("div", { class: "secao-corpo" });
+  if (!dados) {
+    corpo.append(h("div", { class: "carregando-secao" }, h("span", { class: "spinner pequeno" }), "Pesquisando curiosidades…"));
+    return corpo;
+  }
+  const c = dados.conteudo || {};
+  const itens = lista(c.itens);
+  if (!itens.length) {
+    corpo.append(h("p", { class: "vazio" }, "Não foram encontradas curiosidades específicas desta espécie nas fontes consultadas."));
+  } else {
+    corpo.append(
+      h(
+        "div",
+        { class: "curiosidades" },
+        itens.map((it) =>
+          h(
+            "article",
+            { class: "curiosidade" },
+            h("span", { class: "categoria" }, it.categoria || "outro"),
+            h("h4", {}, it.titulo),
+            h("p", {}, it.texto),
+            h(
+              "span",
+              { class: "meta" },
+              origemBadge(it, ctx.refsMap),
+              it.certeza ? h("span", { class: `certeza certeza-${it.certeza}` }, ROTULO_CERTEZA[it.certeza]) : null
+            )
+          )
+        )
+      )
+    );
+  }
+  corpo.append(...[caixa("limite", "Limitações", c.limitacoes)].filter(Boolean));
+  corpo.append(rodapeSecao("curiosidades", dados, ctx));
+  return corpo;
+}
+
+function rodapeSecao(secao, dados, ctx) {
+  const rod = h(
+    "div",
+    { class: "secao-rodape" },
+    h("span", {}, dados.status === "verificada" ? "Seção verificada" : "Seção gerada por IA", dados.atualizado_em ? ` · atualizada em ${formatarData(dados.atualizado_em)}` : "")
+  );
+  if (dados.status !== "verificada" && ctx.onRegenerar) {
+    const btn = h("button", { class: "btn-link", type: "button" }, "Gerar esta seção novamente");
+    btn.addEventListener("click", async () => {
+      btn.disabled = true;
+      btn.textContent = "Gerando…";
+      const ok = await ctx.onRegenerar(secao);
+      if (!ok) {
+        btn.disabled = false;
+        btn.textContent = "Tentar novamente";
+      }
+    });
+    rod.append(btn);
+  }
+  return rod;
+}
+
+function secaoReferencias(ctx) {
+  const { cabecalho, nome } = ctx;
+  const refs = lista(cabecalho?.referencias);
+  const corpo = h("div", { class: "secao-corpo referencias" });
+
+  corpo.append(h("h4", {}, "Fontes desta ficha"));
+  if (refs.length) {
+    corpo.append(
+      h(
+        "ol",
+        { class: "lista-refs" },
+        refs.map((r) =>
+          h(
+            "li",
+            { id: "ref-" + r.id },
+            h("span", {}, r.citacao),
+            r.url ? h("a", { href: r.url, target: "_blank", rel: "noopener" }, " Acessar") : null,
+            r.consultado_em ? h("span", { class: "consultado" }, ` Consultado em ${formatarData(r.consultado_em)}.`) : null,
+            r.secoes?.length ? h("span", { class: "usado-em" }, ` Usado em: ${r.secoes.map((s) => ROTULOS[s] || s).join(", ")}.`) : null
+          )
+        )
+      )
+    );
+  } else {
+    corpo.append(
+      h(
+        "p",
+        { class: "nota nota-limite" },
+        "Nenhuma fonte foi encontrada para esta ficha. Use as bases abaixo para consultar a espécie."
+      )
+    );
+  }
+
+  corpo.append(h("h4", {}, "Bases para conferência"));
+  corpo.append(
+    h(
+      "ul",
+      { class: "lista-bases" },
+      basesParaEspecie(nome).map((b) => h("li", {}, h("a", { href: b.url, target: "_blank", rel: "noopener" }, b.nome), h("span", {}, " — " + b.dica)))
+    )
+  );
+
+  corpo.append(h("h4", {}, "Bibliografia de base"));
+  corpo.append(
+    h(
+      "p",
+      { class: "explica" },
+      "Obras de referência para a terminologia morfológica usada no Herbário. O conteúdo delas não é reproduzido; as descrições são paráfrases científicas."
+    )
+  );
+  corpo.append(
+    h(
+      "ul",
+      { class: "lista-biblio" },
+      BIBLIOGRAFIA_BASE.map((b) => h("li", {}, b.citacao, h("span", { class: "uso" }, " " + b.uso)))
+    )
+  );
+  return corpo;
+}
+
+/**
+ * Monta a ficha. ctx = {nome, cabecalho, secoes, observacoes, onRegenerar, fonte}
+ * Retorna {el, atualizar(ctx)} para renderização progressiva.
+ */
+function montarFicha(ctxInicial) {
+  let ctx = ctxInicial;
+  let abaAtiva = "geral";
+  let tudo = false;
+  const raiz = h("section", { class: "ficha" });
+
+  function refsMap() {
+    const m = {};
+    lista(ctx.cabecalho?.referencias).forEach((r, i) => (m[r.id] = { ...r, n: i + 1 }));
+    return m;
+  }
+
+  function cabecalho() {
+    const c = ctx.cabecalho || {};
+    const nome = c.nome_cientifico || ctx.nome;
+    const geral = ctx.secoes?.geral?.conteudo;
+    const habito = lista(geral?.itens).find((i) => /h[áa]bito/i.test(i.caractere))?.valor;
+    const linhas = [
+      ["Família", c.familia],
+      ["Gênero", c.genero ? h("i", {}, c.genero) : null],
+      ["Espécie", c.epiteto ? h("i", {}, `${c.genero} ${c.epiteto}`) : null],
+      ["Nomes populares", lista(c.nome_popular).join(", ")],
+      ["Sinonímia", lista(c.sinonimos).length ? h("span", {}, lista(c.sinonimos).map((s, i) => [i ? "; " : "", h("i", {}, s)])) : "não indicada"],
+      ["Hábito", habito],
+    ].filter(([, v]) => v);
+
+    return h(
+      "header",
+      { class: "etiqueta" },
+      h(
+        "div",
+        { class: "etiqueta-topo" },
+        h("span", { class: "etiqueta-marca" }, "HERBÁRIO · Ficha botânica"),
+        selo(c.status || "gerada_ia")
+      ),
+      c.foto
+        ? h("figure", { class: "etiqueta-foto" }, h("img", { src: c.foto.url, alt: `Foto de referência de ${c.nome_cientifico}`, loading: "lazy" }), h("figcaption", {}, h("a", { href: c.foto.fonte, target: "_blank", rel: "noopener" }, c.foto.atribuicao || "iNaturalist")))
+        : null,
+      h("p", { class: "etiqueta-popular" }, lista(c.nome_popular)[0] || ""),
+      h("h2", { class: "etiqueta-nome" }, nomeCientifico(nome, c.autoria)),
+      c.nome_aceito_difere
+        ? h("p", { class: "nota nota-divergencia" }, `Você consultou “${c.nome_consultado}”. O nome aceito atualmente é `, h("i", {}, nome), ".")
+        : null,
+      h("dl", { class: "etiqueta-dados" }, linhas.map(([k, v]) => h("div", {}, h("dt", {}, k), h("dd", {}, v)))),
+      c.nota_taxonomica ? h("p", { class: "etiqueta-nota" }, c.nota_taxonomica) : null
+    );
+  }
+
+  function abas() {
+    const ids = [...SECOES, "referencias"];
+    const nav = h("nav", { class: "abas", role: "tablist", "aria-label": "Seções da ficha" });
+    for (const id of ids) {
+      const rot = id === "referencias" ? "Referências" : id === "geral" ? "Geral" : id === "curiosidades" ? "Curiosidades" : ROTULOS[id];
+      const pend = id !== "referencias" && !ctx.secoes?.[id];
+      const temFoto = lista(ctx.observacoes?.[id === "geral" ? "habito" : id]).length > 0;
+      const b = h(
+        "button",
+        {
+          type: "button",
+          role: "tab",
+          class: "aba" + (id === abaAtiva && !tudo ? " ativa" : "") + (pend ? " pendente" : ""),
+          "aria-selected": String(id === abaAtiva && !tudo),
+          dataset: { aba: id },
+        },
+        icone(id),
+        h("span", {}, rot),
+        temFoto ? h("span", { class: "ponto-foto", title: "Visto nas suas fotos" }) : null
+      );
+      b.addEventListener("click", () => {
+        abaAtiva = id;
+        tudo = false;
+        render();
+      });
+      nav.append(b);
+    }
+    const t = h("button", { type: "button", class: "aba aba-tudo" + (tudo ? " ativa" : "") }, "Ficha completa");
+    t.addEventListener("click", () => {
+      tudo = !tudo;
+      render();
+    });
+    nav.append(t);
+    return nav;
+  }
+
+  function painel(id) {
+    const ctxR = { ...ctx, refsMap: refsMap() };
+    const titulo = h("h3", { class: "secao-titulo" }, icone(id), id === "referencias" ? "Referências" : ROTULOS[id]);
+    let corpo;
+    if (id === "referencias") corpo = secaoReferencias(ctxR);
+    else if (id === "curiosidades") corpo = secaoCuriosidades(ctx.secoes?.[id], ctxR);
+    else corpo = secaoOrgao(id, ctx.secoes?.[id], ctxR);
+    return h("div", { class: "painel", role: "tabpanel", id: "secao-" + id }, titulo, corpo);
+  }
+
+  function render() {
+    raiz.replaceChildren(
+      cabecalho(),
+      abas(),
+      tudo ? h("div", { class: "painel-todos" }, [...SECOES, "referencias"].map(painel)) : painel(abaAtiva)
+    );
+  }
+
+  render();
+  return {
+    el: raiz,
+    atualizar(novo) {
+      ctx = { ...ctx, ...novo };
+      render();
+    },
+    irPara(aba) {
+      abaAtiva = aba;
+      tudo = false;
+      render();
+    },
+  };
+}
+
+/** Bloco com o resultado da identificação (Etapa 1). */
+function montarIdentificacao(res, fotos, { onEscolher }) {
+  const top = res.candidatas[0];
+  const pct = (x) => Math.round(x * 100) + "%";
+  const rotNivel = { alta: "Confiança alta", media: "Confiança média", baixa: "Confiança baixa", inconclusiva: "Inconclusiva" };
+
+  const galeria = h(
+    "div",
+    { class: "galeria" },
+    fotos.map((f, i) =>
+      h("figure", { class: i === 0 ? "principal" : "" }, h("img", { src: f.url, alt: `Foto ${i + 1} enviada` }), res.orgaos_por_foto[i] ? h("figcaption", {}, res.orgaos_por_foto[i]) : null)
+    )
+  );
+
+  const status = res.confirmada
+    ? h("p", { class: "status-id ok" }, "Identificação com evidência suficiente nas fotos.")
+    : res.candidatas.length
+    ? h("p", { class: "status-id aviso" }, "Identificação não confirmada. As fotos não bastam para distinguir com segurança; compare as candidatas abaixo.")
+    : h("p", { class: "status-id erro" }, res.e_planta ? "Não foi possível identificar a planta com estas fotos." : "As imagens não parecem mostrar uma planta.");
+
+  const candidatas = res.candidatas.map((c, i) =>
+    h(
+      "article",
+      { class: "candidata" + (i === 0 ? " primeira" : "") },
+      h(
+        "div",
+        { class: "cand-topo" },
+        h("span", { class: "cand-n" }, i + 1),
+        h("div", {}, h("p", { class: "cand-nome" }, nomeCientifico(c.nome_cientifico, c.autoria)), h("p", { class: "cand-sub" }, [c.nome_popular[0], c.familia].filter(Boolean).join(" · "))),
+        h("div", { class: "medidor", title: "Semelhança calculada pelo Pl@ntNet" }, h("span", { style: `width:${pct(c.confianca)}` }), h("b", {}, pct(c.confianca)))
+      ),
+      lista(c.imagens).length
+        ? h("div", { class: "cand-imgs" }, c.imagens.map((im) => h("figure", {}, h("img", { src: im.url, alt: `Referência de ${c.nome_cientifico}`, loading: "lazy" }), h("figcaption", {}, [im.orgao, im.autor].filter(Boolean).join(" · ")))))
+        : null,
+      c.a_favor.length ? h("div", { class: "cand-lista a-favor" }, h("strong", {}, "Sustentam"), h("ul", {}, c.a_favor.map((x) => h("li", {}, x)))) : null,
+      c.contra_ou_faltando.length
+        ? h("div", { class: "cand-lista contra" }, h("strong", {}, "Contra ou faltando"), h("ul", {}, c.contra_ou_faltando.map((x) => h("li", {}, x))))
+        : null,
+      h(
+        "button",
+        { class: i === 0 && res.confirmada ? "btn btn-primario" : "btn btn-secundario", type: "button", onclick: () => onEscolher(c, i) },
+        i === 0 && res.confirmada ? "Ver ficha completa" : "Ver ficha desta candidata"
+      )
+    )
+  );
+
+  return h(
+    "section",
+    { class: "identificacao" },
+    galeria,
+    h(
+      "div",
+      { class: "id-info" },
+      h("span", { class: `nivel nivel-${res.nivel}` }, rotNivel[res.nivel] || res.nivel),
+      top ? h("p", { class: "id-popular" }, top.nome_popular[0] || "") : null,
+      top ? h("h2", { class: "id-nome" }, nomeCientifico(top.nome_cientifico, top.autoria)) : h("h2", { class: "id-nome" }, "Sem identificação"),
+      top ? h("p", { class: "id-familia" }, top.familia) : null,
+      status,
+      res.justificativa ? h("p", { class: "justificativa" }, res.justificativa) : null,
+      res.restantes_hoje != null ? h("p", { class: "explica" }, `Identificação feita pelo Pl@ntNet. Restam ${res.restantes_hoje} consultas gratuitas hoje.`) : null,
+      res.fotos_sugeridas.length ? caixa("dica", "Para confirmar, fotografe também", res.fotos_sugeridas) : null
+    ),
+    res.candidatas.length ? h("div", { class: "candidatas" }, h("h3", {}, res.confirmada ? "Espécie identificada" : "Espécies candidatas"), candidatas) : null
+  );
+}
+
+return { ICONES, montarFicha, montarIdentificacao };
+})();
+
+// ===== app.js =====
+const M_app = (() => {
+const { $, $$, h, slugEspecie, normalizar, formatarData, mensagemErroIA, lista } = M_util;
+const { ColecaoFotos, ORGAOS, MAX_FOTOS, abrirCameraAoVivo } = M_imagens;
+const { identificar, buscarNome, identificacaoConfigurada } = M_identificacao;
+const { carregarFicha } = M_ficha;
+const { listarEspecies, registrarHistorico, listarHistorico } = M_acervo;
+const { montarFicha, montarIdentificacao } = M_render;
+const { BIBLIOGRAFIA_BASE } = M_fontes;
+// Herbário — controlador da aplicação.
+
+
+
+
+
+
+
+
+const fotos = new ColecaoFotos();
+const estado = {
+  resultado: null,        // última identificação
+  fotosResultado: [],     // cópia das fotos usadas
+  controlador: null,      // AbortController da operação em curso
+  acervo: [],             // cache da lista do acervo
+  fichaConsulta: null,    // nome em consulta (vista ficha)
+};
+
+// ------------------------------------------------------------------
+// Roteamento por #hash
+// ------------------------------------------------------------------
+const VISTAS = ["inicio", "processando", "resultado", "ficha", "acervo", "sobre"];
+
+function mostrarVista(nome) {
+  for (const v of $$(".vista")) v.hidden = v.dataset.vista !== nome;
+  for (const a of $$("[data-nav]")) a.classList.toggle("ativo", a.dataset.nav === nome || (nome === "inicio" && a.dataset.nav === "inicio"));
+  window.scrollTo({ top: 0 });
+}
+
+async function rotear() {
+  const hash = location.hash.replace(/^#/, "");
+  if (hash.startsWith("ficha-")) {
+    const slug = hash.slice(6);
+    mostrarVista("ficha");
+    abrirFichaConsulta(slug);
+    return;
+  }
+  if (hash === "resultado") {
+    if (!estado.resultado) return irPara("inicio");
+    return mostrarVista("resultado");
+  }
+  if (hash === "acervo") {
+    mostrarVista("acervo");
+    return carregarAcervo();
+  }
+  if (hash === "sobre") return mostrarVista("sobre");
+  if (hash === "identificar") {
+    mostrarVista("inicio");
+    $("#identificar").scrollIntoView({ behavior: "smooth" });
+    return;
+  }
+  mostrarVista("inicio");
+}
+
+function irPara(nome) {
+  if (location.hash === "#" + nome) rotear();
+  else location.hash = nome;
+}
+
+// ------------------------------------------------------------------
+// Avisos
+// ------------------------------------------------------------------
+let toastT;
+function toast(msg) {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.hidden = false;
+  clearTimeout(toastT);
+  toastT = setTimeout(() => (t.hidden = true), 4500);
+}
+
+function mostrarErros(erros) {
+  const box = $("#mensagens");
+  box.replaceChildren(...erros.map((e) => h("p", { class: "msg-erro" }, e)));
+  if (erros.length) setTimeout(() => box.replaceChildren(), 9000);
+}
+
+// ------------------------------------------------------------------
+// Fotos: seleção, prévia, remoção, substituição
+// ------------------------------------------------------------------
+function renderPrevias() {
+  const ul = $("#previas");
+  ul.replaceChildren(
+    ...fotos.fotos.map((f, i) => {
+      const sel = h(
+        "select",
+        { "aria-label": `Órgão da foto ${i + 1}` },
+        ORGAOS.map((o) => h("option", { value: o.valor, selected: o.valor === f.orgao }, o.rotulo))
+      );
+      sel.addEventListener("change", () => fotos.definirOrgao(f.id, sel.value));
+      // Substituir: campo de arquivo dentro do rótulo (abre o seletor sem input.click()).
+      const inpSub = h("input", { type: "file", accept: "image/*", class: "input-oculto", tabindex: "-1" });
+      inpSub.addEventListener("change", async (e) => {
+        await receberArquivos(e.target.files, { substituirId: f.id });
+        e.target.value = "";
+      });
+      return h(
+        "li",
+        { class: "previa" },
+        h("img", { src: f.url, alt: `Prévia da foto ${i + 1}` }),
+        h("span", { class: "previa-n" }, i + 1),
+        h(
+          "div",
+          { class: "previa-acoes" },
+          h("label", { class: "ic", title: "Substituir foto", "aria-label": `Substituir foto ${i + 1}` }, "↺", inpSub),
+          h("button", { type: "button", class: "ic", title: "Remover foto", "aria-label": `Remover foto ${i + 1}`, onclick: () => fotos.remover(f.id) }, "×")
+        ),
+        sel
+      );
+    })
+  );
+  const n = fotos.fotos.length;
+  $("#contador").textContent = `${n} de ${MAX_FOTOS} fotos`;
+  $("#btn-identificar").disabled = n === 0;
+  $("#dica-orgao").hidden = n === 0;
+  $("#zona").classList.toggle("cheia", fotos.cheia);
+  for (const id of ["btn-camera", "btn-arquivos"]) $("#" + id).classList.toggle("desativado", fotos.cheia);
+  for (const id of ["input-camera", "input-arquivos", "input-zona"]) $("#" + id).disabled = fotos.cheia;
+}
+
+async function receberArquivos(lista, opcoes) {
+  if (!lista?.length) {
+    mostrarErros(["Nenhuma foto foi recebida. Tente de novo ou escolha a foto pela galeria."]);
+    return;
+  }
+  const antes = fotos.fotos.length;
+  const box = $("#mensagens");
+  box.replaceChildren(h("p", { class: "msg-ok" }, h("span", { class: "spinner pequeno" }), `Preparando ${lista.length} foto(s)…`));
+  const erros = await fotos.adicionar(lista, opcoes);
+  mostrarErros(erros);
+  if (!erros.length && fotos.fotos.length > antes) toast(`${fotos.fotos.length - antes} foto(s) adicionada(s).`);
+}
+
+function configurarEntradaFotos() {
+  fotos.addEventListener("change", renderPrevias);
+
+  for (const id of ["input-arquivos", "input-camera", "input-zona"]) {
+    $("#" + id).addEventListener("change", async (e) => {
+      const arqs = [...(e.target.files || [])];
+      e.target.value = "";
+      await receberArquivos(arqs);
+    });
+  }
+
+  const zona = $("#zona");
+  zona.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    zona.classList.add("arrastando");
+  });
+  zona.addEventListener("dragleave", () => zona.classList.remove("arrastando"));
+  zona.addEventListener("drop", async (e) => {
+    e.preventDefault();
+    zona.classList.remove("arrastando");
+    await receberArquivos(e.dataTransfer.files);
+  });
+
+  // Câmera ao vivo só quando a página roda fora de um quadro e o navegador permite;
+  // caso contrário o rótulo abre a câmera do aparelho normalmente.
+  $("#btn-camera").addEventListener("click", (e) => {
+    if (e.target.id === "input-camera") return;
+    if (window.self === window.top && navigator.mediaDevices?.getUserMedia && cameraPermitidaPelaPagina()) {
+      e.preventDefault();
+      abrirCamera();
+    }
+  });
+}
+
+// ------------------------------------------------------------------
+// Câmera: getUserMedia quando permitido; senão, câmera do sistema
+// ------------------------------------------------------------------
+function cameraPermitidaPelaPagina() {
+  const pol = document.permissionsPolicy || document.featurePolicy;
+  if (pol?.allowsFeature) {
+    try {
+      return pol.allowsFeature("camera");
+    } catch {
+      return false;
+    }
+  }
+  // Sem como verificar: só tenta ao vivo fora de quadros incorporados.
+  return window.self === window.top;
+}
+
+let camera = null;
+async function abrirCamera() {
+  const modal = $("#modal-camera");
+  modal.hidden = false;
+  try {
+    camera = await abrirCameraAoVivo($("#video-camera"));
+    atualizarContCamera();
+  } catch (e) {
+    modal.hidden = true;
+    if (e.motivo === "negada") {
+      mostrarErros(["Permissão para a câmera negada. Autorize a câmera nas configurações do navegador ou escolha fotos da galeria."]);
+    } else if (e.motivo === "sem-camera") {
+      mostrarErros(["Nenhuma câmera encontrada neste dispositivo. Escolha fotos da galeria."]);
+    } else {
+      mostrarErros(["A câmera ao vivo não está disponível. Use “Escolher fotos” para abrir a câmera ou a galeria do aparelho."]);
+    }
+  }
+}
+
+function atualizarContCamera() {
+  $("#cam-cont").textContent = `${fotos.fotos.length}/${MAX_FOTOS}`;
+}
+
+function fecharCamera() {
+  camera?.fechar();
+  camera = null;
+  $("#modal-camera").hidden = true;
+}
+
+function configurarCamera() {
+  $("#cam-fechar").addEventListener("click", fecharCamera);
+  $("#cam-disparar").addEventListener("click", async () => {
+    if (!camera) return;
+    const arq = await camera.capturar();
+    await receberArquivos([arq]);
+    atualizarContCamera();
+    if (fotos.cheia) fecharCamera();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !$("#modal-camera").hidden) fecharCamera();
+  });
+}
+
+// ------------------------------------------------------------------
+// Processamento
+// ------------------------------------------------------------------
+function iniciarProcessamento(titulo) {
+  $("#proc-titulo").textContent = titulo;
+  $("#proc-msg").textContent = "";
+  for (const li of $$("#etapas li")) li.className = "";
+  mostrarVista("processando");
+  estado.controlador?.abort();
+  estado.controlador = new AbortController();
+  return estado.controlador.signal;
+}
+
+function etapa(n, msg) {
+  for (const li of $$("#etapas li")) {
+    const k = Number(li.dataset.etapa);
+    li.className = k < n ? "feita" : k === n ? "atual" : "";
+  }
+  if (msg) $("#proc-msg").textContent = msg;
+}
+
+async function executarIdentificacao() {
+  if (!fotos.fotos.length) return;
+  const signal = iniciarProcessamento("Identificando a planta");
+  etapa(1, "Preparando as fotografias…");
+  const usadas = fotos.fotos.map((f) => ({ ...f }));
+  try {
+    if (!estado.acervo.length) estado.acervo = await listarEspecies();
+    const res = await identificar(usadas, {
+      acervo: estado.acervo.map((e) => e.nome_cientifico),
+      signal,
+      onEtapa: (m) => etapa(1, m),
+    });
+    estado.resultado = res;
+    estado.fotosResultado = usadas;
+    registrarHistorico(res);
+    exibirResultado(signal);
+  } catch (e) {
+    if (e?.code === "cancelled") return irPara("inicio");
+    mostrarVista("inicio");
+    mostrarErros([mensagemErroIA(e)]);
+  }
+}
+
+function exibirResultado(signal) {
+  const res = estado.resultado;
+  const areaId = $("#area-identificacao");
+  const areaFicha = $("#area-ficha");
+  areaFicha.replaceChildren();
+
+  const abrirCandidata = (c, i) => {
+    const naoConfirmada = !(res.confirmada && i === 0);
+    carregarFichaEm(areaFicha, c.nome_cientifico, {
+      extra: c,
+      observacoes: res.observacoes,
+      aviso: naoConfirmada
+        ? `Atenção: esta ficha é de uma espécie CANDIDATA (confiança ${Math.round(c.confianca * 100)}%), não de uma identificação confirmada.`
+        : null,
+    });
+    requestAnimationFrame(() => areaFicha.scrollIntoView({ behavior: "smooth", block: "start" }));
+  };
+
+  areaId.replaceChildren(montarIdentificacao(res, estado.fotosResultado, { onEscolher: abrirCandidata }));
+
+  if (location.hash !== "#resultado") location.hash = "resultado";
+  else mostrarVista("resultado");
+
+  // Identificação confiável: segue direto para a Etapa 2.
+  if (res.confirmada) {
+    carregarFichaEm(areaFicha, res.candidatas[0].nome_cientifico, {
+      extra: res.candidatas[0],
+      observacoes: res.observacoes,
+      signal,
+    });
+  } else if (!res.candidatas.length) {
+    areaFicha.replaceChildren(
+      h("div", { class: "cartao" }, h("p", {}, "Sem uma espécie provável, a ficha morfológica não foi gerada. Tente fotos mais nítidas da folha (frente e verso), de flores ou frutos e da planta inteira."))
+    );
+  }
+}
+
+// ------------------------------------------------------------------
+// Ficha
+// ------------------------------------------------------------------
+async function carregarFichaEm(area, nome, { extra = {}, observacoes = null, aviso = null, signal } = {}) {
+  const ctl = new AbortController();
+  if (signal) signal.addEventListener("abort", () => ctl.abort(), { once: true });
+  const progresso = h("div", { class: "progresso-ficha" }, h("span", { class: "spinner pequeno" }), h("span", {}, "Consultando o acervo…"));
+  const parar = h("button", { class: "btn-link", type: "button", onclick: () => ctl.abort() }, "Parar");
+  progresso.append(parar);
+
+  const vista = {
+    ctx: { nome, cabecalho: null, secoes: {}, observacoes },
+    ficha: null,
+  };
+  vista.ficha = montarFicha(vista.ctx);
+  area.replaceChildren(...[aviso ? h("p", { class: "nota nota-divergencia aviso-candidata" }, aviso) : null, progresso, vista.ficha.el].filter(Boolean));
+
+  try {
+    const r = await carregarFicha(nome, {
+      extra,
+      signal: ctl.signal,
+      onEtapa: (m) => (progresso.children[1].textContent = m),
+      onParcial: (p) => {
+        vista.ctx = { ...vista.ctx, cabecalho: p.cabecalho, secoes: { ...p.secoes } };
+        vista.ficha.atualizar(vista.ctx);
+      },
+    });
+    vista.ctx = { ...vista.ctx, cabecalho: r.cabecalho, secoes: r.secoes };
+    vista.ficha.atualizar(vista.ctx);
+    progresso.remove();
+  } catch (e) {
+    progresso.remove();
+    if (e?.code === "cancelled") {
+      area.prepend(h("p", { class: "nota nota-limite" }, "Pesquisa interrompida."));
+      return;
+    }
+    const msg = e?.code === "nao_reconhecida"
+      ? `“${nome}” não foi encontrada nas bases botânicas. Confira a grafia do nome.`
+      : mensagemErroIA(e);
+    area.replaceChildren(h("div", { class: "cartao" }, h("p", { class: "msg-erro" }, msg)));
+  }
+}
+
+async function abrirFichaConsulta(slug) {
+  const area = $("#area-ficha-consulta");
+  if (estado.fichaConsulta === slug && area.childElementCount) return;
+  estado.fichaConsulta = slug;
+  // Nome a partir do acervo, ou do próprio slug.
+  if (!estado.acervo.length) estado.acervo = await listarEspecies();
+  const doAcervo = estado.acervo.find((e) => e.slug === slug);
+  const nome = doAcervo?.nome_cientifico || slug.replace(/-/g, " ").replace(/^./, (c) => c.toUpperCase());
+  carregarFichaEm(area, nome, { extra: doAcervo || {} });
+}
+
+// ------------------------------------------------------------------
+// Busca por nome
+// ------------------------------------------------------------------
+function configurarBusca() {
+  $("#form-busca").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const q = $("#campo-busca").value.trim();
+    const area = $("#resultados-busca");
+    if (q.length < 3) {
+      area.replaceChildren(h("p", { class: "msg-erro" }, "Digite pelo menos 3 letras."));
+      return;
+    }
+    area.replaceChildren(h("p", { class: "carregando-secao" }, h("span", { class: "spinner pequeno" }), "Buscando…"));
+
+    if (!estado.acervo.length) estado.acervo = await listarEspecies();
+    const nq = normalizar(q);
+    const locais = estado.acervo.filter(
+      (e) => normalizar(e.nome_cientifico).includes(nq) || lista(e.nome_popular).some((p) => normalizar(p).includes(nq)) || lista(e.sinonimos).some((s) => normalizar(s).includes(nq))
+    );
+
+    const blocos = [];
+    if (locais.length) {
+      blocos.push(h("p", { class: "rotulo-lista" }, "No acervo do Herbário"));
+      blocos.push(h("ul", { class: "lista-simples" }, locais.slice(0, 8).map(itemEspecie)));
+    }
+    area.replaceChildren(...blocos, h("p", { class: "carregando-secao" }, h("span", { class: "spinner pequeno" }), "Conferindo a nomenclatura…"));
+
+    try {
+      const r = await buscarNome(q);
+      const novos = r.resultados.filter((x) => !locais.some((l) => l.slug === slugEspecie(x.nome_cientifico)));
+      const fim = [...blocos];
+      if (novos.length) {
+        fim.push(h("p", { class: "rotulo-lista" }, locais.length ? "Outras correspondências (GBIF e iNaturalist)" : "Correspondências no GBIF e iNaturalist"));
+        fim.push(
+          h(
+            "ul",
+            { class: "lista-simples" },
+            novos.map((x) =>
+              h(
+                "li",
+                {},
+                h(
+                  "a",
+                  { href: "#ficha-" + slugEspecie(x.nome_cientifico) },
+                  h("i", {}, x.nome_cientifico),
+                  x.autoria ? " " + x.autoria : "",
+                  h("span", { class: "sub" }, [x.nome_popular.slice(0, 3).join(", "), x.familia].filter(Boolean).join(" · ")),
+                  x.observacao ? h("span", { class: "obs" }, x.observacao) : null
+                )
+              )
+            )
+          )
+        );
+      }
+      if (r.nota) fim.push(h("p", { class: "nota nota-limite" }, r.nota));
+      if (!fim.length) fim.push(h("p", {}, "Nenhuma espécie encontrada com esse nome."));
+      area.replaceChildren(...fim);
+    } catch (e2) {
+      area.replaceChildren(...blocos, h("p", { class: "msg-erro" }, locais.length ? "A busca fora do acervo não está disponível agora." : mensagemErroIA(e2)));
+    }
+  });
+}
+
+function itemEspecie(e) {
+  return h(
+    "li",
+    {},
+    h(
+      "a",
+      { href: "#ficha-" + e.slug },
+      h("i", {}, e.nome_cientifico),
+      h("span", { class: "sub" }, [lista(e.nome_popular).slice(0, 2).join(", "), e.familia].filter(Boolean).join(" · ")),
+      h("span", { class: "selo " + (e.status === "verificada" ? "selo-verificada" : "selo-ia") }, e.status === "verificada" ? "verificada" : "não revisada")
+    )
+  );
+}
+
+// ------------------------------------------------------------------
+// Acervo
+// ------------------------------------------------------------------
+async function carregarAcervo() {
+  const area = $("#lista-acervo");
+  area.replaceChildren(h("p", { class: "carregando-secao" }, h("span", { class: "spinner pequeno" }), "Carregando acervo…"));
+  estado.acervo = await listarEspecies();
+  renderAcervo();
+}
+
+function renderAcervo() {
+  const area = $("#lista-acervo");
+  const q = normalizar($("#filtro-acervo").value);
+  const st = $("#filtro-status").value;
+  const itens = estado.acervo.filter(
+    (e) =>
+      (!st || e.status === st) &&
+      (!q || normalizar(e.nome_cientifico).includes(q) || normalizar(e.familia).includes(q) || lista(e.nome_popular).some((p) => normalizar(p).includes(q)))
+  );
+  if (!itens.length) {
+    area.replaceChildren(h("p", { class: "vazio" }, estado.acervo.length ? "Nenhuma espécie corresponde ao filtro." : "O acervo verificado ainda está vazio."));
+    return;
+  }
+  area.replaceChildren(
+    ...itens.map((e) =>
+      h(
+        "a",
+        { class: "cartao-especie", href: "#ficha-" + e.slug },
+        h("span", { class: "selo " + (e.status === "verificada" ? "selo-verificada" : "selo-ia") }, e.status === "verificada" ? "Verificada" : "Não revisada"),
+        h("p", { class: "ce-popular" }, lista(e.nome_popular)[0] || ""),
+        h("p", { class: "ce-nome" }, h("i", {}, e.nome_cientifico), e.autoria ? " " + e.autoria : ""),
+        h("p", { class: "ce-familia" }, e.familia || ""),
+        e.atualizado_em ? h("p", { class: "ce-data" }, "Atualizada em " + formatarData(e.atualizado_em)) : null
+      )
+    )
+  );
+}
+
+// ------------------------------------------------------------------
+// Histórico
+// ------------------------------------------------------------------
+async function carregarHistorico() {
+  const itens = await listarHistorico(6);
+  if (!itens.length) return;
+  $("#bloco-historico").hidden = false;
+  $("#lista-historico").replaceChildren(
+    ...itens.map((it) => {
+      const c = it.candidatas?.[0];
+      return h(
+        "li",
+        {},
+        c
+          ? h(
+              "a",
+              { href: "#ficha-" + slugEspecie(c.nome_cientifico) },
+              h("i", {}, c.nome_cientifico),
+              h("span", { class: "sub" }, `${c.nome_popular || c.familia || ""} · ${it.confirmada ? "confirmada" : "não confirmada"} · ${formatarData(it.data)}`)
+            )
+          : h("span", { class: "sub" }, `Sem identificação · ${formatarData(it.data)}`)
+      );
+    })
+  );
+}
+
+// ------------------------------------------------------------------
+// Página "Método e fontes"
+// ------------------------------------------------------------------
+function renderSobre() {
+  $("#texto-sobre").replaceChildren(
+    h("h2", {}, "Duas etapas"),
+    h("p", {}, h("strong", {}, "Etapa 1 — Identificação. "), "As fotos (até cinco, com o órgão de cada uma) são analisadas juntas pelo Pl@ntNet, sistema de identificação de plantas por imagem mantido por instituições francesas de pesquisa (Cirad, INRAE, Inria e IRD). Ele compara as fotos com milhões de imagens de referência e devolve as espécies mais prováveis com um índice de semelhança. Abaixo de 50% de semelhança, ou com candidatas próximas, o Herbário mostra até três candidatas e não confirma a espécie."),
+    h("p", {}, h("strong", {}, "Etapa 2 — Ficha. "), "Com a espécie definida, o Herbário procura a ficha verificada no acervo: conferida com literatura e bases botânicas, com referência em cada informação. Se a espécie ainda não foi verificada, a ficha é montada automaticamente com o nome aceito, os sinônimos e os nomes populares do GBIF e do iNaturalist, mais os trechos originais das floras que publicam descrições no GBIF, separados por órgão. Órgão sem descrição aparece como “sem dados”: nada é inventado."),
+    h("h2", {}, "Origem de cada informação"),
+    h(
+      "ul",
+      {},
+      h("li", {}, h("span", { class: "origem origem-foto" }, "Observado na foto"), " — órgão reconhecido nas suas fotografias."),
+      h("li", {}, h("span", { class: "origem origem-lit" }, "Literatura [n]"), " — informação com a fonte listada nas referências da ficha.")
+    ),
+    h("h2", {}, "Bases botânicas"),
+    h("p", {}, "Pl@ntNet (identificação), GBIF e iNaturalist (nomes e descrições), Flora e Funga do Brasil e Herbário Virtual Reflora (Jardim Botânico do Rio de Janeiro), Plants of the World Online (Kew) e World Flora Online. Cada ficha traz links de consulta direta pelo nome da espécie."),
+    h("h2", {}, "Bibliografia de base"),
+    h("ul", { class: "lista-biblio" }, BIBLIOGRAFIA_BASE.map((b) => h("li", {}, b.citacao))),
+    h("p", { class: "explica" }, "Essas obras fundamentam a terminologia. O Herbário não reproduz trechos delas; as descrições das fichas verificadas são paráfrases científicas."),
+    h("h2", {}, "Privacidade"),
+    h("p", {}, "As fotos são reduzidas no próprio aparelho e enviadas ao Pl@ntNet apenas para a identificação. O Herbário não as guarda. O histórico fica só neste aparelho e guarda apenas os nomes das espécies e a data."),
+    h("h2", {}, "Limitações"),
+    h("p", {}, "Identificação por imagem pode errar, principalmente entre espécies próximas, plantas jovens ou sem flores e frutos. Não use o Herbário como única fonte para consumo, uso medicinal ou decisões de manejo.")
+  );
+}
+
+// ------------------------------------------------------------------
+// Inicialização
+// ------------------------------------------------------------------
+function verificarConfig() {
+  if (!identificacaoConfigurada()) {
+    const aviso = $("#aviso-ia");
+    aviso.hidden = false;
+    aviso.textContent = "A identificação por foto ainda não foi ativada (falta a chave do Pl@ntNet). A consulta por nome já funciona.";
+  }
+}
+
+// Alternativa: colar uma imagem (Ctrl+V ou "Colar" do teclado do celular).
+function configurarColar() {
+  document.addEventListener("paste", async (e) => {
+    const alvo = e.target;
+    const imgs = [...(e.clipboardData?.files || [])].filter((f) => f.type.startsWith("image/"));
+    if (!imgs.length) return;
+    if (alvo && alvo.id === "campo-busca") e.preventDefault();
+    await receberArquivos(imgs);
+  });
+}
+
+function iniciar() {
+  configurarColar();
+  configurarEntradaFotos();
+  configurarCamera();
+  configurarBusca();
+  renderPrevias();
+  renderSobre();
+  $("#btn-identificar").addEventListener("click", executarIdentificacao);
+  $("#btn-cancelar").addEventListener("click", () => estado.controlador?.abort());
+  $("#filtro-acervo").addEventListener("input", renderAcervo);
+  $("#filtro-status").addEventListener("change", renderAcervo);
+  window.addEventListener("hashchange", rotear);
+  rotear();
+  verificarConfig();
+  carregarHistorico();
+}
+
+iniciar();
+
+return {  };
+})();
+
+</script>
+</body>
+</html>
